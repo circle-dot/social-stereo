@@ -2,8 +2,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
-import { Disc3, MicVocal, Headset, LucideIcon, DiscAlbum, CircleUserRound, HomeIcon, Plus } from 'lucide-react'
-import { usePrivy } from '@privy-io/react-auth'
+import { Disc3, MicVocal, Headset, LucideIcon, DiscAlbum, HomeIcon, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface NavItemProps {
@@ -36,7 +35,6 @@ function NavItem({ icon: Icon, label, href, isCenter = false }: NavItemProps) {
 }
 
 export default function MainNavigation() {
-  const { ready, authenticated } = usePrivy()
   const params = useParams()
   const projectName = params.project as string
   const pathname = usePathname()
@@ -62,9 +60,6 @@ export default function MainNavigation() {
           <NavItem icon={DiscAlbum} label="Music" href={`/${projectName}/music`} />
           <NavItem icon={MicVocal} label="Karaoke" href={`/${projectName}/karaoke`} />
           <NavItem icon={Headset} label="DJ" href={`/${projectName}/dj`}/>
-          {ready && authenticated && (
-            <NavItem icon={CircleUserRound} label="Profile" href={`/${projectName}/profile`} />
-          )}
         </div>
       </nav>
     </div>

@@ -16,6 +16,7 @@ const mockTracks: any = {
         {
             "id": "7ouMYWpwJ422jRcDASZB7P",
             "name": "Knights of Cydonia",
+            "rank": 1,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "Black Holes and Revelations",
@@ -31,6 +32,7 @@ const mockTracks: any = {
         {
             "id": "4VqPOruhp5EdPBeR92t6lQ",
             "name": "Uprising",
+            "rank": 2,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "The Resistance",
@@ -46,6 +48,7 @@ const mockTracks: any = {
         {
             "id": "2takcwOaAZWiXQijPHIx7B",
             "name": "Time is Running Out",
+            "rank": 3,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "Absolution",
@@ -61,6 +64,7 @@ const mockTracks: any = {
         {
             "id": "3WMj8moIAXJhHsyLaqIIHI",
             "name": "Starlight",
+            "rank": 4,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "Black Holes and Revelations",
@@ -76,6 +80,7 @@ const mockTracks: any = {
         {
             "id": "3skn2lauGk7Dx6bVIt5DVj",
             "name": "Supermassive Black Hole",
+            "rank": 5,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "Black Holes and Revelations",
@@ -91,6 +96,7 @@ const mockTracks: any = {
         {
             "id": "7xyYsOvq5Ec3P4fr6mM9fD",
             "name": "Hysteria",
+            "rank": 6,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "Absolution",
@@ -106,6 +112,7 @@ const mockTracks: any = {
         {
             "id": "0c4IEciLCDdXEhhKxj4ThA",
             "name": "Madness",
+            "rank": 7,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "The 2nd Law",
@@ -121,6 +128,7 @@ const mockTracks: any = {
         {
             "id": "4rPkN1FMzQyFNP9cLUGIIB",
             "name": "Resistance",
+            "rank": 8,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "The Resistance",
@@ -136,6 +144,7 @@ const mockTracks: any = {
         {
             "id": "1Q8e1lf1uYV6HEZ911ZMbq",
             "name": "Plug In Baby",
+            "rank": 9,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "Origin of Symmetry",
@@ -151,6 +160,7 @@ const mockTracks: any = {
         {
             "id": "2UqGLVPYUxWkIzQatBKLJG",
             "name": "Psycho",
+            "rank": 10,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "Drones",
@@ -166,6 +176,7 @@ const mockTracks: any = {
         {
             "id": "383QXk8nb2YrARMUwDdjQS",
             "name": "Pressure",
+            "rank": 11,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "Simulation Theory",
@@ -181,6 +192,7 @@ const mockTracks: any = {
         {
             "id": "3lPr8ghNDBLc2uZovNyLs9",
             "name": "Supermassive Black Hole",
+            "rank": 12,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "Black Holes and Revelations",
@@ -196,6 +208,7 @@ const mockTracks: any = {
         {
             "id": "5YtypBTQCjbujLqDV8SZd3",
             "name": "Won't Stand Down",
+            "rank": 13,
             "artists": [{ "name": "Muse" }],
             "album": {
                 "name": "Will of the People",
@@ -323,7 +336,7 @@ function MusicGrid({ tracks = mockTracks.tracks }: { tracks?: any[] }) {
                                         layoutId={`button-${active.id}-${id}`}
                                         className="px-4 py-3 text-sm rounded-full font-bold bg-green-500 text-white"
                                     >
-                                        Play
+                                        Vote
                                     </motion.button>
                                 </div>
                                 <div className="pt-4 relative px-4">
@@ -368,7 +381,12 @@ function MusicGrid({ tracks = mockTracks.tracks }: { tracks?: any[] }) {
                         onClick={() => setActive(track)}
                         className="p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
                     >
-                        <div className="flex gap-4 flex-col md:flex-row">
+                        <div className="flex gap-4 flex-col md:flex-row items-center md:items-start">
+                            {track.rank && (
+                                <span className="text-lg font-bold text-neutral-500 dark:text-neutral-400 md:w-8 text-center">
+                                    #{track.rank}
+                                </span>
+                            )}
                             <motion.div layoutId={`image-${track.id}-${id}`}>
                                 <Image
                                     width={100}
@@ -398,7 +416,7 @@ function MusicGrid({ tracks = mockTracks.tracks }: { tracks?: any[] }) {
                             onClick={(e) => handlePlayClick(e, track)}
                             className="px-4 py-2 text-sm rounded-full font-bold bg-gray-100 hover:bg-green-500 hover:text-white text-black mt-4 md:mt-0"
                         >
-                            Play
+                            Vote
                         </motion.button>
                     </motion.div>
                 ))}
