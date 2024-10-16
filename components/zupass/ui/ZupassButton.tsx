@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -17,7 +19,7 @@ export default function ZupassButton({ user, text, wallets }: { user: any, text:
     const [isLoadingBackend, setIsLoadingBackend] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const { refetch: refetchAttestations, isLoading: isLoadingAttestations, error: attestationError } = useAttestationCheck(user.wallet.address);
+    const { refetch: refetchAttestations, isLoading: isLoadingAttestations } = useAttestationCheck(user.wallet.address);
 
     useEffect(() => {
         if (result && result.pcds) {
@@ -89,18 +91,18 @@ export default function ZupassButton({ user, text, wallets }: { user: any, text:
         }
     };
 
-    const openDialog = () => {
-        setIsDialogOpen(true);
-    };
+    // const openDialog = () => {
+    //     setIsDialogOpen(true);
+    // };
 
     const closeDialog = () => {
         setIsDialogOpen(false);
     };
 
-    const handleConnectZupass = async () => {
-        closeDialog();
-        await onZuAuth();
-    };
+    // const handleConnectZupass = async () => {
+    //     closeDialog();
+    //     await onZuAuth();
+    // };
 
     const handleReconnectZupass = async () => {
         Swal.showLoading();

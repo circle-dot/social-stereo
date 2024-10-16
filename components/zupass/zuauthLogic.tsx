@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useState } from 'react';
 import { zuAuthPopup, ZuAuthArgs } from "@pcd/zuauth";
 import { usePrivy } from '@privy-io/react-auth';
@@ -6,8 +8,6 @@ import { TicketTypeName } from "./types";
 
 
 const watermark = "0";
-
-// Ensure the tickets are formatted correctly
 // Ensure the tickets are formatted correctly
 const config = Object.entries(whitelistedTickets).flatMap(
     ([ticketType, tickets]) =>
@@ -36,7 +36,7 @@ export const useZuAuth = (user: any) => {
     const [result, setResult] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [apiResponse, setApiResponse] = useState<any>(null);
-
+    console.log("user", user);
     const handleZuAuth = async () => {
         setIsLoading(true);
 

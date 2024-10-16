@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import GET_ATTESTATIONS from '@/graphql/queries/getAttestations';
-import { communityData } from '@/config/site';
+import { EAS_CONFIG } from '@/config/site';
 
 export const useAttestationDetails = (
   pageSize: number = 10,
@@ -9,7 +9,7 @@ export const useAttestationDetails = (
   const { data, isLoading, error } = useQuery({
     queryKey: ['attestationDetails', pageSize, pageNumber],
     queryFn: async () => {
-      const response = await fetch(communityData.graphql, {
+      const response = await fetch(EAS_CONFIG.GRAPHQL_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ export const useAttestationDetails = (
         body: JSON.stringify({
           query: GET_ATTESTATIONS,
           variables: {
-            schemaId: communityData.schema,
+            schemaId: EAS_CONFIG.VOUCH_SCHEMA,
             take: pageSize,
             skip: (pageNumber - 1) * pageSize,
           },

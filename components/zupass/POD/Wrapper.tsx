@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React, { useState, useRef } from 'react';
 import { connect, Zapp } from "@parcnet-js/app-connector";
 import { Button } from "@/components/ui/button"
@@ -13,7 +15,7 @@ const PODWrapper: React.FC<PODWrapper> = ({ user, accessToken }) => {
     const [z, setZ] = useState<any>(null);
     const [isInitializing, setIsInitializing] = useState(false);
     const connectorRef = useRef<HTMLDivElement>(null);
-
+    console.log("user", user);
     const initializeZapp = async () => {
         setIsInitializing(true);
         const myZapp: Zapp = {

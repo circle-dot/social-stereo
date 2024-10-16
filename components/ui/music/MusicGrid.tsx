@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client"
 import React, { useEffect, useId, useRef, useState } from 'react'
 import Image from "next/image"
@@ -404,9 +406,5 @@ function MusicGrid({ tracks = mockTracks.tracks }: { tracks?: any[] }) {
         </>
     );
 }
-
-const CloseIcon = () => {
-    // ... (your existing CloseIcon component)
-};
 
 export default MusicGrid;

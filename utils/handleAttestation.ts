@@ -4,8 +4,7 @@ import { SchemaEncoder } from '@ethereum-attestation-service/eas-sdk';
 import { ethers } from 'ethers';
 import fetchNonce from './fetchNonce';
 import { signTypedData } from './signTypedData';
-import { communityData } from '@/config/site';
-
+import { EAS_CONFIG } from '@/config/site';
 export const handleVouch = async (
     recipient: string,
     user: any,
@@ -48,8 +47,8 @@ export const handleVouch = async (
         console.log('attester', attester);
         console.log('platform', platform);
          // Use default values if endorsementType or power are not defined
-         const endorsementType = communityData.endorsementType;
-         const category = communityData.category;
+         const endorsementType = EAS_CONFIG.endorsementType;
+         const category = EAS_CONFIG.category;
          console.log('endorsementType', endorsementType)
          console.log('category',category)
          const schemaEncoder = new SchemaEncoder("bytes32 endorsement,bytes32 platform,bytes32 category");
@@ -114,7 +113,7 @@ export const handleVouch = async (
         console.log('resultAttestation:', resultAttestation);
 
         // Construct the attestation view URL
-        const baseUrl = communityData.graphql.replace('/graphql', '');
+        const baseUrl = EAS_CONFIG.GRAPHQL_URL.replace('/graphql', '');
         const attestationViewUrl = `${baseUrl}/attestation/view/${resultAttestation.newAttestationUID}`;
 
         showSuccessAlert('Vouch created successfully.', 'Go to vouch', attestationViewUrl);

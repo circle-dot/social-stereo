@@ -3,13 +3,13 @@ import React from 'react'
 import { usePrivy } from '@privy-io/react-auth'
 import { Button } from '@/components/ui/button'
 
-function page() {
+function Profile() {
     const { logout } = usePrivy();
-  return (
-    <div>
-        <Button onClick={logout}>Logout</Button>
-    </div>
-  )
+    return (
+        <div>
+            <Button onClick={logout}>Logout</Button>
+        </div>
+    )
 }
 
-export default page
+export default Profile
