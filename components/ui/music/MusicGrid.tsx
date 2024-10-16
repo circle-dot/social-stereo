@@ -118,7 +118,7 @@ const mockTracks: any = {
                 "name": "The 2nd Law",
                 "images": [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273e0dbe715fd9c1b032e8e4967",
+                        "url": "https://i.scdn.co/image/ab67616d0000b2738cb690f962092fd44bbe2bf4",
                         "height": 640,
                         "width": 640
                     }
@@ -150,7 +150,7 @@ const mockTracks: any = {
                 "name": "Origin of Symmetry",
                 "images": [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b8a8b8c8ea0a1ac7e8501b40",
+                        "url": "https://i.scdn.co/image/ab67616d0000b2738cb690f962092fd44bbe2bf4",
                         "height": 640,
                         "width": 640
                     }
@@ -166,7 +166,7 @@ const mockTracks: any = {
                 "name": "Drones",
                 "images": [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273e0dbe715fd9c1b032e8e4967",
+                        "url": "https://i.scdn.co/image/ab67616d0000b2738cb690f962092fd44bbe2bf4",
                         "height": 640,
                         "width": 640
                     }
@@ -182,7 +182,7 @@ const mockTracks: any = {
                 "name": "Simulation Theory",
                 "images": [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273e0dbe715fd9c1b032e8e4967",
+                        "url": "https://i.scdn.co/image/ab67616d0000b2738cb690f962092fd44bbe2bf4",
                         "height": 640,
                         "width": 640
                     }
