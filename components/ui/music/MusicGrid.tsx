@@ -214,7 +214,7 @@ const mockTracks: any = {
                 "name": "Will of the People",
                 "images": [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273e0dbe715fd9c1b032e8e4967",
+                        "url": "https://i.scdn.co/image/ab67616d0000b27328933b808bfb4cbbd0385400",
                         "height": 640,
                         "width": 640
                     }
