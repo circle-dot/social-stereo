@@ -55,4 +55,5 @@ model Music {
   imageUrl   String
   spotifyUrl String
   createdAt  DateTime @default(now())
+  rank       Int
 }

@@ -13,7 +13,9 @@ export const handleVouch = async (
     schema: string,
     chain: number | string,
     platform: string,
-    verifyingContract: string
+    verifyingContract: string,
+    category: string,
+    subcategory: string
 ) => {
     if (!user?.wallet?.address) {
         showErrorAlert('User wallet address is not defined.');
@@ -44,20 +46,12 @@ export const handleVouch = async (
         const chainId = typeof chain === 'string' ? parseInt(chain) : chain;
         const schemaUID = schema;
         const attester = user?.wallet.address;
-        console.log('attester', attester);
-        console.log('platform', platform);
          // Use default values if endorsementType or power are not defined
-         const endorsementType = EAS_CONFIG.endorsementType;
-         const category = EAS_CONFIG.category;
-         console.log('endorsementType', endorsementType)
-         console.log('category',category)
-         const schemaEncoder = new SchemaEncoder("bytes32 endorsement,bytes32 platform,bytes32 category");
-         console.log('schemaEncoder', schemaEncoder)
-         // !TO DO, we need to encode the category/endorsement/platform as bytes32
+         const schemaEncoder = new SchemaEncoder("bytes32 platform,bytes32 category,bytes32 subCategory");
         const encodedData = schemaEncoder.encodeData([
-            { name: "endorsement", value: ethers.encodeBytes32String(endorsementType), type: "bytes32" },
             { name: "platform", value: ethers.encodeBytes32String(platform), type: "bytes32" },
-            { name: "category", value: ethers.encodeBytes32String(category), type: "bytes32" }
+            { name: "category", value: ethers.encodeBytes32String(category), type: "bytes32" },
+            { name: "subCategory", value: ethers.encodeBytes32String(subcategory), type: "bytes32" },
         ]);
         console.log('encodedData', encodedData);
         const domain = {
@@ -109,7 +103,7 @@ export const handleVouch = async (
 
 
         //TO CONSIDER, we can pass encoded data instead of doing it server side as well, but should we?
-        const resultAttestation = await generateAttestation(token, platform, recipient, attester, signature);
+        const resultAttestation = await generateAttestation(token, platform, recipient, attester, signature,category,subcategory);
         console.log('resultAttestation:', resultAttestation);
 
         // Construct the attestation view URL

@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useOutsideClick } from '@/utils/hooks/use-outside-click'
 import { CircleX } from 'lucide-react';
 import { handleMusicVote } from './logic/handleMusicVote'
-import { usePrivy } from '@privy-io/react-auth'
+import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogOverlay } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 
@@ -225,11 +225,11 @@ const mockTracks: any = {
 }
 
 function MusicGrid({ tracks = mockTracks.tracks }: { tracks?: any[] }) {
-    const { login, authenticated, ready } = usePrivy();
+    const { login, authenticated, ready, getAccessToken, user } = usePrivy();
     const [active, setActive] = useState<any | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [authStatus, setAuthStatus] = useState(false);
-
+    const { wallets } = useWallets();
     const ref = useRef<HTMLDivElement>(null);
     const id = useId();
 
@@ -267,7 +267,7 @@ function MusicGrid({ tracks = mockTracks.tracks }: { tracks?: any[] }) {
         if (track !== active) {
             setActive(track);
         } else if (authStatus) {
-            handleMusicVote(track.id, authStatus);
+            handleMusicVote(track.id, authStatus, user, wallets, getAccessToken);
         } else {
             setIsDialogOpen(true);
         }
