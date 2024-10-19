@@ -7,11 +7,14 @@ import { ethers } from "ethers";
  */
 function stringToBytes20(input: string) {
   const utf8Bytes = ethers.toUtf8Bytes(input);
-  const slicedBytes = utf8Bytes.slice(0, 20);
+  
+  if (utf8Bytes.length > 20) {
+    throw new Error("Input string is too long. Max 20 bytes allowed.");
+  }
 
   // Pad with zeros to make it exactly 20 bytes
   const paddedBytes = new Uint8Array(20);
-  paddedBytes.set(slicedBytes); // Copy input bytes into the padded array
+  paddedBytes.set(utf8Bytes); // Copy input bytes into the padded array
 
   return ethers.hexlify(paddedBytes); // Convert to hex string
 }
@@ -29,5 +32,12 @@ function bytes20ToString(hex: string) {
   
   return ethers.toUtf8String(trimmedBytes);
 }
+
+// Example usage:
+const encoded = stringToBytes20("hello");
+console.log("Encoded:", encoded); // Encoded: 0x68656c6c6f000000000000000000000000000000
+
+const decoded = bytes20ToString(encoded);
+console.log("Decoded:", decoded); // Decoded: hello
 
 export { stringToBytes20, bytes20ToString };

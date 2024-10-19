@@ -1,5 +1,7 @@
-export const siteName = "Social Stereo";
-
+export const SITE_CONFIG = {
+  name: "Social Stereo",
+  description: "Devcon SEA"
+};
 export const EAS_CONFIG = {
     chainId: 84532,
     EAS_CONTRACT_ADDRESS: "0x4200000000000000000000000000000000000021",

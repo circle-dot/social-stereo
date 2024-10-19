@@ -266,7 +266,7 @@ function MusicGrid({ tracks = mockTracks.tracks }: { tracks?: any[] }) {
         e.stopPropagation();
         if (track !== active) {
             setActive(track);
-        } else if (authStatus) {
+        } else if (authStatus && user) {
             handleMusicVote(track.id, authStatus, user, wallets, getAccessToken);
         } else {
             setIsDialogOpen(true);

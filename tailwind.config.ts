@@ -49,6 +49,20 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			custom: {
+  				darkBlue: '#0C101A',
+  				mediumBlue: '#3C5184',
+  				lightPurple: '#C08FD4',
+  				green: '#00B896',
+  				lime: '#C5ED00',
+  				cream: '#F3EBD0',
+  				white: '#FFFFFF',
+  				lightGreen: '#B9FE5E',
+  				purple: '#714BFF',
+  				lightBlue: '#B9C3EC',
+  				black: '#000000',
+				darkGreen: '#142200'
   			}
   		},
   		borderRadius: {

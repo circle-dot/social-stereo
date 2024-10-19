@@ -4,7 +4,7 @@ import { PrivyProvider } from '@privy-io/react-auth';
 import React from 'react';
 import { baseSepolia } from 'viem/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { siteName } from '@/config/site';
+import { SITE_CONFIG } from '@/config/site';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
     // Get the chainId from environment variables and parse it as a number
@@ -23,7 +23,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                     theme: 'light',
                     accentColor: '#19473f',
                     logo: '/agora.png',
-                    landingHeader: `Welcome to ${siteName}`,
+                    landingHeader: `Welcome to ${SITE_CONFIG.name}`,
                 },
                 // Create embedded wallets for users who don't have a wallet
                 embeddedWallets: {
