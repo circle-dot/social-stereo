@@ -4,7 +4,7 @@ import { SITE_CONFIG } from '@/config/site';
 const cardData = [
   {
     icon: <Headphones />,
-    title: "Decentralized Playlist",
+    title: "Music",
     description: "Lorem ipsum dolor sit amet consectetur. Loboris orci malesuada nunc lobortis turpis proin lectus nibh.",
     href: "/decentralized-playlist"
   },
@@ -12,19 +12,19 @@ const cardData = [
     icon: <Music />,
     title: "Decentralized DJs",
     description: "Lorem ipsum dolor sit amet consectetur. Loboris orci malesuada nunc lobortis turpis proin lectus nibh.",
-    href: "/decentralized-djs"
+    href: "/feed/dj"
   },
   {
     icon: <Mic />,
     title: "Karaoke",
     description: "Lorem ipsum dolor sit amet consectetur. Loboris orci malesuada nunc lobortis turpis proin lectus nibh.",
-    href: "/karaoke"
+    href: "/feed/karaoke"
   },
   {
     icon: <Gift />,
     title: "Special Box",
     description: "Lorem ipsum dolor sit amet consectetur. Loboris orci malesuada nunc lobortis turpis proin lectus nibh.",
-    href: "/special-box"
+    href: "/feed/special-box"
   }
 ];
 

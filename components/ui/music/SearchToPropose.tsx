@@ -5,7 +5,7 @@ import { searchTracks } from '@/lib/spotify/spotify'
 import { debounce } from 'lodash'
 import MusicGrid from './MusicGrid'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { Search } from 'lucide-react';
 
 function SearchToPropose() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -38,17 +38,15 @@ function SearchToPropose() {
   return (
     <div className="max-w-2xl mx-auto w-full">
       <form onSubmit={handleSearchSubmit} className="mb-6">
-        <div className="flex gap-2">
+        <div className="relative">
           <Input
             type="text"
             value={searchTerm}
             onChange={handleSearchChange}
-            placeholder="Search for a track..."
-            className="flex-grow"
+            placeholder="Search"
+            className="w-full pl-10 pr-4 py-2 rounded-full bg-custom-purple text-white placeholder-custom-lightGreen focus:outline-none focus:ring-2 focus:ring-custom-darkGreen"
           />
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Searching...' : 'Search'}
-          </Button>
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-lightGreen" size={20} />
         </div>
       </form>
       {searchResults && searchResults.length > 0 && (

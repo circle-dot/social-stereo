@@ -15,7 +15,7 @@ const NavigationCard: React.FC<CardProps> = ({ icon, title, description, href })
       <div className="text-2xl text-custom-lightGreen">{icon}</div>
       <h2 className="text-lg font-semibold text-white">{title}</h2>
       <p className="text-xs text-gray-300">{description}</p>
-      <StyledButton href={href}>
+      <StyledButton href={href} className='mt-4'>
         Play <MoveRight className='w-3 h-3' />
       </StyledButton>
     </div>

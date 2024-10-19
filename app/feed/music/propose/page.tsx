@@ -1,12 +1,11 @@
 import React from 'react'
 import SearchToPropose from '@/components/ui/music/SearchToPropose'
-import TitleSection from '@/components/ui/TitleSection'
 
 function ProposeMusicPage() {
     return (
         <div className='flex flex-col items-center justify-center min-h-screen p-4'>
-            <TitleSection />
-            <h2 className="text-2xl font-bold mb-6">Submit your song to the playlist</h2>
+            <h1 className='text-xl font-semibold'>Add your favourite song</h1>
+            <h2 className="text-base mb-6">lorem ipsum</h2>
             <SearchToPropose />
         </div>
     )
