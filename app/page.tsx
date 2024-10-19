@@ -1,8 +1,8 @@
 import React from 'react'
-
+import Home from '@/components/devcon/home/Home'
 function page() {
   return (
-    <div>page</div>
+    <Home />
   )
 }
 
