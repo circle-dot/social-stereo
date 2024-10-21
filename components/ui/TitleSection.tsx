@@ -1,12 +1,8 @@
-"use client"
 import React from 'react'
-import { useParams } from 'next/navigation'
 
-function TitleSection() {
-    const params = useParams();
-    const projectName = params.project as string;
+function TitleSection({ children }: { children: React.ReactNode }) {
   return (
-    <h1 className="text-3xl font-bold mb-6">{projectName} Music</h1>
+    <h1 className="text-3xl font-bold mb-6">{children}</h1>
   )
 }
 

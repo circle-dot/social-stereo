@@ -18,7 +18,7 @@ interface SpotifyArtist {
   uri: string;
 }
 
-interface SpotifyTrack {
+export interface SpotifyTrack {
   album: {
     album_type: string;
     total_tracks: number;

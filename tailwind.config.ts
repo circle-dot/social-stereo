@@ -62,7 +62,8 @@ const config: Config = {
   				purple: '#714BFF',
   				lightBlue: '#B9C3EC',
   				black: '#000000',
-				darkGreen: '#142200'
+				darkGreen: '#142200',
+				dark:'#191919'
   			}
   		},
   		borderRadius: {
