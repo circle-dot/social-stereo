@@ -4,7 +4,7 @@ import MusicGrid from '@/components/ui/music/MusicGrid'
 import { SITE_CONFIG } from '@/config/site'
 import SearchToPropose from '@/components/ui/music/SearchToPropose'
 import { Button } from '@/components/ui/button'
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const mockTracks: any = {
   "tracks": [
       {

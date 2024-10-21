@@ -62,16 +62,16 @@ export async function GET() {
     }, {});
 
     // // Create a sorted ranking
-    // const ranking = Object.entries(recipientCounts)
-    //   .sort(([, a], [, b]) => (b as number) - (a as number))
-    //   .map(([recipient, count], index) => {
-    //     const spotifyId = ethAddressToSpotifyId(recipient);
-    //     console.log(`Recipient: ${recipient}, Spotify ID: ${spotifyId}`);
-    //     return { rank: index + 1, recipient, spotifyId, count };
-    //   });
+    const ranking = Object.entries(recipientCounts)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
+      .map(([recipient, count], index) => {
+        const spotifyId = ethAddressToSpotifyId(recipient);
+        console.log(`Recipient: ${recipient}, Spotify ID: ${spotifyId}`);
+        return { rank: index + 1, recipient, spotifyId, count };
+      });
 
     // // Log the ranking
-    // console.log('Music Ranking:', ranking);
+    console.log('Music Ranking:', ranking);
 
     return NextResponse.json({ message: 'Ranking updated and logged successfully' });
   } catch (error) {
