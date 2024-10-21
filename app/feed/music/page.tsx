@@ -229,7 +229,7 @@ function MusicPage() {
       <div className="flex-grow overflow-y-auto">
         <MusicGrid tracks={mockTracks.tracks} />
       </div>
-      <Button className="bg-custom-lightGreen text-custom-black py-3 px-6 rounded-full w-full mt-4 mb-16">
+      <Button className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full mt-4 mb-10">
         Propose your song
       </Button>
     </div>
