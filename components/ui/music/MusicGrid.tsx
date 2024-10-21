@@ -1,28 +1,33 @@
 import Image from "next/image"
-import { ArrowUp } from 'lucide-react'
 import { SpotifyTrack } from './SearchToProposePresentational'
+import VoteSongButton from './VoteSongButton'
 
 function SongListItem({ track, rank }: { track: SpotifyTrack; rank: number }) {
   return (
-    <div className="flex items-stretch mb-2">
-      <div className="flex items-center justify-center w-16 h-16 bg-custom-darkGreen text-custom-lightGreen font-bold text-2xl rounded-lg mr-2">
+    <div className="flex items-stretch mb-2 h-16">
+      <div className="flex items-center justify-center w-16 border border-custom-lightGreen bg-custom-darkGreen text-custom-lightGreen font-bold text-2xl rounded-lg mr-2">
         #{rank.toString().padStart(2, '0')}
       </div>
-      <div className="flex items-center flex-grow bg-white rounded-lg px-3 py-2">
-        <Image src={track.album.images[0].url} alt={`${track.name} album cover`} width={48} height={48} className="rounded-lg mr-3" />
-        <div className="flex-grow">
-          <h3 className="font-bold text-custom-dark">
-            {track.name.length > 15 ? `${track.name.slice(0, 15)}...` : track.name}
+      <div className="flex items-center flex-grow bg-white rounded-lg overflow-hidden">
+        <div className="h-full w-16 relative">
+          <Image
+            src={track.album.images[0].url}
+            alt={`${track.name} album cover`}
+            fill
+            className="rounded-lg border border-custom-lightGreen object-cover"
+          />
+        </div>
+        <div className="flex-grow px-3 py-2">
+          <h3 className="font-bold text-custom-dark truncate">
+            {track.name}
           </h3>
-          <p className="text-sm text-custom-dark">
-            {track.artists.map(artist => 
-              artist.name.length > 15 ? `${artist.name.slice(0, 15)}...` : artist.name
-            ).join(', ')}
+          <p className="text-sm text-custom-dark truncate">
+            {track.artists.map(artist => artist.name).join(', ')}
           </p>
         </div>
-        <button className="bg-custom-lightGreen text-custom-black p-2 rounded-full w-10 h-10 flex items-center justify-center">
-          <ArrowUp className="w-5 h-5" />
-        </button>
+        <div className="pr-2">
+          <VoteSongButton trackId={track.id} />
+        </div>
       </div>
     </div>
   )

@@ -31,6 +31,9 @@ const variables = {
     ],
     schemaId: {
       equals: "0xa142412d946732a5a336236267a625ab2bc5c51b9d6f0703317bc979432ced66"
+    },
+    revoked: {
+      equals: false
     }
   }
 };
