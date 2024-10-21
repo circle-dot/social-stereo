@@ -23,7 +23,7 @@ function Home() {
       <div className='mt-12 md:mt-0 md:w-7/12 lg:w-8/12 md:flex md:flex-col md:justify-center md:pl-8 lg:pl-12'>
         <h1 className='!font-extrabold text-2xl md:text-3xl lg:text-4xl'>Social Stereo</h1>
         <p className='text-regular font-normal my-4 md:text-lg lg:text-xl'>Lorem ipsum dolor sit amet consectetur. Lobortis orci malesuada nunc lobortis turpis proin lectus nibh.</p>
-        <StyledButton href="/devcon/feed">
+        <StyledButton href="/feed">
           Login <MoveRight className='w-4 h-4' />
         </StyledButton>
       </div>

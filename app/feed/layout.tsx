@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="flex-grow pb-24 bg-custom-purple">
+      <main className="flex-grow bg-custom-purple">
         {children}
       </main>
       <MainNavigation />

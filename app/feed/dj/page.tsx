@@ -1,8 +1,10 @@
 import React from 'react'
-
+import PalmTreeBackground from '@/components/ui/music/PalmTreeBackground'
 function page() {
   return (
-    <div>page</div>
+    <div>
+        <PalmTreeBackground />
+    </div>
   )
 }
 

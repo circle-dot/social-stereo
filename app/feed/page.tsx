@@ -6,7 +6,7 @@ const cardData = [
     icon: <Headphones />,
     title: "Music",
     description: "Lorem ipsum dolor sit amet consectetur. Loboris orci malesuada nunc lobortis turpis proin lectus nibh.",
-    href: "/decentralized-playlist"
+    href: "/feed/music"
   },
   {
     icon: <Music />,
@@ -30,7 +30,7 @@ const cardData = [
 
 function Page() {
   return (
-    <div className=" mx-auto space-y-4 p-4 bg-custom-purple h-full">
+    <div className=" mx-auto space-y-4 p-4 bg-custom-purple h-full pb-24">
       <div>
       <h1 className='!font-extrabold text-2xl md:text-3xl lg:text-4xl pb-2'>{SITE_CONFIG.description}</h1>
       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum vero quidem consequuntur hic nihil perferendis.</p>

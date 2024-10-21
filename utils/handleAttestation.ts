@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import fetchNonce from './fetchNonce';
 import { signTypedData } from './signTypedData';
 import { EAS_CONFIG } from '@/config/site';
+
 export const handleVouch = async (
     recipient: string,
     user: any,
@@ -53,7 +54,6 @@ export const handleVouch = async (
             { name: "category", value: ethers.encodeBytes32String(category), type: "bytes32" },
             { name: "subCategory", value: ethers.encodeBytes32String(subcategory), type: "bytes32" },
         ]);
-        console.log('encodedData', encodedData);
         const domain = {
             name: 'EAS',
             version: '1.2.0',
