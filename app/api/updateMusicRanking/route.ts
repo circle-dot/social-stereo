@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { EAS_CONFIG } from '@/config/site';
+import { ethAddressToSpotifyId } from '@/components/ui/music/logic/convertToAddress';
+
 const query = `
   query Attestations($where: AttestationWhereInput) {
     attestations(where: $where) {
@@ -59,14 +61,17 @@ export async function GET() {
       return acc;
     }, {});
 
-    // Create a sorted ranking
-    const ranking = Object.entries(recipientCounts)
-      .sort(([, a], [, b]) => (b as number) - (a as number))
-      .map(([recipient, count], index) => ({ rank: index + 1, recipient, count }));
+    // // Create a sorted ranking
+    // const ranking = Object.entries(recipientCounts)
+    //   .sort(([, a], [, b]) => (b as number) - (a as number))
+    //   .map(([recipient, count], index) => {
+    //     const spotifyId = ethAddressToSpotifyId(recipient);
+    //     console.log(`Recipient: ${recipient}, Spotify ID: ${spotifyId}`);
+    //     return { rank: index + 1, recipient, spotifyId, count };
+    //   });
 
-    // Log the ranking
-    console.log('Music Ranking:', ranking);
- 
+    // // Log the ranking
+    // console.log('Music Ranking:', ranking);
 
     return NextResponse.json({ message: 'Ranking updated and logged successfully' });
   } catch (error) {

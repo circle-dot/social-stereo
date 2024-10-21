@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import MainNavigation from "@/components/ui/MainNavigation";
+import PalmTreeBackground from "@/components/ui/music/PalmTreeBackground";
 
 export const metadata: Metadata = {
   title: "Social Stereo",
@@ -12,11 +13,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-grow bg-custom-purple">
-        {children}
-      </main>
-      <MainNavigation />
-    </div>
+    <PalmTreeBackground>
+      <div className="min-h-screen flex flex-col">
+        <main className="flex-grow ">
+          {children}
+        </main>
+        <MainNavigation />
+      </div>
+    </PalmTreeBackground>
   );
 }

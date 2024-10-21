@@ -31,12 +31,11 @@ const config = Object.entries(whitelistedTickets).flatMap(
                 (ticket): ticket is NonNullable<typeof ticket> => ticket !== null
             )
 );
-export const useZuAuth = (user: any) => {
-    const { getAccessToken } = usePrivy(); // Add this line
+export const useZuAuth = () => {
+    const { getAccessToken } = usePrivy(); 
     const [result, setResult] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [apiResponse, setApiResponse] = useState<any>(null);
-    console.log("user", user);
     const handleZuAuth = async () => {
         setIsLoading(true);
 
@@ -58,7 +57,6 @@ export const useZuAuth = (user: any) => {
             };
 
             const result = await zuAuthPopup(args);
-            console.log("Local result:", result);
             setResult(result);
         } catch (error) {
             console.error("ZuAuth error:", error);
@@ -99,7 +97,6 @@ export const useZuAuth = (user: any) => {
             }
             
             setApiResponse(data);
-            console.log("API response:", data);
         } catch (error) {
             console.error("Sign error:", error);
             setApiResponse({ error: error instanceof Error ? error.message : String(error) });

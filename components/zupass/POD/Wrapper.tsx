@@ -11,11 +11,10 @@ interface PODWrapper {
     accessToken: string;
 }
 
-const PODWrapper: React.FC<PODWrapper> = ({ user, accessToken }) => {
+const PODWrapper: React.FC<PODWrapper> = ({ accessToken }) => {
     const [z, setZ] = useState<any>(null);
     const [isInitializing, setIsInitializing] = useState(false);
     const connectorRef = useRef<HTMLDivElement>(null);
-    console.log("user", user);
     const initializeZapp = async () => {
         setIsInitializing(true);
         const myZapp: Zapp = {
@@ -62,7 +61,6 @@ const PODWrapper: React.FC<PODWrapper> = ({ user, accessToken }) => {
             });
 
             const queryResult = await z.pod.collection("Stamp").query(query);
-            console.log("queryResult", queryResult);
             if (queryResult.length > 0) {
                 showSuccessAlertWithoutRedirect('An AgoraPass already exists in your account', 'OK');
             } else {

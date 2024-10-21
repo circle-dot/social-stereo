@@ -3,11 +3,71 @@ import MusicGrid from './MusicGrid'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 
+interface SpotifyImage {
+  url: string;
+  height: number;
+  width: number;
+}
+
+interface SpotifyArtist {
+  external_urls: { spotify: string };
+  href: string;
+  id: string;
+  name: string;
+  type: string;
+  uri: string;
+}
+
+interface SpotifyTrack {
+  album: {
+    album_type: string;
+    total_tracks: number;
+    available_markets: string[];
+    external_urls: { spotify: string };
+    href: string;
+    id: string;
+    images: SpotifyImage[];
+    name: string;
+    release_date: string;
+    release_date_precision: string;
+    type: string;
+    uri: string;
+    artists: SpotifyArtist[];
+  };
+  artists: SpotifyArtist[];
+  available_markets: string[];
+  disc_number: number;
+  duration_ms: number;
+  explicit: boolean;
+  external_urls: { spotify: string };
+  href: string;
+  id: string;
+  name: string;
+  popularity: number;
+  preview_url: string | null;
+  track_number: number;
+  type: string;
+  uri: string;
+  is_local: boolean;
+}
+
+interface SearchResults {
+  tracks: {
+    href: string;
+    items: SpotifyTrack[];
+    limit: number;
+    next: string | null;
+    offset: number;
+    previous: string | null;
+    total: number;
+  };
+}
+
 interface SearchToProposePresentationalProps {
   searchTerm: string
   handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   handleSearchSubmit: (e: React.FormEvent) => void
-  searchResults: any[] | undefined
+  searchResults: SearchResults | undefined
 }
 
 function SearchToProposePresentational({
@@ -30,8 +90,8 @@ function SearchToProposePresentational({
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-lightGreen" size={20} />
         </div>
       </form>
-      {searchResults && searchResults.length > 0 && (
-        <MusicGrid tracks={searchResults} />
+      {searchResults && searchResults.tracks && searchResults.tracks.items && searchResults.tracks.items.length > 0 && (
+        <MusicGrid tracks={searchResults.tracks.items} />
       )}
     </div>
   )

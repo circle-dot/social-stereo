@@ -6,7 +6,7 @@ import NavItem from './NavItem'
 
 export default function MainNavigation() {
   return (
-    <div className="fixed bottom-4 left-4 right-4 ">
+    <div className="fixed bottom-4 left-4 right-4 z-30">
       <nav className="bg-custom-darkGreen border border-gray-800 rounded-3xl relative shadow-lg">
         <div className="flex justify-around items-center h-16 px-4">
           <NavItem icon={navIcon} href="/feed" />

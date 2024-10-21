@@ -9,7 +9,7 @@ function SearchToPropose() {
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
 
-  const { data: searchResults, refetch, isLoading } = useQuery({
+  const { data: searchResults, refetch } = useQuery({
     queryKey: ['searchTracks', debouncedSearchTerm],
     queryFn: () => searchTracks(debouncedSearchTerm),
     enabled: debouncedSearchTerm.length > 0,

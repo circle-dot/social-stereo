@@ -15,7 +15,7 @@ import { ethers } from 'ethers';
 import Swal from 'sweetalert2';
 
 export default function ZupassButton({ user, text, wallets }: { user: any, text: string, wallets: any }) {
-    const { handleZuAuth, isLoading, result, handleSign, apiResponse } = useZuAuth(user);
+    const { handleZuAuth, isLoading, result, handleSign, apiResponse } = useZuAuth();
     const [isLoadingBackend, setIsLoadingBackend] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
