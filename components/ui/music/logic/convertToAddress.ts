@@ -40,10 +40,8 @@ function bigIntToBase62(value: bigint): string {
 export function ethAddressToSpotifyId(ethAddress: string): string {
   // Remove '0x' prefix and convert to lowercase
   const addressWithoutPrefix = ethAddress.slice(2).toLowerCase();
-  
   // Convert hex to BigInt
   const bigIntValue = BigInt('0x' + addressWithoutPrefix);
-  
   // Convert BigInt to base62 string
   return bigIntToBase62(bigIntValue);
 }

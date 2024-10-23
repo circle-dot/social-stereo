@@ -220,7 +220,7 @@ const mockTracks: any = {
 
 function MusicPage() {
   return (
-    <div className="flex flex-col h-screen max-w-2xl mx-auto p-4 pb-24">
+    <div className="flex flex-col h-screen max-w-2xl mx-auto p-4 pb-32">
       <div className="mb-4">
         <TitleSection>{SITE_CONFIG.description}</TitleSection>
         <p className='text-sm text-white mb-4'>Playlist Last Updated: {new Date().toLocaleDateString()}</p>
