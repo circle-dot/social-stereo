@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { searchTracks } from '@/lib/spotify/spotify'
 import { debounce } from 'lodash'
@@ -9,11 +9,12 @@ function SearchToPropose() {
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
 
-  const { data: searchResults, refetch } = useQuery({
+  const { data: searchResults, error, isLoading, refetch } = useQuery({
     queryKey: ['searchTracks', debouncedSearchTerm],
     queryFn: () => searchTracks(debouncedSearchTerm),
     enabled: debouncedSearchTerm.length > 0,
     staleTime: Infinity,
+    retry: 1, 
   })
 
   const debouncedSearch = useCallback(
@@ -33,12 +34,21 @@ function SearchToPropose() {
     refetch()
   }
 
+  // Log error if it occurs
+  useEffect(() => {
+    if (error) {
+      console.error('Error searching tracks:', error)
+    }
+  }, [error])
+
   return (
     <SearchToProposePresentational
       searchTerm={searchTerm}
       handleSearchChange={handleSearchChange}
       handleSearchSubmit={handleSearchSubmit}
-      searchResults={searchResults}
+      searchResults={searchResults?.music}
+      isLoading={isLoading}
+      error={error instanceof Error ? error.message : error ? 'An error occurred' : null}
     />
   )
 }

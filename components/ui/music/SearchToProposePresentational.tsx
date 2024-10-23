@@ -1,73 +1,22 @@
 import React from 'react'
-import MusicGrid from './MusicGrid'
 import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-react'
+import VoteSongButton from './VoteSongButton'
+import Image from 'next/image';
+import SpotifyLogo from '@/public/Spotify_Full_Logo_RGB_Green.png'
+import Link from 'next/link'
 
-interface SpotifyImage {
-  url: string;
-  height: number;
-  width: number;
-}
-
-interface SpotifyArtist {
-  external_urls: { spotify: string };
-  href: string;
-  id: string;
-  name: string;
-  type: string;
-  uri: string;
-}
-
-export interface SpotifyTrack {
-  album: {
-    album_type: string;
-    total_tracks: number;
-    available_markets: string[];
-    external_urls: { spotify: string };
-    href: string;
-    id: string;
-    images: SpotifyImage[];
-    name: string;
-    release_date: string;
-    release_date_precision: string;
-    type: string;
-    uri: string;
-    artists: SpotifyArtist[];
-  };
-  artists: SpotifyArtist[];
-  available_markets: string[];
-  disc_number: number;
-  duration_ms: number;
-  explicit: boolean;
-  external_urls: { spotify: string };
-  href: string;
-  id: string;
-  name: string;
-  popularity: number;
-  preview_url: string | null;
-  track_number: number;
-  type: string;
-  uri: string;
-  is_local: boolean;
-}
-
-interface SearchResults {
-  tracks: {
-    href: string;
-    items: SpotifyTrack[];
-    limit: number;
-    next: string | null;
-    offset: number;
-    previous: string | null;
-    total: number;
-  };
-}
+const truncate = (str: string, maxLength: number) => 
+  str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
 
 interface SearchToProposePresentationalProps {
   searchTerm: string
   handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   handleSearchSubmit: (e: React.FormEvent) => void
-  searchResults: SearchResults | undefined
+  searchResults: any[] | undefined
+  isLoading: boolean
+  error: string | null
 }
 
 function SearchToProposePresentational({
@@ -75,23 +24,66 @@ function SearchToProposePresentational({
   handleSearchChange,
   handleSearchSubmit,
   searchResults,
+  isLoading,
+  error
 }: SearchToProposePresentationalProps) {
   return (
-    <div className="max-w-2xl mx-auto w-full">
-      <form onSubmit={handleSearchSubmit} className="mb-6">
-        <div className="relative">
+    <div className="w-full max-w-md mx-auto">
+      <form onSubmit={handleSearchSubmit} className="mb-4">
+        <div className="flex">
           <Input
             type="text"
+            placeholder="Search for a song..."
             value={searchTerm}
             onChange={handleSearchChange}
-            placeholder="Search"
-            className="w-full pl-10 pr-4 py-2 rounded-full bg-custom-purple text-white placeholder-custom-lightGreen focus:outline-none focus:ring-2 focus:ring-custom-darkGreen"
+            className="flex-grow"
           />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-lightGreen" size={20} />
+          <Button type="submit" disabled={isLoading} className="ml-2">
+            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Search'}
+          </Button>
         </div>
       </form>
-      {searchResults && searchResults.tracks && searchResults.tracks.items && searchResults.tracks.items.length > 0 && (
-        <MusicGrid tracks={searchResults.tracks.items} />
+
+      {error && (
+        <div className="text-red-500 mb-4">
+          Error: {error}
+        </div>
+      )}
+
+      {searchResults && searchResults.length > 0 ? (
+        <>
+          {searchResults.map((track: any) => (
+            <div key={track.id} className="flex items-stretch mb-2 h-16">
+              <div className="flex items-center flex-grow bg-white rounded-lg overflow-hidden">
+                <div className="h-full w-16 relative">
+                  <Image
+                    src={track.imageUrl}
+                    alt={`${track.title} album cover`}
+                    width={100}
+                    height={100}
+                    className="rounded-lg border border-custom-lightGreen object-cover"
+                  />
+                </div>
+                <div className="flex-grow px-3 py-2">
+                  <h3 className="font-bold text-custom-dark truncate">
+                    {truncate(track.title, 10)}
+                  </h3>
+                  <p className="text-sm text-custom-dark truncate">
+                    {truncate(track.artist, 10)}
+                  </p>
+                </div>
+                <div className="flex items-center pr-2">
+                  <Link href={track.spotifyUrl} target="_blank" rel="noopener noreferrer" className="mr-2 text-[#121212] font-sans">Open in 
+                    <Image width={70} height={70} src={SpotifyLogo} alt='Spotify logo' />
+                  </Link>
+                  <VoteSongButton trackId={track.id} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </>
+      ) : (
+        !isLoading && !error && searchTerm && <p className="text-center">No results found</p>
       )}
     </div>
   )

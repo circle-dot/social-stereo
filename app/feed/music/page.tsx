@@ -8,6 +8,7 @@ import useMusic from '@/utils/hooks/useSearchSongs'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 import { debounce } from 'lodash'
+import Link from 'next/link'
 
 function MusicPage() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -58,9 +59,11 @@ function MusicPage() {
           {isLoading ? 'Loading...' : 'Load More'}
         </Button>
       )}
-      <Button className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full mt-4 mb-10">
+   <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full mt-4 mb-10 text-center">
+   <Link href="/feed/music/propose" >
         Propose your song
-      </Button>
+   </Link>
+   </Button>
     </div>
   )
 }
