@@ -39,16 +39,9 @@ model Zupass {
   platform       String?
 }
 
-model Ranking {
-  id        Int      @id @default(autoincrement())
-  address   String   @unique
-  value     Float
-  createdAt DateTime @default(now())
-  position  String
-}
 
 model Music {
-  id         Int      @id @default(autoincrement())
+  id         String      @id
   title      String
   artist     String
   album      String
