@@ -13,7 +13,8 @@ import Link from 'next/link'
 function MusicPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  
+  const [sortOrder] = useState<'asc' | 'desc'>('desc')
   const { data, isLoading, fetchNextPage, hasNextPage } = useMusic(sortOrder, debouncedSearchTerm)
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
