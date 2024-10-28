@@ -11,6 +11,7 @@ export const handleMusicVote = async (
 ): Promise<void> => {
     console.log('Voted for track with ID:', trackId);
     const recipient = spotifyIdToEthAddress(trackId);
+    console.log('Recipient:', recipient);
     const subcategory = "Music";
     await handleVouch(
         recipient, 

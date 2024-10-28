@@ -22,9 +22,22 @@ function base62ToBigInt(base62: string): bigint {
 }
 
 export function spotifyIdToEthAddress(spotifyId: string): string {
-  const bigIntValue = base62ToBigInt(spotifyId);
-  const hexString = bigIntValue.toString(16).padStart(40, '0');
-  return ethers.getAddress('0x' + hexString);
+  const BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  
+  // Convert base62 to decimal
+  let decimal = 0n;
+  for (let char of spotifyId) {
+      decimal = decimal * 62n + BigInt(BASE62.indexOf(char));
+  }
+  
+  // Convert decimal to hex
+  let hexString = decimal.toString(16);
+  
+  // Ensure the hex string is 40 characters long (20 bytes)
+  hexString = hexString.padStart(40, '0');
+  
+  // Add '0x' prefix and return
+  return '0x' + hexString;
 }
 
 function bigIntToBase62(value: bigint): string {

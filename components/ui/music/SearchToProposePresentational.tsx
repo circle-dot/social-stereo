@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Loader2, Search } from 'lucide-react'
 import VoteSongButton from './VoteSongButton'
 import Image from 'next/image';
