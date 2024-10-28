@@ -3,7 +3,7 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 import VoteSongButton from './VoteSongButton'
 import Image from 'next/image';
 
@@ -28,19 +28,27 @@ function SearchToProposePresentational({
   error
 }: SearchToProposePresentationalProps) {
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto px-8">
       <form onSubmit={handleSearchSubmit} className="mb-4">
-        <div className="flex">
+        <div className="relative ">
           <Input
             type="text"
-            placeholder="Search for a song..."
+            placeholder="Search..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="flex-grow"
+            className="w-full pr-10 rounded-full"
           />
-          <Button type="submit" disabled={isLoading} className="ml-2">
-            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Search'}
-          </Button>
+          <button 
+            type="submit" 
+            className="absolute right-3 top-1/2 -translate-y-1/2"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <Search className="h-4 w-4 text-muted-foreground" />
+            )}
+          </button>
         </div>
       </form>
 
