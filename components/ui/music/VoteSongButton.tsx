@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, Di
 import { Button } from '@/components/ui/button'
 
 export default function VoteSongButton({ trackId }: { trackId: string }) {
-    const { login, authenticated, ready, getAccessToken, user } = usePrivy();
+    const { login, authenticated, ready, getAccessToken, user, logout } = usePrivy();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { wallets, ready: walletsReady } = useWallets();
 
@@ -22,7 +22,10 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
             return;
         }
         try {
-            await handleMusicVote(trackId, user, wallets, getAccessToken);
+            const result = await handleMusicVote(trackId, user, wallets, getAccessToken);
+            if (result?.error === 'NO_VALID_WALLETS') {
+                await logout();
+            }
         } catch (error) {
             console.error("Error voting for track:", error);
         }
