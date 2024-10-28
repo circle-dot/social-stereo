@@ -6,7 +6,7 @@ import { whitelistedTickets } from '@/components/zupass/megazu/mega-config'
 import { TicketTypeName } from '@/components/zupass/megazu/mega-config'
 
 function LoginPage() {
-  const { login, ready, authenticated, logout } = usePrivy()
+  const { login, ready, authenticated,getAccessToken, logout } = usePrivy()
   const [step, setStep] = useState<'privy' | 'zuauth'>(() => 
     authenticated ? 'zuauth' : 'privy'
   )
@@ -66,10 +66,12 @@ function LoginPage() {
 
       if (result.type === "pcd") {
         // Send the PCD to your verification endpoint
+        const token = await getAccessToken(); 
         const verifyResponse = await fetch('/api/verifyZupass', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({ pcdStr: result.pcdStr }),
         });
