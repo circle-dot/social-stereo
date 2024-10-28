@@ -6,10 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 import VoteSongButton from './VoteSongButton'
 import Image from 'next/image';
-import SpotifyLogo from '@/public/Spotify_Full_Logo_RGB_Green.png'
-import Link from 'next/link'
 
-const truncate = (str: string, maxLength: number) => 
+const truncate = (str: string, maxLength: number) =>
   str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
 
 interface SearchToProposePresentationalProps {
@@ -74,10 +72,7 @@ function SearchToProposePresentational({
                     {truncate(track.artist, 10)}
                   </p>
                 </div>
-                <div className="flex items-center pr-2">
-                  <Link href={track.spotifyUrl} target="_blank" rel="noopener noreferrer" className="mr-2 text-[#121212] font-sans">Open in 
-                    <Image width={70} height={70} src={SpotifyLogo} alt='Spotify logo' />
-                  </Link>
+                <div className="pr-2">
                   <VoteSongButton trackId={track.id} />
                 </div>
               </div>

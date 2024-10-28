@@ -1,7 +1,6 @@
 import Image from "next/image"
 import VoteSongButton from './VoteSongButton'
-import SpotifyLogo from '@/public/Spotify_Full_Logo_RGB_Green.png'
-import Link from 'next/link'
+
 interface Track {
   id: string;
   title: string;
@@ -39,12 +38,9 @@ function SongListItem({ track }: { track: Track }) {
             {truncate(track.artist, 10)}
           </p>
         </div>
-        <div className="flex items-center pr-2">
-                  <Link href={track.spotifyUrl} target="_blank" rel="noopener noreferrer" className="mr-2 text-[#121212] font-sans">Open in 
-                    <Image width={70} height={70} src={SpotifyLogo} alt='Spotify logo' />
-                  </Link>
-                  <VoteSongButton trackId={track.id} />
-                </div>
+        <div className="pr-2">
+          <VoteSongButton trackId={track.id} />
+        </div>
       </div>
     </div>
   )
