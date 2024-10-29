@@ -93,12 +93,25 @@ function MusicPage() {
         </div>
       </div>
       <div className="flex-grow">
-        <MusicGrid
-          tracks={tracks}
-          isLoading={isLoading}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage}
-        />
+        {tracks.length === 0 && !isLoading ? (
+          <div className="text-center py-8">
+            <p className="text-white mb-4">
+              Looks like this song isn&apos;t in our Top 100 yet!
+            </p>
+            <Button asChild className="bg-custom-lightGreen text-custom-black py-2 px-4 rounded-full">
+              <Link href="/feed/music/propose">
+                Propose it now
+              </Link>
+            </Button>
+          </div>
+        ) : (
+          <MusicGrid
+            tracks={tracks}
+            isLoading={isLoading}
+            fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
+          />
+        )}
       </div>
       <div className='flex flex-row gap-4'>
         <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full mt-4 mb-10 text-center">

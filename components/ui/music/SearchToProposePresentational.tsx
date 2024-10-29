@@ -35,7 +35,7 @@ function SearchToProposePresentational({
             placeholder="Search..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="w-full pr-10 rounded-full bg-white"
+            className="w-full pr-10 rounded-full bg-white text-custom-black placeholder-custom-lightGreen focus:outline-none focus:ring-2 focus:ring-custom-darkGreen"
           />
           <button 
             type="submit" 

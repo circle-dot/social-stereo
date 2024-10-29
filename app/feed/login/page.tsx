@@ -6,25 +6,48 @@ import { whitelistedTickets } from '@/components/zupass/megazu/mega-config'
 import { TicketTypeName } from '@/components/zupass/megazu/mega-config'
 import Swal from 'sweetalert2'
 import { useRouter } from 'next/navigation';
+import LoadingSpinner from '@/app/components/LoadingSpinner'
 
 function LoginPage() {
-  const { login, ready, authenticated,getAccessToken, user } = usePrivy()
-  const [step, setStep] = useState<'privy' | 'zuauth'>(() => 
-    authenticated ? 'zuauth' : 'privy'
-  )
-  const router = useRouter();
+  const { login, ready, authenticated, getAccessToken, user } = usePrivy()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isZupassVerified, setIsZupassVerified] = useState(false)
+  const router = useRouter()
 
-  // When authentication status changes, update the step
   useEffect(() => {
-    if (authenticated) {
-      setStep('zuauth')
+    const checkZupassVerification = async () => {
+      if (!ready) return
+      
+      if (!authenticated) {
+        setIsLoading(false)
+        return
+      }
+
+      if (authenticated && user) {
+        try {
+          const token = await getAccessToken()
+          const response = await fetch(`/api/user/${user.id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+          
+          if (response.ok) {
+            setIsZupassVerified(true)
+          }
+        } catch (error) {
+          console.error('Error checking Zupass verification:', error)
+        }
+      }
+      setIsLoading(false)
     }
-  }, [authenticated])
+
+    checkZupassVerification()
+  }, [ready, authenticated, user, getAccessToken])
 
   const handlePrivyLogin = async () => {
     try {
       await login()
-      setStep('zuauth')
     } catch (error) {
       console.error('Privy login error:', error)
     }
@@ -69,11 +92,9 @@ function LoginPage() {
       const result = await zuAuthPopup({
         fieldsToReveal: {
           revealAttendeeEmail: true,
-          revealAttendeeName: true,
           revealEventId: true,
           revealProductId: true,
           revealAttendeeSemaphoreId: true,
-          revealTicketCategory: true
         },
         returnUrl: window.location.origin,
         watermark,
@@ -130,25 +151,32 @@ function LoginPage() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    )
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
         <h1 className="mb-8 text-3xl font-bold">Welcome to SocialStereo</h1>
         
-        {!authenticated && step === 'privy' && (
+        {!authenticated && (
           <>
             <h2 className="mb-4 text-xl">Step 1: Login with Privy</h2>
             <button
               onClick={handlePrivyLogin}
               className="rounded-lg bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
-              disabled={!ready}
             >
-              {!ready ? 'Loading...' : 'Sign in with Privy'}
+              Sign in with Privy
             </button>
           </>
         )}
 
-        {step === 'zuauth' && authenticated && (
+        {authenticated && !isZupassVerified && (
           <>
             <h2 className="mb-4 text-xl">Verify with Zupass</h2>
             <button
@@ -156,6 +184,18 @@ function LoginPage() {
               className="rounded-lg bg-green-500 px-6 py-3 text-white hover:bg-green-600"
             >
               Connect your Zupass
+            </button>
+          </>
+        )}
+
+        {isZupassVerified && (
+          <>
+            <h2 className="mb-4 text-xl">Sign up already completed!</h2>
+            <button
+              onClick={() => router.push('/feed')}
+              className="rounded-lg bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
+            >
+              Go to Home
             </button>
           </>
         )}
