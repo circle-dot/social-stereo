@@ -22,7 +22,7 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
 
   const { vouchesMade, isLoading: isCountsLoading } = useVoteCounts(graphqlEndpoint, address);
   const { attestations, isLoading: isVotesLoading } = useVoteDetails(graphqlEndpoint, address);
-  
+
   // Extract unique recipients from attestations
   const recipients = attestations ? Array.from(new Set(attestations.map((att: { recipient: string; }) => att.recipient as string))) : [];
   console.log('recipients', recipients)
@@ -68,10 +68,10 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
   }
 
   const totalVotesMade = vouchesMade?.data?.aggregateAttestation?._count?.attester ?? 0;
-  const maxVotes = 5;
+  const maxVotes = 20;
   const votesRemaining = Math.max(0, maxVotes - totalVotesMade);
 
-  const avatar= ProfileAvatar(address) 
+  const avatar = ProfileAvatar(address)
 
   // Add this loading check
   const isLoading = isCountsLoading || isVotesLoading || ensLoading;
@@ -95,7 +95,7 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
                 </CardContent>
               </Card>
             </div>
-            
+
             <Skeleton className="h-8 w-48" />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[...Array(6)].map((_, i) => (
@@ -140,21 +140,21 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
               </CardContent>
             </Card>
           </div>
-          
+
           <h2 className="text-2xl font-bold mb-6 text-custom-lightGreen border-b-2 border-custom-lightGreen pb-2 flex items-center gap-2">
             <span className="bg-custom-darkGreen px-3 rounded-lg">Voted Songs</span>
             <span className="text-sm font-normal text-gray-400">
               ({musicData.length} songs)
             </span>
           </h2>
-          
+
           {musicData.length === 0 && !isLoading ? (
             <div className="text-center text-gray-500 py-8">
               <p>No voted songs found</p>
             </div>
           ) : (
-            <MusicGrid 
-              tracks={musicData} 
+            <MusicGrid
+              tracks={musicData}
               isLoading={isVotesLoading}
             />
           )}
