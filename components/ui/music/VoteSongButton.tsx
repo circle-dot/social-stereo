@@ -37,7 +37,7 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
         // Check if user has Zupass verification
         try {
             const token = await getAccessToken();
-            const response = await fetch(`/api/user/${user.id}/zupass`, {
+            const response = await fetch(`/api/user/${user.id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

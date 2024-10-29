@@ -4,7 +4,7 @@ import privy from '@/lib/privy';
 
 export async function GET(
     request: Request,
-    { params }: { params: { userId: string } }
+    { params }: { params: { slug: string } }
 ) {
     try {
         // Verify Privy token
@@ -14,14 +14,14 @@ export async function GET(
         }
 
         const verifiedClaims = await privy.verifyAuthToken(authorization);
-        if (verifiedClaims.userId !== params.userId) {
+        if (verifiedClaims.userId !== params.slug) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         // Check if user has Zupass verification
         const zupass = await prisma.zupass.findFirst({
             where: {
-                userId: params.userId
+                userId: params.slug
             }
         });
 
