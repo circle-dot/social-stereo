@@ -113,15 +113,15 @@ function MusicPage() {
           />
         )}
       </div>
-      <div className='flex flex-row gap-4'>
-        <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full mt-4 mb-10 text-center">
+      <div className='flex flex-row gap-4 fixed bottom-[6rem] left-0 right-0 px-4 max-w-2xl mx-auto'>
+        <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center">
           <Link href="/feed/music/propose">
             Propose your song
           </Link>
         </Button>
         <Button
           asChild
-          className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full mt-4 mb-10 text-center"
+          className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center"
           onClick={handleVotesClick}
         >
           <Link href={authenticated ? `/feed/${user?.wallet?.address}` : '#'}>
