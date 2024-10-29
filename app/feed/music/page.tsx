@@ -52,7 +52,12 @@ function MusicPage() {
           </DialogDescription>
           <DialogFooter className="mt-6 flex flex-col space-y-2 !items-end w-full">
             <Button 
-              onClick={() => { login(); setIsDialogOpen(false); }} 
+              onClick={() => { 
+                login({
+                  disableSignup: true, 
+                })
+                setIsDialogOpen(false); 
+              }} 
               className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3"
             >
               Log In
@@ -64,6 +69,12 @@ function MusicPage() {
             >
               Cancel
             </Button>
+            <div className="w-full text-center text-sm text-white mt-2">
+              Don't have an account?{' '}
+              <Link href="/feed/login" className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
+                Register here
+              </Link>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

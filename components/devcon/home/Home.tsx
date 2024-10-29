@@ -26,7 +26,7 @@ function Home() {
           Play and experiment with the Ethereum stack and Programable Cryptography. Use Zupass, EAS and Stamp to vouch for songs, DJs and Karaoke enthusiasts.
         </p>
         <StyledButton href="/feed">
-          Login <MoveRight className='w-4 h-4' />
+          Get started <MoveRight className='w-4 h-4' />
         </StyledButton>
       </div>
     </div>
