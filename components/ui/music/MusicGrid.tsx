@@ -93,7 +93,7 @@ export default function MusicGrid({
   }, [inView, hasNextPage, isLoading, fetchNextPage]);
 
   return (
-    <div className="w-full h-[300px] bg-transparent overflow-y-auto scrollbar-thin scrollbar-thumb-custom-lightGreen scrollbar-track-custom-darkGreen">
+    <div className="w-full h-[400px] sm:h-[550px] md:h-[600px] lg:h-[650px] bg-transparent overflow-y-auto scrollbar-thin scrollbar-thumb-custom-lightGreen scrollbar-track-custom-darkGreen">
       <div className="w-full">
         {tracks.map((track) => (
           <SongListItem key={track.id} track={track} />

@@ -6,7 +6,7 @@ import { SITE_CONFIG } from '@/config/site'
 import { Button } from '@/components/ui/button'
 import useMusic from '@/utils/hooks/useSearchSongs'
 import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
+import { Search, Loader2 } from 'lucide-react'
 import { debounce } from 'lodash'
 import Link from 'next/link'
 import { usePrivy } from '@privy-io/react-auth'
@@ -81,15 +81,25 @@ function MusicPage() {
       <div className="mb-4">
         <TitleSection>{SITE_CONFIG.description}</TitleSection>
         <p className='text-sm text-white mb-4'>Updates every five minutes</p>
-        <div className="relative">
+        <div className="relative ">
           <Input
             type="text"
+            placeholder="Search..."
             value={searchTerm}
             onChange={handleSearchChange}
-            placeholder="Search"
-            className="w-full pl-10 pr-4 py-2 rounded-full bg-white text-custom-black placeholder-custom-lightGreen focus:outline-none focus:ring-2 focus:ring-custom-darkGreen"
+            className="w-full pr-10 rounded-full bg-white text-custom-black placeholder-custom-lightGreen focus:outline-none focus:ring-2 focus:ring-custom-darkGreen"
           />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-lightGreen" size={20} />
+          <button 
+            type="submit" 
+            className="absolute right-3 top-1/2 -translate-y-1/2"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <Search className="h-4 w-4 text-muted-foreground" />
+            )}
+          </button>
         </div>
       </div>
       <div className="flex-grow">
