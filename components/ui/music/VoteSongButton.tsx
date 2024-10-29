@@ -109,7 +109,7 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
               Cancel
             </Button>
             <div className="w-full text-center text-sm text-white mt-2">
-              Don't have an account?{' '}
+              Dont have an account?{' '}
               <Link href="/feed/login" className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
                 Register here
               </Link>

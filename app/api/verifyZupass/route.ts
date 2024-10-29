@@ -78,9 +78,8 @@ export async function POST(request: Request) {
 
             // Write to Zupass table with additional data from validation
             console.log("📝 Writing to Zupass table...");
-            let zupassEntry;
             try {
-                zupassEntry = await prisma.zupass.create({
+                await prisma.zupass.create({
                     data: {
                         userId: verifiedClaims.userId,
                         nullifier: validationResult.nullifier,
