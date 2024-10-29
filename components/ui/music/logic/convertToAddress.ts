@@ -1,5 +1,3 @@
-import { ethers } from "ethers";
-
 const BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
 // function stringToBytes20(input: string): string {
@@ -12,19 +10,19 @@ const BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 //   return ethers.hexlify(paddedBytes);
 // }
 
-function base62ToBigInt(base62: string): bigint {
-  let result = BigInt(0);
-  const base = BigInt(62);
-  for (let i = 0; i < base62.length; i++) {
-    result = result * base + BigInt(BASE62.indexOf(base62[i]));
-  }
-  return result;
-}
 
 export function spotifyIdToEthAddress(spotifyId: string): string {
-  const bigIntValue = base62ToBigInt(spotifyId);
-  const hexString = bigIntValue.toString(16).padStart(40, '0');
-  return ethers.getAddress('0x' + hexString);
+  const BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  
+  let decimal = 0n;
+  for (const char of spotifyId) {
+      decimal = decimal * 62n + BigInt(BASE62.indexOf(char));
+  }
+  
+  let hexString = decimal.toString(16);
+  hexString = hexString.padStart(40, '0');
+  
+  return '0x' + hexString;
 }
 
 function bigIntToBase62(value: bigint): string {

@@ -1,5 +1,8 @@
 import Image from "next/image"
 import VoteSongButton from './VoteSongButton'
+import { Skeleton } from "@/components/ui/skeleton"
+import { useInView } from 'react-intersection-observer'
+import { useEffect } from 'react'
 
 interface Track {
   id: string;
@@ -10,6 +13,25 @@ interface Track {
   spotifyUrl: string;
   createdAt: string;
   rank: number;
+  spotify_id: string;
+}
+
+function SongSkeleton() {
+  return (
+    <div className="flex items-stretch mb-2 h-16">
+      <Skeleton className="w-16 h-full rounded-lg mr-2" />
+      <div className="flex items-center flex-grow bg-white rounded-lg overflow-hidden">
+        <Skeleton className="h-full w-16" />
+        <div className="flex-grow px-3 py-2">
+          <Skeleton className="h-4 w-24 mb-2" />
+          <Skeleton className="h-3 w-20" />
+        </div>
+        <div className="pr-2">
+          <Skeleton className="w-10 h-10 rounded-full" />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function SongListItem({ track }: { track: Track }) {
@@ -39,19 +61,57 @@ function SongListItem({ track }: { track: Track }) {
           </p>
         </div>
         <div className="pr-2">
-          <VoteSongButton trackId={track.id} />
+          <VoteSongButton trackId={track.spotify_id} />
         </div>
       </div>
     </div>
   )
 }
 
-export default function MusicGrid({ tracks }: { tracks: Track[] }) {
+interface MusicGridProps {
+  tracks: Track[];
+  isLoading: boolean;
+  fetchNextPage?: () => void;
+  hasNextPage?: boolean;
+}
+
+export default function MusicGrid({ 
+  tracks, 
+  isLoading, 
+  fetchNextPage, 
+  hasNextPage 
+}: MusicGridProps) {
+  // Set up intersection observer for infinite scroll
+  const { ref, inView } = useInView({
+    threshold: 0.5
+  });
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isLoading && fetchNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isLoading, fetchNextPage]);
+
   return (
-    <div className="w-full">
-      {tracks.map((track) => (
-        <SongListItem key={track.id} track={track} />
-      ))}
+    <div className="w-full h-[300px] bg-transparent overflow-y-auto scrollbar-thin scrollbar-thumb-custom-lightGreen scrollbar-track-custom-darkGreen">
+      <div className="w-full">
+        {tracks.map((track) => (
+          <SongListItem key={track.id} track={track} />
+        ))}
+        
+        {isLoading && (
+          <div className="w-full">
+            {[...Array(2)].map((_, i) => (
+              <SongSkeleton key={i} />
+            ))}
+          </div>
+        )}
+
+        {/* Intersection observer target */}
+        {hasNextPage && (
+          <div ref={ref} className="h-10" />
+        )}
+      </div>
     </div>
   )
 }

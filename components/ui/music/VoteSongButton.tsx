@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, Di
 import { Button } from '@/components/ui/button'
 
 export default function VoteSongButton({ trackId }: { trackId: string }) {
-    const { login, authenticated, ready, getAccessToken, user } = usePrivy();
+    const { login, authenticated, ready, getAccessToken, user, logout } = usePrivy();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { wallets, ready: walletsReady } = useWallets();
 
@@ -19,10 +19,14 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
         }
         if (!user || !ready || !walletsReady) {
             console.error("User not ready or wallets not initialized");
+            await logout();
             return;
         }
         try {
-            await handleMusicVote(trackId, user, wallets, getAccessToken);
+            const result = await handleMusicVote(trackId, user, wallets, getAccessToken);
+            if (result?.error === 'NO_VALID_WALLETS') {
+                await logout();
+            }
         } catch (error) {
             console.error("Error voting for track:", error);
         }
@@ -37,26 +41,32 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
                     <DialogDescription className="text-white mt-2">
                         You need to be logged in to vote for a track.
                     </DialogDescription>
-                    <DialogFooter className="mt-6 flex flex-col space-y-2">
+                    <DialogFooter className="mt-6 flex flex-col !items-end space-y-2 w-full">
                         <Button 
                             onClick={() => { login(); setIsDialogOpen(false); }} 
-                            className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3"
+                            className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 px-6 py-3"
                         >
                             Log In
                         </Button>
                         <Button 
                             variant="secondary" 
                             onClick={() => setIsDialogOpen(false)} 
-                            className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 py-3"
+                            className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 px-6 py-3"
                         >
                             Cancel
                         </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>  
-            <button onClick={handleVote} className="bg-custom-lightGreen text-custom-black p-2 rounded-full w-10 h-10 flex items-center justify-center">
-      <ArrowUp className="w-5 h-5" />
-    </button>
+            <button 
+                onClick={handleVote} 
+                disabled={!ready || !walletsReady}
+                className={`bg-custom-lightGreen text-custom-black p-2 rounded-full w-10 h-10 flex items-center justify-center ${
+                    (!ready || !walletsReady) ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+            >
+                <ArrowUp className="w-5 h-5" />
+            </button>
         </>
 
     )

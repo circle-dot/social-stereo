@@ -20,7 +20,7 @@ function SearchToPropose() {
   const debouncedSearch = useCallback(
     debounce((value: string) => {
       setDebouncedSearchTerm(value)
-    }, 300),
+    }, 800),
     []
   )
 
