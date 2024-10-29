@@ -108,7 +108,7 @@ function MusicPage() {
             <p className="text-white mb-4">
               Looks like this song isn&apos;t in the Top 100 yet!
             </p>
-            <Button asChild className="bg-custom-lightGreen text-custom-black py-2 px-4 rounded-full">
+            <Button asChild className="bg-custom-lightGreen text-custom-black py-2 px-4 rounded-full hover:bg-custom-lightGreen/90">
               <Link href="/feed/music/propose">
                 Propose it now
               </Link>
@@ -124,14 +124,14 @@ function MusicPage() {
         )}
       </div>
       <div className='flex flex-row gap-4 fixed bottom-[6rem] left-0 right-0 px-4 max-w-2xl mx-auto'>
-        <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center">
+        <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90">
           <Link href="/feed/music/propose">
             Propose your song
           </Link>
         </Button>
         <Button
           asChild
-          className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center"
+          className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90"
           onClick={handleVotesClick}
         >
           <Link href={authenticated ? `/feed/${user?.wallet?.address}` : '#'}>
