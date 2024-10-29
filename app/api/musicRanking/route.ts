@@ -36,15 +36,20 @@ export async function GET(req: NextRequest) {
     const skip = (pageNumber - 1) * pageSize;
 
     try {
-        const whereClause: Prisma.MusicWhereInput = searchQuery
-            ? {
-                OR: [
-                    { title: { contains: searchQuery, mode: 'insensitive' } },
-                    { artist: { contains: searchQuery, mode: 'insensitive' } },
-                    { album: { contains: searchQuery, mode: 'insensitive' } },
-                ],
-            }
-            : {};
+        const whereClause: Prisma.MusicWhereInput = {
+            ...(
+                searchQuery
+                ? {
+                    OR: [
+                        { title: { contains: searchQuery, mode: 'insensitive' } },
+                        { artist: { contains: searchQuery, mode: 'insensitive' } },
+                        { album: { contains: searchQuery, mode: 'insensitive' } },
+                    ],
+                }
+                : {}
+            ),
+            rank: { not: null }
+        };
 
         const music = await prisma.music.findMany({
             skip,
