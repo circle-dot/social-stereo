@@ -118,6 +118,8 @@ export const handleVouch = async (
             showErrorAlert("You don't have any vouches available.");
         } else if (errorMessage === "You can't vouch yourself.") {
             showErrorAlert("You can't vouch yourself.");
+        } else if (errorMessage.includes("You have already vouched for this user in this season")) {
+            showErrorAlert("You have already vouched for this in this season.");
         } else {
             showErrorAlert('An error occurred while creating the vouch.');
         }

@@ -22,10 +22,14 @@ async function generateAttestation(token: string, platform: string, recipient: s
     });
 
     if (!response.ok) {
+        // Get error response as JSON if possible
+        const errorData = await response.json().catch(() => null);
+        
         if (response.status === 550) {
             throw new Error("You have no vouches available.");
         } else if (response.status === 400) {
-            throw new Error("You can't vouch yourself.");
+            // Use the error message from response if available, otherwise use default message
+            throw new Error(errorData?.message || "You can't vouch yourself.");
         } else {
             // Throw a general error for other status codes
             throw new Error(`Error creating attestation: ${response.statusText}`);
