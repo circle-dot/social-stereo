@@ -13,9 +13,6 @@ export default function ProfileAvatar(wallet: string, className?: string): React
     return (
 
      <div className="flex items-center justify-center gap-x-4 flex-row">
-     <Avatar className="w-10 h-10 cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center bg-custom-darkGreen text-custom-lightGreen">
-     <Share2 />
-     </Avatar>
         <Avatar className={`cursor-pointer hover:opacity-80 transition-opacity ${className}`}>
             <AvatarImage src={`data:image/svg+xml;utf8,${encodeURIComponent(avatarSvg)}`} alt={`Avatar for ${wallet}`} />
             <AvatarFallback>{wallet.slice(0, 2).toUpperCase()}</AvatarFallback>

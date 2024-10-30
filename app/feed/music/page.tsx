@@ -109,7 +109,7 @@ function MusicPage() {
               Looks like this song isn&apos;t in the Top 100 yet!
             </p>
             <Button asChild className="bg-custom-lightGreen text-custom-black py-2 px-4 rounded-full hover:bg-custom-lightGreen/90">
-              <Link href="/feed/music/propose">
+              <Link href={`/feed/music/propose?search=${encodeURIComponent(searchTerm)}`}>
                 Propose it now
               </Link>
             </Button>
