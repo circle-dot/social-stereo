@@ -1,9 +1,10 @@
 "use client"
-import React from 'react'
+import React, { Suspense } from 'react'
 import SearchToPropose from '@/components/ui/music/SearchToPropose'
 import { useSearchParams } from 'next/navigation'
+import { Skeleton } from '@/components/ui/skeleton'
 
-export default function ProposeMusicPage() {
+function ProposeMusicContent() {
     const searchParams = useSearchParams()
     const initialSearch = searchParams.get('search') || ''
 
@@ -15,5 +16,25 @@ export default function ProposeMusicPage() {
             </div>
             <SearchToPropose initialSearch={initialSearch} />
         </div>
+    )
+}
+
+function LoadingFallback() {
+    return (
+        <div className='flex flex-col items-center justify-center min-h-screen p-4'>
+            <div className='flex flex-col items-center justify-center mb-6'>
+                <Skeleton className="h-8 w-48 mb-2" />
+                <Skeleton className="h-6 w-36" />
+            </div>
+            <Skeleton className="w-full max-w-md h-10 rounded-full" />
+        </div>
+    )
+}
+
+export default function ProposeMusicPage() {
+    return (
+        <Suspense fallback={<LoadingFallback />}>
+            <ProposeMusicContent />
+        </Suspense>
     )
 }

@@ -2,7 +2,6 @@ import React from 'react';
 import { createAvatar } from '@dicebear/core';
 import { thumbs } from '@dicebear/collection';
 import { Avatar, AvatarImage, AvatarFallback } from './avatar';
-import { Share2 } from 'lucide-react';
 export default function ProfileAvatar(wallet: string, className?: string): React.ReactElement {
     const seed = wallet ? wallet.toLowerCase() : 'default';
     const avatarSvg = createAvatar(thumbs, {
