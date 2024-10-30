@@ -30,7 +30,7 @@ const cardData = [
 
 function Page() {
   return (
-    <div className="mx-auto space-y-4 p-4 bg-custom-purple h-full pb-24">
+    <div className="mx-auto space-y-4 p-4 h-full pb-24">
       <div className="max-w-4xl">
         <h1 className='!font-extrabold text-2xl md:text-3xl lg:text-4xl pb-2'>{SITE_CONFIG.description}</h1>
         <p>Select a category to start</p>
