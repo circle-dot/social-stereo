@@ -60,7 +60,21 @@ function SongListItem({ track }: { track: Track }) {
             {truncate(track.artist, 10)}
           </p>
         </div>
-        <div className="pr-2">
+        <div className="pr-2 flex items-center">
+          <a 
+            href={track.spotifyUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="ml-2"
+          >
+            <Image
+              src="/Spotify_Primary_Logo_RGB_Green.png"
+              alt="Listen on Spotify"
+              width={24}
+              height={24}
+              className="min-w-[24px]"
+            />
+          </a>
           <VoteSongButton trackId={track.spotify_id} />
         </div>
       </div>
