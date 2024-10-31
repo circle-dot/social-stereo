@@ -25,7 +25,7 @@ function Home() {
         <p className='text-regular font-normal my-4 md:text-lg lg:text-xl'>
           Play and experiment with the Ethereum stack and Programable Cryptography. Use Zupass, EAS and Stamp to vouch for songs, DJs and Karaoke enthusiasts.
         </p>
-        <StyledButton href="/feed">
+        <StyledButton href="/feed/home">
           Get started <MoveRight className='w-4 h-4' />
         </StyledButton>
       </div>

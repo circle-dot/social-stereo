@@ -6,7 +6,7 @@ import { SITE_CONFIG } from '@/config/site'
 import { Button } from '@/components/ui/button'
 import useMusic from '@/utils/hooks/useSearchSongs'
 import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
+import { Search, Loader2 } from 'lucide-react'
 import { debounce } from 'lodash'
 import Link from 'next/link'
 import { usePrivy } from '@privy-io/react-auth'
@@ -80,26 +80,36 @@ function MusicPage() {
 
       <div className="mb-4">
         <TitleSection>{SITE_CONFIG.description}</TitleSection>
-        <p className='text-sm text-white mb-4'>Updates every one minute</p>
-        <div className="relative">
+        <p className='text-sm text-white mb-4'>Updates every five minutes</p>
+        <div className="relative ">
           <Input
             type="text"
+            placeholder="Search..."
             value={searchTerm}
             onChange={handleSearchChange}
-            placeholder="Search"
-            className="w-full pl-10 pr-4 py-2 rounded-full bg-white text-custom-black placeholder-custom-lightGreen focus:outline-none focus:ring-2 focus:ring-custom-darkGreen"
+            className="w-full pr-10 rounded-full bg-white text-custom-black placeholder-custom-lightGreen focus:outline-none focus:ring-2 focus:ring-custom-darkGreen"
           />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-lightGreen" size={20} />
+          <button 
+            type="submit" 
+            className="absolute right-3 top-1/2 -translate-y-1/2"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : (
+              <Search className="h-4 w-4 text-muted-foreground" />
+            )}
+          </button>
         </div>
       </div>
       <div className="flex-grow">
         {tracks.length === 0 && !isLoading ? (
           <div className="text-center py-8">
             <p className="text-white mb-4">
-              Looks like this song isn&apos;t in our Top 100 yet!
+              Looks like this song isn&apos;t in the Top 100 yet!
             </p>
-            <Button asChild className="bg-custom-lightGreen text-custom-black py-2 px-4 rounded-full">
-              <Link href="/feed/music/propose">
+            <Button asChild className="bg-custom-lightGreen text-custom-black py-2 px-4 rounded-full hover:bg-custom-lightGreen/90">
+              <Link href={`/feed/music/propose?search=${encodeURIComponent(searchTerm)}`}>
                 Propose it now
               </Link>
             </Button>
@@ -113,15 +123,15 @@ function MusicPage() {
           />
         )}
       </div>
-      <div className='flex flex-row gap-4'>
-        <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full mt-4 mb-10 text-center">
+      <div className='flex flex-row gap-4 fixed bottom-[6rem] left-0 right-0 px-4 max-w-2xl mx-auto'>
+        <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90">
           <Link href="/feed/music/propose">
             Propose your song
           </Link>
         </Button>
         <Button
           asChild
-          className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full mt-4 mb-10 text-center"
+          className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90"
           onClick={handleVotesClick}
         >
           <Link href={authenticated ? `/feed/${user?.wallet?.address}` : '#'}>

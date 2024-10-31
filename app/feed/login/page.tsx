@@ -192,7 +192,7 @@ function LoginPage() {
           <>
             <h2 className="mb-4 text-xl">Sign up already completed!</h2>
             <button
-              onClick={() => router.push('/feed')}
+              onClick={() => router.push('/feed/home')}
               className="rounded-lg bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
             >
               Go to Home

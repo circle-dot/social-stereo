@@ -89,8 +89,9 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
                     <DialogDescription className="text-white mt-2">
                         You need to be logged in to vote for a track.
                     </DialogDescription>
-                    <DialogFooter className="mt-6 flex flex-col space-y-2 !items-end w-full">
-            <Button 
+                    <DialogFooter className="mt-6 flex !flex-col space-y-2 !items-end w-full">
+         <div className="flex flex-col space-y-2 w-full">
+         <Button 
               onClick={() => { 
                 login({
                   disableSignup: true, 
@@ -108,6 +109,7 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
             >
               Cancel
             </Button>
+         </div>
             <div className="w-full text-center text-sm text-white mt-2">
               Dont have an account?{' '}
               <Link href="/feed/login" className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>

@@ -9,7 +9,7 @@ export default function MainNavigation() {
     <div className="fixed bottom-4 left-4 right-4 z-30">
       <nav className="bg-custom-darkGreen border border-gray-800 rounded-3xl relative shadow-lg">
         <div className="flex justify-around items-center h-16 px-4">
-          <NavItem icon={navIcon} href="/feed" />
+          <NavItem icon={navIcon} href="/feed/home" />
           <NavItem icon={navIcon2} href="/feed/music" />
           <NavItem icon={navIcon3} href="/feed/karaoke" />
           <NavItem icon={navIcon4} href="/feed/dj"/>
