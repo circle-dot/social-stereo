@@ -11,8 +11,6 @@ export async function POST(request: NextRequest) {
         // Get the request body
         const body = await request.json()
 
-      console.log('body', body)
-
         // Forward the request to the STAMP API
         const response = await fetch(`${process.env.NEXT_PUBLIC_STAMP_API_URL}/pod/verify-proof`, {
             method: 'POST',
@@ -20,7 +18,7 @@ export async function POST(request: NextRequest) {
                 'Content-Type': 'application/json',
                 'Authorization': authHeader
             },
-            body: body
+            body: JSON.stringify(body)
         })
 
         // Forward the response from the STAMP API

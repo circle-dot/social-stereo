@@ -53,30 +53,31 @@ function ZupassButton() {
                 },
             })
 
-            const proofResult = await api?.gpc.prove({ 
+            const proofData = await api?.gpc.prove({ 
                 request: req.schema, 
                 collectionIds: ["Tickets"] 
             })
 
+            if (!proofData) {
+                throw new Error('Failed to generate proof')
+            }
+
             const token = await getAccessToken()
             
-            // Match the curl request structure exactly
+            // Send proof to backend for verification
             const response = await fetch('/api/verifyPOD', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ 
-                    success: true,
-                    proof: proofResult.proof,
-                    boundConfig: proofResult.boundConfig,
-                    revealedClaims: proofResult.revealedClaims
-                }),
+                // Send the raw proofData as received from the API
+                body: JSON.stringify(proofData),
             })
 
             if (!response.ok) {
-                throw new Error('Failed to verify proof')
+                const errorData = await response.json()
+                throw new Error(errorData.message || 'Failed to verify proof')
             }
 
             const result = await response.json()
