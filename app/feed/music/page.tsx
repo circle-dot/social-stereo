@@ -49,8 +49,9 @@ function MusicPage() {
           <DialogDescription className="text-white mt-2">
             You need to be logged in to view your votes.
           </DialogDescription>
-          <DialogFooter className="mt-6 flex flex-col space-y-2 !items-end w-full">
-            <Button 
+          <DialogFooter className="mt-6 flex !flex-col space-y-2 !items-end w-full">
+         <div className="flex flex-col space-y-2 w-full">
+         <Button 
               onClick={() => { 
                 login({
                   disableSignup: true, 
@@ -68,13 +69,14 @@ function MusicPage() {
             >
               Cancel
             </Button>
+         </div>
             <div className="w-full text-center text-sm text-white mt-2">
               Dont have an account?{' '}
               <Link href="/feed/login" className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
                 Register here
               </Link>
-            </div>
-          </DialogFooter>
+                        </div>
+                    </DialogFooter>
         </DialogContent>
       </Dialog>
 
