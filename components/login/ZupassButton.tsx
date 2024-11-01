@@ -9,7 +9,6 @@ import { usePrivy } from '@privy-io/react-auth'
 
 function ZupassButton() {
     const { getAccessToken } = usePrivy()
-    const [parcnetApi, setParcnetApi] = useState<ParcnetAPI>()
     const [isLoading, setIsLoading] = useState(false)
     const connectorRef = useRef<HTMLDivElement>(null)
 
@@ -20,6 +19,7 @@ function ZupassButton() {
                 name: "Devcon Ticket Authentication",
                 permissions: {
                     REQUEST_PROOF: { collections: ["Tickets"] },
+                    READ_PUBLIC_IDENTIFIERS: {}
                 },
             }
 
@@ -28,7 +28,6 @@ function ZupassButton() {
                 connectorRef.current!,
                 "https://zupass.org"
             )
-            setParcnetApi(api)
             await verifyTicket(api)
         } catch (error) {
             console.error(error)
@@ -62,17 +61,24 @@ function ZupassButton() {
                 throw new Error('Failed to generate proof')
             }
 
+            if (!api) return;
+            const semaphoreIdentity = await api.identity.getSemaphoreV4Commitment();
+            const commitment = semaphoreIdentity.toString()
             const token = await getAccessToken()
             
-            // Send proof to backend for verification
+            // Create the request body by spreading the proofData and adding semaphoreIdentity
+            const requestBody = {
+                ...proofData,
+                commitment
+            }
+            
             const response = await fetch('/api/verifyPOD', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                // Send the raw proofData as received from the API
-                body: JSON.stringify(proofData),
+                body: JSON.stringify(requestBody),
             })
 
             if (!response.ok) {
