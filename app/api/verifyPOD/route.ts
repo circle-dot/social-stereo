@@ -48,7 +48,8 @@ export async function POST(request: NextRequest) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': authorization
+                'Authorization': authorization,
+                'x-privy-app-id': 'stamp'
             },
             body: JSON.stringify(enrichedBody)
         })
