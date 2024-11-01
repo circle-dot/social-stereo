@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { MoveRight } from 'lucide-react'
 import { connect, ParcnetAPI, Zapp } from "@parcnet-js/app-connector"
@@ -11,10 +11,42 @@ import { showSuccessAlert, showErrorAlertWithSpace } from '@/utils/alertUtils'
 import Swal from 'sweetalert2'
 
 function ZupassButton() {
-    const { authenticated } = usePrivy()
-    const { getAccessToken } = usePrivy()
-    const [isLoading, setIsLoading] = useState(false)
+    const { authenticated, ready, user, getAccessToken } = usePrivy()
+    const [isLoading, setIsLoading] = useState(true)
+    const [isZupassVerified, setIsZupassVerified] = useState(false)
     const connectorRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const checkZupassVerification = async () => {
+          if (!ready) return
+          
+          if (!authenticated) {
+            setIsLoading(false)
+            return
+          }
+    
+          if (authenticated && user) {
+            try {
+              const token = await getAccessToken()
+              const response = await fetch(`/api/user/${user.id}`, {
+                headers: {
+                  'Authorization': `Bearer ${token}`
+                }
+              })
+              
+              if (response.ok) {
+                setIsZupassVerified(true)
+              }
+            } catch (error) {
+              console.error('Error checking Zupass verification:', error)
+            }
+          }
+          setIsLoading(false)
+        }
+    
+        checkZupassVerification()
+      }, [ready, authenticated, user, getAccessToken])
+
 
     const handleZupassLogin = async () => {
         setIsLoading(true)
@@ -133,17 +165,37 @@ function ZupassButton() {
     return (
         <>
             <div ref={connectorRef} style={{ width: '0', height: '0', overflow: 'hidden' }}></div>
-            <Button 
-                className={`py-2 px-8 rounded-full gap-3 ${!authenticated ? 'bg-gray-300' : 'bg-custom-lightGreen'} text-black text-base md:text-lg`} 
-                onClick={handleZupassLogin}
-                disabled={isLoading || !authenticated}
-            >
-                {!authenticated ? (
-                    'Connect wallet first ↑'
-                ) : (
-                    <>Validate Devcon Ticket <MoveRight className='w-4 h-4' /></>
-                )}
-            </Button>
+            {!ready || isLoading ? (
+                <Button 
+                    className="py-2 px-8 rounded-full gap-3 bg-gray-300 text-black text-base md:text-lg"
+                    disabled={true}
+                >
+                    <span className="animate-spin mr-2">⚡</span>
+                    Loading...
+                </Button>
+            ) : !authenticated ? (
+                <Button 
+                    className="py-2 px-8 rounded-full gap-3 bg-gray-300 text-black text-base md:text-lg"
+                    disabled={true}
+                >
+                    Connect wallet first ↑
+                </Button>
+            ) : isZupassVerified ? (
+                <Button 
+                    className="py-2 px-8 rounded-full gap-3 bg-green-500 text-black text-base md:text-lg"
+                    disabled={true}
+                >
+                    ✓ Ticket Verified
+                </Button>
+            ) : (
+                <Button 
+                    className="py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg"
+                    onClick={handleZupassLogin}
+                    disabled={isLoading}
+                >
+                    Validate Devcon Ticket <MoveRight className='w-4 h-4' />
+                </Button>
+            )}
         </>
     )
 }

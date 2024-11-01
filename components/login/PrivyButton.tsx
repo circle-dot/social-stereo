@@ -14,9 +14,14 @@ function PrivyButton() {
         <Button 
             className={`py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg`} 
             onClick={handlePrivyLogin}
-            disabled={!ready}
+            disabled={!ready || authenticated}
         >
-            {authenticated ? (
+            {!ready ? (
+                <>
+                    <span className="animate-spin mr-2">⚡</span>
+                    Loading...
+                </>
+            ) : authenticated ? (
                 <>
                     Already connected <span className="ml-1">✓</span>
                 </>
