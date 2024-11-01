@@ -56,8 +56,14 @@ export async function POST(request: NextRequest) {
 
         // Get the response data
         const data = await response.json()
+        console.log('data:', data)
         
-        // If the verification was successful, save the attestation
+        // Check for ALREADY_REGISTERED status before proceeding
+        if (data.status === 'ALREADY_REGISTERED') {
+            return NextResponse.json(data, { status: 200 })
+        }
+        
+        // Only save attestation if verification was successful and not already registered
         if (response.ok) {  
             const attestationUID = data.attestationUID;
             await prisma.zupass.create({
@@ -74,6 +80,6 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
         console.error('Error verifying POD:', error)
-        return NextResponse.json({ error: 'Failed to verify POD' }, { status: 500 })
+        return NextResponse.json({ error: error }, { status: 500 })
     }
 }

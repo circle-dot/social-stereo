@@ -6,8 +6,12 @@ import { MoveRight } from 'lucide-react'
 import { connect, ParcnetAPI, Zapp } from "@parcnet-js/app-connector"
 import { ticketProofRequest } from "@parcnet-js/ticket-spec"
 import { usePrivy } from '@privy-io/react-auth'
+import { EAS_CONFIG } from '@/config/site'
+import { showSuccessAlert, showErrorAlertWithSpace } from '@/utils/alertUtils'
+import Swal from 'sweetalert2'
 
 function ZupassButton() {
+    const { authenticated } = usePrivy()
     const { getAccessToken } = usePrivy()
     const [isLoading, setIsLoading] = useState(false)
     const connectorRef = useRef<HTMLDivElement>(null)
@@ -15,6 +19,14 @@ function ZupassButton() {
     const handleZupassLogin = async () => {
         setIsLoading(true)
         try {
+            Swal.fire({
+                title: 'Connecting to Zupass...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+
             const myApp: Zapp = {
                 name: "Devcon Ticket Authentication",
                 permissions: {
@@ -31,6 +43,7 @@ function ZupassButton() {
             await verifyTicket(api)
         } catch (error) {
             console.error(error)
+            Swal.close()
         } finally {
             setIsLoading(false)
         }
@@ -38,6 +51,14 @@ function ZupassButton() {
 
     const verifyTicket = async (api: ParcnetAPI) => {
         try {
+            Swal.fire({
+                title: 'Verifying ticket...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+
             const req = ticketProofRequest({
                 classificationTuples: [
                     {
@@ -81,6 +102,8 @@ function ZupassButton() {
                 body: JSON.stringify(requestBody),
             })
 
+            Swal.close()
+
             if (!response.ok) {
                 const errorData = await response.json()
                 throw new Error(errorData.message || 'Failed to verify proof')
@@ -88,8 +111,22 @@ function ZupassButton() {
 
             const result = await response.json()
             console.log('Verification result:', result)
+
+            if (result.status === 'ALREADY_REGISTERED') {
+                // Show an informational alert for already registered tickets
+                showErrorAlertWithSpace(
+                    'Ticket Already Registered',
+                    'This ticket has already been verified and cannot be used again.'
+                );
+            } else {
+                // Show success message with attestation link for new verifications
+                const baseUrl = EAS_CONFIG.GRAPHQL_URL.replace('/graphql', '');
+                const attestationViewUrl = `${baseUrl}/attestation/view/${result.newAttestationUID}`;
+                showSuccessAlert('Ticket verified successfully.', 'View transaction', attestationViewUrl);
+            }
         } catch (error) {
             console.error('Verification error:', error)
+            Swal.close()
         }
     }
 
@@ -97,11 +134,15 @@ function ZupassButton() {
         <>
             <div ref={connectorRef} style={{ width: '0', height: '0', overflow: 'hidden' }}></div>
             <Button 
-                className={`py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg`} 
+                className={`py-2 px-8 rounded-full gap-3 ${!authenticated ? 'bg-gray-300' : 'bg-custom-lightGreen'} text-black text-base md:text-lg`} 
                 onClick={handleZupassLogin}
-                disabled={isLoading}
+                disabled={isLoading || !authenticated}
             >
-                Validate Devcon Ticket <MoveRight className='w-4 h-4' />
+                {!authenticated ? (
+                    'Connect wallet first ↑'
+                ) : (
+                    <>Validate Devcon Ticket <MoveRight className='w-4 h-4' /></>
+                )}
             </Button>
         </>
     )
