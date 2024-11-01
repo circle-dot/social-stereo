@@ -70,7 +70,7 @@ export async function POST(request: Request) {
             if (!validationResponse.ok) {
                 const error = await validationResponse.json();
                 console.error("❌ External validation failed:", error);
-                throw new Error(error.message || "External validation failed");
+                throw new Error(JSON.stringify(error) || "External validation failed");
             }
 
             const validationResults = await validationResponse.json();
@@ -117,13 +117,40 @@ export async function POST(request: Request) {
 
     } catch (error) {
         console.error('❌ ZuAuth verification error:', error);
-        console.error('Full error details:', {
-            name: error instanceof Error ? error.name : undefined,
-            message: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined,
-        });
+        
+        // Parse error message if it's a string containing JSON
+        let parsedError;
+        try {
+            if (error instanceof Error) {
+                parsedError = JSON.parse(error.message);
+            }
+        } catch {
+            // If parsing fails, continue with original error
+        }
+
+        // Check for the specific "Already registered" error
+        if (parsedError?.message?.[0]?.error?.includes('Already registered')) {
+            return NextResponse.json(
+                { 
+                    error: 'Ticket already used',
+                    details: 'This ticket has already been registered'
+                },
+                { status: 409 } // Using 409 Conflict for already used resources
+            );
+        }
+
+        // Default error response for other cases
+        const errorMessage = error instanceof Error 
+            ? error.message
+            : typeof error === 'object' 
+                ? JSON.stringify(error) 
+                : String(error);
+                
         return NextResponse.json(
-            { error: 'Authentication failed', details: error instanceof Error ? error.message : String(error) },
+            { 
+                error: 'Authentication failed', 
+                details: errorMessage
+            },
             { status: 401 }
         );
     }

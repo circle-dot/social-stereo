@@ -48,7 +48,6 @@ export const useZuAuth = () => {
                     revealAttendeeSemaphoreId: true,
                     revealTicketCategory: true
                 },
-                returnUrl: window.location.origin,
                 watermark,
                 config,
                 proofTitle: "Connect with Zupass",

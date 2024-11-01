@@ -14,18 +14,18 @@ import { ethers } from 'ethers';
 import ProfileAvatar from '@/components/ui/ProfileAvatar';
 import MusicGrid from '@/components/ui/music/MusicGrid';
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePrivy } from '@privy-io/react-auth';
 
 export default function AddressPage({ params }: { params: { slug: string } }) {
   const { slug: rawAddress } = params;
   const address = ethers.getAddress(rawAddress);
   const graphqlEndpoint = EAS_CONFIG.GRAPHQL_URL;
-
+  const { user, ready, authenticated, logout } = usePrivy();
   const { vouchesMade, isLoading: isCountsLoading } = useVoteCounts(graphqlEndpoint, address);
   const { attestations, isLoading: isVotesLoading } = useVoteDetails(graphqlEndpoint, address);
 
   // Extract unique recipients from attestations
   const recipients = attestations ? Array.from(new Set(attestations.map((att: { recipient: string; }) => att.recipient as string))) : [];
-  console.log('recipients', recipients)
   const { data: ensName, isLoading: ensLoading } = useEnsName(address);
 
   const truncateAddress = (address: string) => {
@@ -137,6 +137,18 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
                     {votesRemaining} votes remaining
                   </p>
                 </div>
+                {ready && authenticated && user?.wallet?.address && 
+                 ethers.getAddress(user.wallet.address) === ethers.getAddress(address) && (
+                  <div className="flex justify-center mt-4">
+                    <Button 
+                      variant="destructive" 
+                      onClick={logout}
+                      className="w-full"
+                    >
+                      Log Out
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

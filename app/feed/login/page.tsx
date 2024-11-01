@@ -96,7 +96,6 @@ function LoginPage() {
           revealProductId: true,
           revealAttendeeSemaphoreId: true,
         },
-        returnUrl: window.location.origin,
         watermark,
         config,
         multi: true
@@ -117,7 +116,8 @@ function LoginPage() {
         });
 
         if (!verifyResponse.ok) {
-          throw new Error('Verification failed');
+          const errorData = await verifyResponse.json();
+          throw new Error(errorData.error || 'Verification failed');
         }
 
         const {  nullifier } = await verifyResponse.json();
@@ -142,10 +142,18 @@ function LoginPage() {
     } catch (error) {
       console.error('ZuAuth error:', error);
       
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const title = errorMessage === 'Ticket already used' 
+        ? 'Ticket Already Used'
+        : 'Verification Failed';
+      const text = errorMessage === 'Ticket already used'
+        ? 'This ticket has already been registered to another account.'
+        : 'There was an error verifying your Zupass ticket. Please try again.';
+      
       await Swal.fire({
         icon: 'error',
-        title: 'Verification Failed',
-        text: 'There was an error verifying your Zupass ticket. Please try again.',
+        title: title,
+        text: text,
         confirmButtonText: 'OK'
       });
     }
