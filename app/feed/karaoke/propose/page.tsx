@@ -1,5 +1,4 @@
 import React from 'react'
-import StyledButton from '@/components/ui/StyledButton'
 
 function page() {
   return (
