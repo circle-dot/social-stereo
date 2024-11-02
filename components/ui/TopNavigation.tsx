@@ -19,7 +19,7 @@ function TopNavigation() {
         <div>
             {ready && authenticated && user && (
                 <Link href={`/address/${user?.wallet?.address}`}>
-                {ProfileAvatar(user?.wallet?.address || '', "w-12 h-12 hover:cursor-pointer")}  
+                {ProfileAvatar(user?.wallet?.address || '', "w-10 h-10 hover:cursor-pointer")}  
                 </Link>
             )}
         </div>
