@@ -19,7 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-
+import VoteKaraokeButton from '@/components/ui/music/VoteKaraokeButton';
 
 export default function AddressPage({ params }: { params: { slug: string } }) {
   const { slug: rawAddress } = params;
@@ -31,7 +31,6 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
 
   // Extract unique recipients from attestations
   const recipients = attestations ? Array.from(new Set(attestations.map((att: { recipient: string; }) => att.recipient as string))) : [];
-  console.log('recipients', recipients)
   const { data: ensName, isLoading: ensLoading } = useEnsName(address);
 
   const truncateAddress = (address: string) => {
@@ -169,20 +168,13 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
           </TooltipProvider>
 
       <div className="my-6">
-        {ready && authenticated && user?.wallet?.address ? (
-          ethers.getAddress(user.wallet.address) === ethers.getAddress(address) ? (
-            <button className="w-full bg-[#B4FF4C] text-black rounded-2xl p-4 font-semibold">
-              Your Profile
-            </button>
-          ) : (
-            <button className="w-full bg-[#B4FF4C] text-black rounded-2xl p-4 font-semibold">
-              Endorse for Karaoke
-            </button>
-          )
-        ) : (
+        {ready && authenticated && user?.wallet?.address && 
+         ethers.getAddress(user.wallet.address) === ethers.getAddress(address) ? (
           <button className="w-full bg-[#B4FF4C] text-black rounded-2xl p-4 font-semibold">
-            Endorse for Karaoke
+            Your Profile
           </button>
+        ) : (
+          <VoteKaraokeButton  walletAddress={address}/>
         )}
       </div>
       {/* Votes Counter */}
