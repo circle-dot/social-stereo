@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 interface Stamp {
   id: string
@@ -38,11 +39,13 @@ export default function StampCollection({
                 stamp.isLocked && "opacity-50"
               )}
             >
-              <div className="rounded-full mb-3">
-                <img
+              <div className="relative min-w-[96px] min-h-[96px] mb-3">
+                <Image
                   src={stamp.icon}
                   alt={stamp.title}
-                  className="w-28 h-28 object-cover rounded-full"
+                  fill
+                  className=" rounded-full"
+                  priority
                 />
               </div>
               <span className={cn(
