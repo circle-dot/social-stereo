@@ -1,25 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 'use client';
 import React, { useState } from 'react';
 import { useVoteDetails } from '@/utils/hooks/useMusicVotes';
 import { useVoteCounts } from '@/utils/hooks/useMusicVotes';
 import { useEnsName } from '@/utils/hooks/useEnsName';
 import { EAS_CONFIG } from "@/config/site";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy } from 'lucide-react';
+import { Copy, Info } from 'lucide-react';
 import { showCopySuccessAlert } from '@/utils/alertUtils';
 import { ethers } from 'ethers';
 import ProfileAvatar from '@/components/ui/ProfileAvatar';
 import MusicGrid from '@/components/ui/music/MusicGrid';
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePrivy } from '@privy-io/react-auth';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 
 export default function AddressPage({ params }: { params: { slug: string } }) {
   const { slug: rawAddress } = params;
   const address = ethers.getAddress(rawAddress);
   const graphqlEndpoint = EAS_CONFIG.GRAPHQL_URL;
-
+  const { user, ready, authenticated } = usePrivy();
   const { vouchesMade, isLoading: isCountsLoading } = useVoteCounts(graphqlEndpoint, address);
   const { attestations, isLoading: isVotesLoading } = useVoteDetails(graphqlEndpoint, address);
 
@@ -71,14 +77,27 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
   const maxVotes = 20;
   const votesRemaining = Math.max(0, maxVotes - totalVotesMade);
 
-  const avatar = ProfileAvatar(address)
 
   // Add this loading check
   const isLoading = isCountsLoading || isVotesLoading || ensLoading;
 
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
   if (isLoading) {
     return (
       <div className=" p-6">
+        <div className="flex flex-col items-center">
+          <Skeleton className="h-24 w-24 rounded-full" />
+          <Skeleton className="h-8 w-48 mt-4" />
+          <Skeleton className="h-4 w-32 mt-2" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!ready) {
+    return (
+      <div className="min-h-screen bg-custom-purple p-6">
         <div className="flex flex-col items-center">
           <Skeleton className="h-24 w-24 rounded-full" />
           <Skeleton className="h-8 w-48 mt-4" />
@@ -93,9 +112,12 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
       {/* Profile Header */}
       <div className="mb-8">
         <p className="text-white/80 text-sm mb-1">Profile Details</p>
-        <h1 className="text-[#B4FF4C] text-2xl font-bold">
-          {ensName || truncateAddress(address)}
-        </h1>
+        <div className="flex flex-col gap-1">
+          <h1 className="text-[#B4FF4C] text-2xl font-bold">
+            {ensName || truncateAddress(address)}
+          </h1>
+       
+        </div>
       </div>
 
       {/* Avatar */}
@@ -104,23 +126,65 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
           {ProfileAvatar(address, "w-full h-full hover:cursor-default")}
         </div>
       </div>
+      <TooltipProvider>
+            <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen}>
+              <TooltipTrigger asChild>
+                <div 
+                  className="flex items-center justify-center gap-2 text-white/60 text-sm cursor-pointer"
+                >
+                  <span className="font-mono">
+                    {truncateAddress(address)}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      copyAddress();
+                    }}
+                    className="text-[#B4FF4C] hover:text-[#B4FF4C]/80 h-6 w-6"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-white/60 hover:text-white h-6 w-6"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsTooltipOpen(!isTooltipOpen);
+                    }}
+                  >
+                    <Info className="h-4 w-4" />
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent 
+                onPointerDownOutside={() => setIsTooltipOpen(false)}
+                className="select-all"
+              >
+                <p className="font-mono text-sm">{address}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-      {/* Address Display */}
-      <div className="mb-6">
-        <label className="text-white/80 text-sm block mb-2">Wallet Address</label>
-        <div className="w-full bg-white/10 rounded-2xl p-4 text-white/60 flex items-center justify-between">
-          <span>{truncateAddress(address)}</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={copyAddress}
-            className="text-[#B4FF4C] hover:text-[#B4FF4C]/80"
-          >
-            <Copy className="h-4 w-4" />
-          </Button>
-        </div>
+      <div className="my-6">
+        {ready && authenticated && user?.wallet?.address ? (
+          ethers.getAddress(user.wallet.address) === ethers.getAddress(address) ? (
+            <button className="w-full bg-[#B4FF4C] text-black rounded-2xl p-4 font-semibold">
+              Your Profile
+            </button>
+          ) : (
+            <button className="w-full bg-[#B4FF4C] text-black rounded-2xl p-4 font-semibold">
+              Endorse for Karaoke
+            </button>
+          )
+        ) : (
+          <button className="w-full bg-[#B4FF4C] text-black rounded-2xl p-4 font-semibold">
+            Endorse for Karaoke
+          </button>
+        )}
       </div>
-
       {/* Votes Counter */}
       <div className="mb-6">
         <label className="text-white/80 text-sm block mb-2">Votes Remaining</label>
@@ -143,6 +207,8 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
           )}
         </div>
       </div>
+
+  
     </div>
   );
 }

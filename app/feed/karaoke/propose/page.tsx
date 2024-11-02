@@ -1,9 +1,10 @@
 import React from 'react'
+import SearchBarKaraoke from '@/components/devcon/music/SearchBarKaraoke'
 
 function page() {
   return (
     <div className=" p-6 flex flex-col items-center text-center relative">
-
+      <SearchBarKaraoke />
       <h3 className="text-custom-lightGreen mb-2">
         Karaoke
       </h3>
