@@ -88,7 +88,7 @@ function SearchBarKaraoke() {
           {results.map((result) => (
             <Link
               key={result.id}
-              href={`/feed/address/${result.id}`}
+              href={`/address/${result.id}`}
               className="block p-3 hover:bg-custom-lightGreen/10 cursor-pointer text-white border-b border-custom-lightGreen/20 last:border-b-0"
               onClick={() => {
                 setInput(result.name);
