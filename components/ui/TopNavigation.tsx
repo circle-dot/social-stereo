@@ -18,7 +18,7 @@ function TopNavigation() {
         </div>
         <div>
             {ready && authenticated && user && (
-                <Link href={`/feed/address/${user?.wallet?.address}`}>
+                <Link href={`/address/${user?.wallet?.address}`}>
                 {ProfileAvatar(user?.wallet?.address || '', "w-full h-full hover:cursor-default")}  
                 </Link>
             )}
