@@ -19,7 +19,7 @@ function TopNavigation() {
         </div>
         <div>
             {ready && authenticated && user && (
-                <Link href={`/feed/${user?.wallet?.address}`}>
+                <Link href={`/feed/address/${user?.wallet?.address}`}>
                 {avatar}  
                 </Link>
             )}

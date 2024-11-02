@@ -70,7 +70,7 @@ function MusicPage() {
             </Button>
             <div className="w-full text-center text-sm text-white mt-2">
               Dont have an account?{' '}
-              <Link href="/feed/login" className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
+              <Link href="/login" className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
                 Register here
               </Link>
             </div>
@@ -134,7 +134,7 @@ function MusicPage() {
           className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90"
           onClick={handleVotesClick}
         >
-          <Link href={authenticated ? `/feed/${user?.wallet?.address}` : '#'}>
+          <Link href={authenticated ? `/feed/address/${user?.wallet?.address}` : '#'}>
             Your votes
           </Link>
         </Button>

@@ -5,6 +5,7 @@ import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogOverlay } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import Swal from 'sweetalert2'
 
 export default function VoteSongButton({ trackId }: { trackId: string }) {
     const { login, authenticated, ready, getAccessToken, user, logout } = usePrivy();
@@ -22,7 +23,47 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
             await logout();
             return;
         }
+       
+        // Show loading state
+        Swal.fire({
+            title: 'Checking verification...',
+            text: 'Please wait while we verify your credentials',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+
+        // Check if user has Zupass verification
         try {
+            const token = await getAccessToken();
+            const response = await fetch(`/api/user/${user.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            // Close loading state
+            await Swal.close();
+            
+            if (!response.ok) {
+                // Show dialog to redirect to login for Zupass verification
+                await Swal.fire({
+                    icon: 'warning',
+                    title: 'Zupass Required',
+                    text: 'You need to verify your Zupass before voting. Would you like to do that now?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, verify Zupass',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/login';
+                    }
+                });
+                return;
+            }
+
+            // If Zupass verified, proceed with vote
             const result = await handleMusicVote(trackId, user, wallets, getAccessToken);
             if (result?.error === 'NO_VALID_WALLETS') {
                 await logout();
