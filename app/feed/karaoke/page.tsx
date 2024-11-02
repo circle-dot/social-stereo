@@ -23,7 +23,7 @@ function page() {
           href="/feed/karaoke/participate" 
           className="bg-custom-lightGreen text-black px-6 py-3 rounded-full w-full"
         >
-          Participate in karaoke Slot
+          Participate in karaoke slot
         </StyledButton>
         
         <StyledButton 

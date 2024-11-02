@@ -78,80 +78,63 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen text-gray-900">
-        <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col">
-          <div className="flex flex-col gap-8">
-            <div className="w-full">
-              <Card className="md:sticky md:top-4">
-                <CardContent className="pt-6">
-                  <div className="flex flex-col items-center mb-4">
-                    <Skeleton className="h-24 w-24 rounded-full" />
-                    <Skeleton className="h-8 w-48 mt-2" />
-                    <Skeleton className="h-4 w-32 mt-1" />
-                  </div>
-                  <div className="mt-4 mb-4 text-center">
-                    <Skeleton className="h-4 w-32 mx-auto" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Skeleton className="h-8 w-48" />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[...Array(6)].map((_, i) => (
-                <Skeleton key={i} className="h-48 w-full" />
-              ))}
-            </div>
-          </div>
+      <div className=" p-6">
+        <div className="flex flex-col items-center">
+          <Skeleton className="h-24 w-24 rounded-full" />
+          <Skeleton className="h-8 w-48 mt-4" />
+          <Skeleton className="h-4 w-32 mt-2" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen text-gray-900">
-      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col">
-        <div className="flex flex-col gap-8">
-          <div className="w-full">
-            <Card className="md:sticky md:top-4">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center mb-4">
-                  {avatar}
-                  <h1 className="text-2xl font-bold mt-4">
-                    {ensName || truncateAddress(address)}
-                  </h1>
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <span>{truncateAddress(address)}</span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-4 w-4"
-                      onClick={copyAddress}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="mt-4 mb-4 text-center">
-                  <p className="text-gray-600">
-                    {votesRemaining} votes remaining
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+    <div className=" p-6">
+      {/* Profile Header */}
+      <div className="mb-8">
+        <p className="text-white/80 text-sm mb-1">Profile Details</p>
+        <h1 className="text-[#B4FF4C] text-2xl font-bold">
+          {ensName || truncateAddress(address)}
+        </h1>
+      </div>
 
-          <h2 className="text-2xl font-bold mb-6 text-custom-lightGreen border-b-2 border-custom-lightGreen pb-2 flex items-center gap-2">
-            <span className="bg-custom-darkGreen px-3 rounded-lg">Voted Songs</span>
-            <span className="text-sm font-normal text-gray-400">
-              ({musicData.length} songs)
-            </span>
-          </h2>
+      {/* Avatar */}
+      <div className="flex justify-center mb-8">
+        <div className="w-24 h-24  rounded-full">
+          {ProfileAvatar(address, "w-full h-full hover:cursor-default")}
+        </div>
+      </div>
 
-          {musicData.length === 0 && !isLoading ? (
-            <div className="text-center text-gray-500 py-8">
-              <p>No voted songs found</p>
-            </div>
+      {/* Address Display */}
+      <div className="mb-6">
+        <label className="text-white/80 text-sm block mb-2">Wallet Address</label>
+        <div className="w-full bg-white/10 rounded-2xl p-4 text-white/60 flex items-center justify-between">
+          <span>{truncateAddress(address)}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={copyAddress}
+            className="text-[#B4FF4C] hover:text-[#B4FF4C]/80"
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Votes Counter */}
+      <div className="mb-6">
+        <label className="text-white/80 text-sm block mb-2">Votes Remaining</label>
+        <div className="w-full bg-white/10 rounded-2xl p-4 text-[#B4FF4C]">
+          {votesRemaining} / {maxVotes}
+        </div>
+      </div>
+
+      {/* Music Grid Section */}
+      <div className="mb-6">
+        <label className="text-white/80 text-sm block mb-2">Voted Songs</label>
+        <div className="bg-white/10 rounded-2xl p-4">
+          {musicData.length === 0 ? (
+            <p className="text-white/60 text-center py-4">No voted songs found</p>
           ) : (
             <MusicGrid
               tracks={musicData}

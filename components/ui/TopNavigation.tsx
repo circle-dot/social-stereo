@@ -7,7 +7,6 @@ import Link from 'next/link'
 
 function TopNavigation() {
     const { ready, authenticated, user } = usePrivy();
-    const avatar = ProfileAvatar(user?.wallet?.address || '');
 
   return (
     <div className="w-full flex justify-between items-center p-4">
@@ -20,7 +19,7 @@ function TopNavigation() {
         <div>
             {ready && authenticated && user && (
                 <Link href={`/feed/address/${user?.wallet?.address}`}>
-                {avatar}  
+                {ProfileAvatar(user?.wallet?.address || '', "w-full h-full hover:cursor-default")}  
                 </Link>
             )}
         </div>

@@ -12,7 +12,7 @@ export default function ProfileAvatar(wallet: string, className?: string): React
     return (
 
      <div className="flex items-center justify-center gap-x-4 flex-row">
-        <Avatar className={`cursor-pointer hover:opacity-80 transition-opacity ${className}`}>
+        <Avatar className={`hover:opacity-80 transition-opacity ${className}`}>
             <AvatarImage src={`data:image/svg+xml;utf8,${encodeURIComponent(avatarSvg)}`} alt={`Avatar for ${wallet}`} />
             <AvatarFallback>{wallet.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
