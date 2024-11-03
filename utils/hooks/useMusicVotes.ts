@@ -22,17 +22,17 @@ export const useVoteCounts = (graphqlEndpoint: string, formattedAddress: string 
               AND: [
                 {
                   decodedDataJson: {
-                    contains: "0x5374616d70000000000000000000000000000000000000000000000000000000"
+                    contains: EAS_CONFIG.FirstFilter
                   }
                 },
                 {
                   decodedDataJson: {
-                    contains: "0x4d6567615a750000000000000000000000000000000000000000000000000000"
+                    contains: EAS_CONFIG.SecondFilter
                   }
                 },
                 {
                   decodedDataJson: {
-                    contains: "0x4d75736963000000000000000000000000000000000000000000000000000000"
+                    contains: EAS_CONFIG.ThirdFilter
                   }
                 }
               ],
@@ -78,17 +78,17 @@ export const useVoteDetails = (
               AND: [
                 {
                   decodedDataJson: {
-                    contains: "0x5374616d70000000000000000000000000000000000000000000000000000000"
+                    contains: EAS_CONFIG.FirstFilter
                   }
                 },
                 {
                   decodedDataJson: {
-                    contains: "0x4d6567615a750000000000000000000000000000000000000000000000000000"
+                    contains: EAS_CONFIG.SecondFilter
                   }
                 },
                 {
                   decodedDataJson: {
-                    contains: "0x4d75736963000000000000000000000000000000000000000000000000000000"
+                    contains: EAS_CONFIG.ThirdFilter
                   }
                 }
               ],
