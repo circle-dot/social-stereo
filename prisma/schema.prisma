@@ -32,7 +32,22 @@ model Zupass {
   zupassEmail    String?
 }
 
-model Music {
+model MusicDevcon {
+  id                 String   @id @default(uuid())
+  spotify_id         String   @unique
+  title              String
+  artist             String
+  album              String
+  imageUrl           String
+  spotifyUrl         String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  rank               Int?
+  vouches            Int?     @default(0)
+  insertionTimestamp String?
+}
+
+model MusicMegaZu {
   id                 String   @id @default(uuid())
   spotify_id         String   @unique
   title              String
