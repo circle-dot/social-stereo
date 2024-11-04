@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogOverlay } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import Swal from 'sweetalert2'
-
+import Link from 'next/link'
 interface VoteSongButtonProps {
   trackId: string;
   params: {
@@ -89,20 +89,33 @@ export default function VoteSongButton({ trackId, params }: VoteSongButtonProps)
                     <DialogDescription className="text-white mt-2">
                         You need to be logged in to vote for a track.
                     </DialogDescription>
-                    <DialogFooter className="mt-6 flex flex-col !items-end space-y-2 w-full">
-                        <Button 
-                            onClick={() => { login(); setIsDialogOpen(false); }} 
-                            className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 px-6 py-3"
-                        >
-                            Log In
-                        </Button>
-                        <Button 
-                            variant="secondary" 
-                            onClick={() => setIsDialogOpen(false)} 
-                            className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 px-6 py-3"
-                        >
-                            Cancel
-                        </Button>
+                    <DialogFooter className="mt-6 flex !flex-col space-y-2 !items-end w-full">
+         <div className="flex flex-col space-y-2 w-full">
+         <Button 
+              onClick={() => { 
+                login({
+                  disableSignup: true, 
+                })
+                setIsDialogOpen(false); 
+              }} 
+              className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3"
+            >
+              Log In
+            </Button>
+            <Button 
+              variant="secondary" 
+              onClick={() => setIsDialogOpen(false)} 
+              className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 py-3"
+            >
+              Cancel
+            </Button>
+         </div>
+            <div className="w-full text-center text-sm text-white mt-2">
+              Dont have an account?{' '}
+              <Link href={`/${params.org}/login`} className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
+                Register here
+              </Link>
+                        </div>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>  

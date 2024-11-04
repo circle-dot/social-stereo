@@ -89,8 +89,9 @@ export async function verifyOrCreateZupassEntry(params: {
 
   return null;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getDecodedField(decodedDataArray: any[], fieldName: string): string {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const field = decodedDataArray.find((item: any) => item.name === fieldName);
   if (field?.value?.value) {
     try {

@@ -133,6 +133,7 @@ export async function POST(request: Request) {
 
       // Helper function to find and decode a specific field
       const getDecodedField = (fieldName: string) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const field = decodedDataArray.find((item: any) => item.name === fieldName);
         if (field?.value?.value) {
           return decodeBytes32(field.value.value);

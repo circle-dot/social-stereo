@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/tooltip"
 import VoteKaraokeButton from '@/components/ui/music/VoteKaraokeButton';
 
-export default function AddressPage({ params }: { params: { slug: string } }) {
+export default function AddressPage({ params }: { params: { slug: string, org: string } }) {
   const { slug: rawAddress } = params;
   const address = ethers.getAddress(rawAddress);
   const graphqlEndpoint = EAS_CONFIG.GRAPHQL_URL;
@@ -195,6 +195,7 @@ export default function AddressPage({ params }: { params: { slug: string } }) {
             <MusicGrid
               tracks={musicData}
               isLoading={isVotesLoading}
+              params={params}
             />
           )}
         </div>

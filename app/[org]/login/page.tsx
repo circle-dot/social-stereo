@@ -14,6 +14,7 @@ function Login({
 }) {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [wallet, setWallet] = useState<string | null>(null);
 
   useEffect(() => {
@@ -67,7 +68,7 @@ function Login({
         </div>
       </div>
 
-      <StyledButton href="/feed/home">
+      <StyledButton href={`/${params.org}/feed/home`}>
         Continue <MoveRight className='w-4 h-4' />
       </StyledButton>
     </div>
