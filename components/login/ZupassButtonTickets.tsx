@@ -9,7 +9,11 @@ import { usePrivy } from '@privy-io/react-auth'
 import { Button } from '@/components/ui/button'
 import { MoveRight } from 'lucide-react'
 
-export function ZupassButtonTickets() {
+interface Props {
+  onVerified: (verified: boolean) => void;
+}
+
+export function ZupassButtonTickets({ onVerified }: Props) {
   const router = useRouter()
   const { user, getAccessToken, authenticated, ready } = usePrivy()
   const [isLoading, setIsLoading] = useState(true)
@@ -35,6 +39,7 @@ export function ZupassButtonTickets() {
           
           if (response.ok) {
             setIsZupassVerified(true)
+            onVerified(true)
           }
         } catch (error) {
           console.error('Error checking Zupass verification:', error)
@@ -44,7 +49,7 @@ export function ZupassButtonTickets() {
     }
   
     checkZupassVerification()
-  }, [ready, authenticated, user, getAccessToken])
+  }, [ready, authenticated, user, getAccessToken, onVerified])
 
   const handleZuAuth = async () => {
     setIsLoading(true)
@@ -108,6 +113,7 @@ export function ZupassButtonTickets() {
         }
 
         setIsZupassVerified(true)
+        onVerified(true)
         await Swal.fire({
           icon: 'success',
           title: 'Welcome to SocialStereo!',

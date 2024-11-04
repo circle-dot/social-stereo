@@ -10,7 +10,12 @@ import { EAS_CONFIG } from '@/config/site'
 import { showSuccessAlert, showErrorAlertWithSpace } from '@/utils/alertUtils'
 import Swal from 'sweetalert2'
 
-function ZupassButtonPOD() {
+// Add to props interface
+interface Props {
+  onVerified: (verified: boolean) => void;
+}
+
+function ZupassButtonPOD({ onVerified }: Props) {
     const { authenticated, ready, user, getAccessToken } = usePrivy()
     const [isLoading, setIsLoading] = useState(true)
     const [isZupassVerified, setIsZupassVerified] = useState(false)
@@ -36,6 +41,7 @@ function ZupassButtonPOD() {
                     
                     if (response.ok) {
                         setIsZupassVerified(true)
+                        onVerified(true)
                     }
                 } catch (error) {
                     console.error('Error checking Zupass verification:', error)
@@ -45,7 +51,7 @@ function ZupassButtonPOD() {
         }
     
         checkZupassVerification()
-    }, [ready, authenticated, user, getAccessToken])
+    }, [ready, authenticated, user, getAccessToken, onVerified])
 
     const handleZupassLogin = async () => {
         setIsLoading(true)
@@ -145,6 +151,7 @@ function ZupassButtonPOD() {
 
             if (result.status === 'SUCCESS') {
                 setIsZupassVerified(true)
+                onVerified(true)
                 const baseUrl = EAS_CONFIG.GRAPHQL_URL.replace('/graphql', '');
                 const attestationViewUrl = `${baseUrl}/attestation/view/${result.attestationUID}`;
                 showSuccessAlert('Ticket verified successfully.', 'View transaction', attestationViewUrl);
