@@ -94,7 +94,6 @@ export function ZupassButtonTickets({ onVerified }: Props) {
         watermark,
         config,
         multi: true,
-        returnUrl: window.location.origin,
         proofTitle: "Connect with Zupass",
         proofDescription: "**Connect your Zupass to Stamp Network**",
       });
