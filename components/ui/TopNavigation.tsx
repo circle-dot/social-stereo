@@ -5,7 +5,7 @@ import { usePrivy } from '@privy-io/react-auth'
 import ProfileAvatar from './ProfileAvatar'
 import Link from 'next/link'
 
-function TopNavigation() {
+function TopNavigation({ params }: { params: { org: string } }) {
     const { ready, authenticated, user } = usePrivy();
 
   return (
@@ -18,7 +18,7 @@ function TopNavigation() {
         </div>
         <div>
             {ready && authenticated && user && (
-                <Link href={`/address/${user?.wallet?.address}`}>
+                <Link href={`/${params.org}/address/${user?.wallet?.address}`}>
                 {ProfileAvatar(user?.wallet?.address || '', "w-10 h-10 hover:cursor-pointer")}  
                 </Link>
             )}

@@ -2,14 +2,14 @@ import React from 'react'
 import { MoveRight } from 'lucide-react';
 import StyledButton from '@/components/ui/StyledButton';
 
-interface CardProps {
+interface NavigationCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
   href: string;
 }
 
-const NavigationCard: React.FC<CardProps> = ({ icon, title, description, href }) => {
+const NavigationCard: React.FC<NavigationCardProps> = ({ icon, title, description, href }) => {
   return (
     <div className="bg-custom-darkGreen rounded-xl p-4 flex flex-col space-y-2 max-w-lg ">
       <div className="text-2xl text-custom-lightGreen">{icon}</div>

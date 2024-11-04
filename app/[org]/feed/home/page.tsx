@@ -1,31 +1,25 @@
-import { Headphones, Music, Mic, Gift } from 'lucide-react';
+import { Headphones, Gift } from 'lucide-react';
 import NavigationCard from '@/components/ui/NavigationCard';
-import { SITE_CONFIG } from '@/config/site';
 import StampCollection from '@/components/devcon/stamps/StampCollection';
+
+interface PageProps {
+  params: {
+    org: string
+  }
+}
+
 const cardData = [
   {
     icon: <Headphones />,
     title: "Decentralized Playlist",
     description: "Vote for the music you like to contribute to the playlist.",
-    href: "/feed/music"
-  },
-  {
-    icon: <Music />,
-    title: "Decentralized DJs",
-    description: "Vouch for your favorite DJs.",
-    href: "/feed/dj"
-  },
-  {
-    icon: <Mic />,
-    title: "Karaoke",
-    description: "Vouch for friends, so they can cut the line and have their moment of fame.",
-    href: "/feed/karaoke"
+    path: "music"
   },
   {
     icon: <Gift />,
     title: "DevCon Pack",
     description: "Coming soon...",
-    href: "/feed/special-box"
+    path: "special-box"
   }
 ];
 
@@ -36,11 +30,18 @@ const stamps = [
   { id: '4', title: 'Top Contributor', icon: '/StampIt.png', isLocked: true },
 ]
 
-function Page() {
+export default function HomePage({ params }: PageProps) {
+  const orgName = params.org
+    .split(/[-_]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+
   return (
     <div className="mx-auto space-y-4 p-4 h-full pb-24">
       <div className="max-w-4xl">
-        <h1 className='!font-extrabold text-2xl md:text-3xl lg:text-4xl pb-2'>{SITE_CONFIG.description}</h1>
+        <h1 className='!font-extrabold text-2xl md:text-3xl lg:text-4xl pb-2'>
+          Welcome to {orgName}
+        </h1>
         <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi sit distinctio vel, ut facilis labore maxime nemo aliquid similique accusantium.</p>
         <StampCollection stamps={stamps} />
       </div>
@@ -51,12 +52,10 @@ function Page() {
             icon={card.icon}
             title={card.title}
             description={card.description}
-            href={card.href}
+            href={`/${params.org}/feed/${card.path}`}
           />
         ))}
       </div>
     </div>
   );
 }
-
-export default Page

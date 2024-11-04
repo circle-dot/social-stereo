@@ -2,7 +2,6 @@
 import React, { useState, useCallback } from 'react'
 import TitleSection from '@/components/ui/TitleSection'
 import MusicGrid from '@/components/ui/music/MusicGrid'
-import { SITE_CONFIG } from '@/config/site'
 import { Button } from '@/components/ui/button'
 import useMusic from '@/utils/hooks/useSearchSongs'
 import { Input } from '@/components/ui/input'
@@ -12,7 +11,18 @@ import Link from 'next/link'
 import { usePrivy } from '@privy-io/react-auth'
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogOverlay } from '@/components/ui/dialog'
 
-function MusicPage() {
+interface PageProps {
+  params: {
+    org: string
+  }
+}
+
+export default function MusicPage({ params }: PageProps) {
+  const orgName = params.org
+    .split(/[-_]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const { login, authenticated, ready, user } = usePrivy()
@@ -79,7 +89,7 @@ function MusicPage() {
       </Dialog>
 
       <div className="mb-4">
-        <TitleSection>{SITE_CONFIG.description}</TitleSection>
+      <TitleSection>{orgName} Music</TitleSection>
         <p className='text-sm text-white mb-4'>Updates every five minutes</p>
         <div className="relative ">
           <Input
@@ -109,7 +119,7 @@ function MusicPage() {
               Looks like this song isn&apos;t in the Top 100 yet!
             </p>
             <Button asChild className="bg-custom-lightGreen text-custom-black py-2 px-4 rounded-full hover:bg-custom-lightGreen/90">
-              <Link href={`/feed/music/propose?search=${encodeURIComponent(searchTerm)}`}>
+              <Link href={`/${params.org}/feed/music/propose?search=${encodeURIComponent(searchTerm)}`}>
                 Propose it now
               </Link>
             </Button>
@@ -125,7 +135,7 @@ function MusicPage() {
       </div>
       <div className='flex flex-row gap-4 fixed bottom-[6rem] left-0 right-0 px-4 max-w-2xl mx-auto'>
         <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90">
-          <Link href="/feed/music/propose">
+          <Link href={`/${params.org}/feed/music/propose`}>
             Propose your song
           </Link>
         </Button>
@@ -134,7 +144,7 @@ function MusicPage() {
           className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90"
           onClick={handleVotesClick}
         >
-          <Link href={authenticated ? `/address/${user?.wallet?.address}` : '#'}>
+          <Link href={authenticated ? `/${params.org}/address/${user?.wallet?.address}` : '#'}>
             Your votes
           </Link>
         </Button>
@@ -142,5 +152,3 @@ function MusicPage() {
     </div>
   )
 }
-
-export default MusicPage
