@@ -7,11 +7,18 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, Di
 import { Button } from '@/components/ui/button'
 import Swal from 'sweetalert2'
 
-export default function VoteSongButton({ trackId }: { trackId: string }) {
+interface VoteSongButtonProps {
+  trackId: string;
+  params: {
+    org: string;
+  };
+}
+
+export default function VoteSongButton({ trackId, params }: VoteSongButtonProps) {
     const { login, authenticated, ready, getAccessToken, user, logout } = usePrivy();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { wallets, ready: walletsReady } = useWallets();
-
+    console.log('params',params)
     const handleVote = async () => {
         console.log(trackId);
         if (!authenticated && ready) {
@@ -37,7 +44,7 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
         // Check if user has Zupass verification
         try {
             const token = await getAccessToken();
-            const response = await fetch(`/api/user/${user.id}`, {
+            const response = await fetch(`/api/user/${user?.wallet?.address}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -64,7 +71,7 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
             }
 
             // If Zupass verified, proceed with vote
-            const result = await handleMusicVote(trackId, user, wallets, getAccessToken);
+            const result = await handleMusicVote(trackId, user, wallets, getAccessToken, params.org);
             if (result?.error === 'NO_VALID_WALLETS') {
                 await logout();
             }

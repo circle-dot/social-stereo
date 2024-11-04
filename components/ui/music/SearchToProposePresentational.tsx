@@ -16,6 +16,7 @@ interface SearchToProposePresentationalProps {
   searchResults: any[] | undefined
   isLoading: boolean
   error: string | null
+  params: { org: string }
 }
 
 function SearchToProposePresentational({
@@ -24,7 +25,8 @@ function SearchToProposePresentational({
   handleSearchSubmit,
   searchResults,
   isLoading,
-  error
+  error,
+  params
 }: SearchToProposePresentationalProps) {
   return (
     <div className="w-full max-w-md mx-auto px-8">
@@ -80,7 +82,7 @@ function SearchToProposePresentational({
                   </p>
                 </div>
                 <div className="pr-2">
-                  <VoteSongButton trackId={track.id} />
+                  <VoteSongButton trackId={track.id} params={params} />
                 </div>
               </div>
             </div>

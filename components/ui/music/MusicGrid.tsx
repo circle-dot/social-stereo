@@ -34,7 +34,7 @@ function SongSkeleton() {
   )
 }
 
-function SongListItem({ track }: { track: Track }) {
+function SongListItem({ track, params }: { track: Track, params: { org: string } }) {
   const truncate = (str: string, maxLength: number) => 
     str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
 
@@ -61,7 +61,7 @@ function SongListItem({ track }: { track: Track }) {
           </p>
         </div>
         <div className="pr-2">
-          <VoteSongButton trackId={track.spotify_id} />
+          <VoteSongButton trackId={track.spotify_id} params={params} />
         </div>
       </div>
     </div>
@@ -73,13 +73,16 @@ interface MusicGridProps {
   isLoading: boolean;
   fetchNextPage?: () => void;
   hasNextPage?: boolean;
+  params: { org: string };
 }
+
 
 export default function MusicGrid({ 
   tracks, 
   isLoading, 
   fetchNextPage, 
-  hasNextPage 
+  hasNextPage,
+  params
 }: MusicGridProps) {
   // Set up intersection observer for infinite scroll
   const { ref, inView } = useInView({
@@ -96,7 +99,7 @@ export default function MusicGrid({
     <div className="w-full h-[300px] bg-transparent overflow-y-auto scrollbar-thin scrollbar-thumb-custom-lightGreen scrollbar-track-custom-darkGreen">
       <div className="w-full">
         {tracks.map((track) => (
-          <SongListItem key={track.id} track={track} />
+          <SongListItem key={track.id} track={track} params={params} />
         ))}
         
         {isLoading && (

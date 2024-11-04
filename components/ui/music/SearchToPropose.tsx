@@ -7,9 +7,11 @@ import SearchToProposePresentational from './SearchToProposePresentational'
 
 interface SearchToProposeProps {
     initialSearch: string
+    params: { org: string }
 }
 
-function SearchToPropose({ initialSearch }: SearchToProposeProps) {
+
+function SearchToPropose({ initialSearch, params }: SearchToProposeProps) {
     const [searchTerm, setSearchTerm] = useState(initialSearch)
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(initialSearch)
 
@@ -61,6 +63,7 @@ function SearchToPropose({ initialSearch }: SearchToProposeProps) {
             searchResults={searchResults?.music}
             isLoading={isLoading}
             error={error instanceof Error ? error.message : error ? 'An error occurred' : null}
+            params={params}
         />
     )
 }
