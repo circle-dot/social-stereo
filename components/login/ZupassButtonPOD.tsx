@@ -10,7 +10,7 @@ import { EAS_CONFIG } from '@/config/site'
 import { showSuccessAlert, showErrorAlertWithSpace } from '@/utils/alertUtils'
 import Swal from 'sweetalert2'
 
-function ZupassButton() {
+function ZupassButtonPOD() {
     const { authenticated, ready, user, getAccessToken } = usePrivy()
     const [isLoading, setIsLoading] = useState(true)
     const [isZupassVerified, setIsZupassVerified] = useState(false)
@@ -28,7 +28,7 @@ function ZupassButton() {
           if (authenticated && user) {
             try {
               const token = await getAccessToken()
-              const response = await fetch(`/api/user/${user.id}`, {
+              const response = await fetch(`/api/user/${user.wallet?.address}`, {
                 headers: {
                   'Authorization': `Bearer ${token}`
                 }
@@ -144,17 +144,17 @@ function ZupassButton() {
             const result = await response.json()
             console.log('Verification result:', result)
 
-            if (result.status === 'ALREADY_REGISTERED') {
-                // Show an informational alert for already registered tickets
+            if (result.status === 'SUCCESS') {
+                // Show success message with attestation link
+                const baseUrl = EAS_CONFIG.GRAPHQL_URL.replace('/graphql', '');
+                const attestationViewUrl = `${baseUrl}/attestation/view/${result.attestationUID}`;
+                showSuccessAlert('Ticket verified successfully.', 'View transaction', attestationViewUrl);
+            } else if (result.status === 'ALREADY_REGISTERED' && !result.nullifier) {
+                // Only show error if it's not our registration
                 showErrorAlertWithSpace(
                     'Ticket Already Registered',
                     'This ticket has already been verified and cannot be used again.'
                 );
-            } else {
-                // Show success message with attestation link for new verifications
-                const baseUrl = EAS_CONFIG.GRAPHQL_URL.replace('/graphql', '');
-                const attestationViewUrl = `${baseUrl}/attestation/view/${result.newAttestationUID}`;
-                showSuccessAlert('Ticket verified successfully.', 'View transaction', attestationViewUrl);
             }
         } catch (error) {
             console.error('Verification error:', error)
@@ -200,4 +200,4 @@ function ZupassButton() {
     )
 }
 
-export default ZupassButton
+export default ZupassButtonPOD

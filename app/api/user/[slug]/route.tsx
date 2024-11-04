@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import privy from '@/lib/privy';
+import { ethers } from 'ethers';
 
 export async function GET(
     request: Request,
@@ -14,14 +15,32 @@ export async function GET(
         }
 
         const verifiedClaims = await privy.verifyAuthToken(authorization);
-        if (verifiedClaims.userId !== params.slug) {
+
+        // Check if the user exists and create if not
+        let user = await prisma.user.findFirst({
+            where: {
+                id: verifiedClaims.userId,
+            }
+        });
+
+        if (!user) {
+            user = await prisma.user.create({
+                data: {
+                    id: verifiedClaims.userId,
+                    wallet: ethers.getAddress(params.slug)
+                }
+            });
+        }
+
+        // Verify the wallet matches
+        if (user.wallet.toLowerCase() !== params.slug.toLowerCase()) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         // Check if user has Zupass verification
         const zupass = await prisma.zupass.findFirst({
             where: {
-                userId: params.slug
+                wallet: ethers.getAddress(params.slug).toLowerCase()
             }
         });
 

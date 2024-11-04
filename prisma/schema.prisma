@@ -18,20 +18,18 @@ model User {
   rankScore Float    @default(0)
   createdAt DateTime @default(now())
   podUrl    String?
-  Zupass    Zupass[]
 }
 
 model Zupass {
-  userId         String
+  wallet         String
   nullifier      String
-  attestationUID String   @unique
+  attestationUID String   @id @unique
   createdAt      DateTime @default(now())
   category       String?
   subcategory    String?
   credentialType String?
   platform       String?
   zupassEmail    String?
-  user           User     @relation(fields: [userId], references: [id])
 }
 
 model Music {

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/db'
 import privy from '@/lib/privy'
+import { ethers } from 'ethers'
+import { verifyOrCreateZupassEntry } from '@/components/login/VerifyOrCreateZupass';
 
 export async function POST(request: NextRequest) {
     try {
@@ -36,7 +38,23 @@ export async function POST(request: NextRequest) {
         }
         // Get the request body
         const body = await request.json()
+        const { commitment } = body
+        
+        // Extract eventId from the nested structure
+        const eventId = body.revealedClaims?.pods?.ticket?.entries?.eventId?.value;
+        
+        if (!commitment || !eventId) {
+            console.error('Missing required fields:', { commitment, eventId });
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        }
 
+        // Calculate the nullifier hash
+        const calculatedNullifier = ethers.keccak256(
+            ethers.concat([
+                ethers.toUtf8Bytes(commitment),
+                ethers.toUtf8Bytes(eventId)
+            ])
+        ).slice(0, 66);
         // Append wallet to body
         const enrichedBody = {
             ...body,
@@ -58,12 +76,32 @@ export async function POST(request: NextRequest) {
         const data = await response.json()
         console.log('entries detailed:', JSON.stringify(enrichedBody.revealedClaims.pods.ticket.entries, null, 2))
         
-        const attendeeEmail = enrichedBody.revealedClaims.pods.ticket.entries.attendeeEmail.value;
+        const attendeeEmail = body.revealedClaims?.pods?.ticket?.entries?.attendeeEmail?.value;
         console.log('attendeeEmail:', attendeeEmail);
         
-        // Check for ALREADY_REGISTERED status before proceeding
+        // Check for ALREADY_REGISTERED status
         if (data.status === 'ALREADY_REGISTERED') {
-            return NextResponse.json(data, { status: 200 })
+            console.log('Nullifier comparison:', {
+                received: data.nullifier,
+                calculated: calculatedNullifier,
+                match: data.nullifier.toLowerCase() === calculatedNullifier.toLowerCase()
+            });
+
+            if (data.nullifier.toLowerCase() === calculatedNullifier.toLowerCase()) {
+                const zupassEntry = await verifyOrCreateZupassEntry({
+                    wallet: wallet.wallet,
+                    community: 'Devcon'
+                });
+
+                if (zupassEntry) {
+                    return NextResponse.json({ 
+                        status: 'SUCCESS',
+                        message: 'Ticket verified successfully',
+                        nullifier: zupassEntry.nullifier,
+                        attestationUID: zupassEntry.attestationUID
+                    }, { status: 200 });
+                }
+            }
         }
         
         // Only save attestation if verification was successful and not already registered
@@ -72,7 +110,7 @@ export async function POST(request: NextRequest) {
             await prisma.zupass.create({
                 data: {
                     attestationUID: attestationUID,
-                    userId: verifiedClaims.userId,
+                    wallet: wallet.wallet,
                     nullifier: data.nullifier,
                     createdAt: new Date(),
                     zupassEmail: attendeeEmail,
