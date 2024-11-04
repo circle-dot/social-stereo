@@ -93,7 +93,10 @@ export function ZupassButtonTickets({ onVerified }: Props) {
         },
         watermark,
         config,
-        multi: true
+        multi: true,
+        returnUrl: window.location.origin,
+        proofTitle: "Connect with Zupass",
+        proofDescription: "**Connect your Zupass to Stamp Network**",
       });
 
       if (result && result.type === "multi-pcd" && Array.isArray(result.pcds)) {
