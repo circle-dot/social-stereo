@@ -32,6 +32,7 @@ model Zupass {
   userId         String
   nullifier      String
   attestationUID String   @unique
+  zupassEmail    String?
   createdAt      DateTime @default(now())
   category       String?
   subcategory    String?
