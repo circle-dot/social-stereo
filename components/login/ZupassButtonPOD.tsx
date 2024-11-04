@@ -18,35 +18,34 @@ function ZupassButtonPOD() {
 
     useEffect(() => {
         const checkZupassVerification = async () => {
-          if (!ready) return
-          
-          if (!authenticated) {
-            setIsLoading(false)
-            return
-          }
-    
-          if (authenticated && user) {
-            try {
-              const token = await getAccessToken()
-              const response = await fetch(`/api/user/${user.wallet?.address}`, {
-                headers: {
-                  'Authorization': `Bearer ${token}`
-                }
-              })
-              
-              if (response.ok) {
-                setIsZupassVerified(true)
-              }
-            } catch (error) {
-              console.error('Error checking Zupass verification:', error)
+            if (!ready) return
+            
+            if (!authenticated) {
+                setIsLoading(false)
+                return
             }
-          }
-          setIsLoading(false)
+    
+            if (authenticated && user) {
+                try {
+                    const token = await getAccessToken()
+                    const response = await fetch(`/api/user/${user.wallet?.address}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                    
+                    if (response.ok) {
+                        setIsZupassVerified(true)
+                    }
+                } catch (error) {
+                    console.error('Error checking Zupass verification:', error)
+                }
+            }
+            setIsLoading(false)
         }
     
         checkZupassVerification()
-      }, [ready, authenticated, user, getAccessToken])
-
+    }, [ready, authenticated, user, getAccessToken])
 
     const handleZupassLogin = async () => {
         setIsLoading(true)
@@ -145,7 +144,7 @@ function ZupassButtonPOD() {
             console.log('Verification result:', result)
 
             if (result.status === 'SUCCESS') {
-                // Show success message with attestation link
+                setIsZupassVerified(true)
                 const baseUrl = EAS_CONFIG.GRAPHQL_URL.replace('/graphql', '');
                 const attestationViewUrl = `${baseUrl}/attestation/view/${result.attestationUID}`;
                 showSuccessAlert('Ticket verified successfully.', 'View transaction', attestationViewUrl);
@@ -165,37 +164,30 @@ function ZupassButtonPOD() {
     return (
         <>
             <div ref={connectorRef} style={{ width: '0', height: '0', overflow: 'hidden' }}></div>
-            {!ready || isLoading ? (
-                <Button 
-                    className="py-2 px-8 rounded-full gap-3 bg-gray-300 text-black text-base md:text-lg"
-                    disabled={true}
-                >
-                    <span className="animate-spin mr-2">⚡</span>
-                    Loading...
-                </Button>
-            ) : !authenticated ? (
-                <Button 
-                    className="py-2 px-8 rounded-full gap-3 bg-gray-300 text-black text-base md:text-lg"
-                    disabled={true}
-                >
-                    Connect wallet first ↑
-                </Button>
-            ) : isZupassVerified ? (
-                <Button 
-                    className="py-2 px-8 rounded-full gap-3 bg-green-500 text-black text-base md:text-lg"
-                    disabled={true}
-                >
-                    ✓ Ticket Verified
-                </Button>
-            ) : (
-                <Button 
-                    className="py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg"
-                    onClick={handleZupassLogin}
-                    disabled={isLoading}
-                >
-                    Validate Devcon Ticket <MoveRight className='w-4 h-4' />
-                </Button>
-            )}
+            <Button 
+                className={`py-2 px-8 rounded-full gap-3 ${
+                    isZupassVerified 
+                        ? 'bg-green-500' 
+                        : !authenticated 
+                            ? 'bg-gray-300' 
+                            : 'bg-custom-lightGreen'
+                } text-black text-base md:text-lg`}
+                onClick={handleZupassLogin}
+                disabled={!ready || !authenticated || isLoading || isZupassVerified}
+            >
+                {!ready || isLoading ? (
+                    <>
+                        <span className="animate-spin mr-2">⚡</span>
+                        Loading...
+                    </>
+                ) : !authenticated ? (
+                    <>Connect wallet first ↑</>
+                ) : isZupassVerified ? (
+                    <>Ticket Verified <span className="ml-1">✓</span></>
+                ) : (
+                    <>Validate Devcon Ticket <MoveRight className='w-4 h-4' /></>
+                )}
+            </Button>
         </>
     )
 }

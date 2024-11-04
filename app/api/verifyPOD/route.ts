@@ -74,10 +74,8 @@ export async function POST(request: NextRequest) {
 
         // Get the response data
         const data = await response.json()
-        console.log('entries detailed:', JSON.stringify(enrichedBody.revealedClaims.pods.ticket.entries, null, 2))
         
         const attendeeEmail = body.revealedClaims?.pods?.ticket?.entries?.attendeeEmail?.value;
-        console.log('attendeeEmail:', attendeeEmail);
         
         // Check for ALREADY_REGISTERED status
         if (data.status === 'ALREADY_REGISTERED') {

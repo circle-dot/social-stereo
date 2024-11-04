@@ -1,17 +1,53 @@
 "use client"
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { zuAuthPopup } from '@pcd/zuauth'
 import { whitelistedTickets } from '@/components/login/config/zupass-tickets-config'
 import { TicketTypeName } from '@/components/login/config/zupass-tickets-config'
 import Swal from 'sweetalert2'
 import { useRouter } from 'next/navigation'
 import { usePrivy } from '@privy-io/react-auth'
-
+import { Button } from '@/components/ui/button'
+import { MoveRight } from 'lucide-react'
 
 export function ZupassButtonTickets() {
   const router = useRouter()
-  const { user, getAccessToken } = usePrivy()
+  const { user, getAccessToken, authenticated, ready } = usePrivy()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isZupassVerified, setIsZupassVerified] = useState(false)
+
+  useEffect(() => {
+    const checkZupassVerification = async () => {
+      if (!ready) return
+      
+      if (!authenticated) {
+        setIsLoading(false)
+        return
+      }
+  
+      if (authenticated && user) {
+        try {
+          const token = await getAccessToken()
+          const response = await fetch(`/api/user/${user.wallet?.address}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+          
+          if (response.ok) {
+            setIsZupassVerified(true)
+          }
+        } catch (error) {
+          console.error('Error checking Zupass verification:', error)
+        }
+      }
+      setIsLoading(false)
+    }
+  
+    checkZupassVerification()
+  }, [ready, authenticated, user, getAccessToken])
+
   const handleZuAuth = async () => {
+    setIsLoading(true)
     Swal.fire({
       title: 'Verifying...',
       text: 'Please wait while we verify your Zupass ticket',
@@ -71,6 +107,7 @@ export function ZupassButtonTickets() {
           throw new Error(errorData.error || 'Verification failed');
         }
 
+        setIsZupassVerified(true)
         await Swal.fire({
           icon: 'success',
           title: 'Welcome to SocialStereo!',
@@ -99,15 +136,35 @@ export function ZupassButtonTickets() {
         text: text,
         confirmButtonText: 'OK'
       });
+    } finally {
+      setIsLoading(false)
     }
   };
 
   return (
-    <button
+    <Button 
+      className={`py-2 px-8 rounded-full gap-3 ${
+        isZupassVerified 
+          ? 'bg-green-500' 
+          : !authenticated 
+            ? 'bg-gray-300' 
+            : 'bg-custom-lightGreen'
+      } text-black text-base md:text-lg`}
       onClick={handleZuAuth}
-      className="rounded-lg bg-green-500 px-6 py-3 text-white hover:bg-green-600"
+      disabled={!ready || !authenticated || isLoading || isZupassVerified}
     >
-      Connect your Zupass
-    </button>
+      {!ready || isLoading ? (
+        <>
+          <span className="animate-spin mr-2">⚡</span>
+          Loading...
+        </>
+      ) : !authenticated ? (
+        <>Connect wallet first ↑</>
+      ) : isZupassVerified ? (
+        <>Ticket Verified <span className="ml-1">✓</span></>
+      ) : (
+        <>Validate Zupass Ticket <MoveRight className='w-4 h-4' /></>
+      )}
+    </Button>
   );
 }
