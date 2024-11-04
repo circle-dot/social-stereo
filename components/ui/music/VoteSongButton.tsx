@@ -64,7 +64,7 @@ export default function VoteSongButton({ trackId, params }: VoteSongButtonProps)
                     cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = '/login';
+                        window.location.href = `/${params.org}/login`;
                     }
                 });
                 return;

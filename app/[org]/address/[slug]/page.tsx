@@ -45,6 +45,7 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
   const [musicData, setMusicData] = useState<any[]>([]);
 
   const fetchMusicData = async () => {
+    const community = params.org;
     if (recipients.length > 0) {
       try {
         const response = await fetch('/api/musicRanking', {
@@ -52,7 +53,7 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ recipients }),
+          body: JSON.stringify({ recipients, community }),
         });
 
         if (!response.ok) {

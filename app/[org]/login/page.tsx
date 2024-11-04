@@ -13,10 +13,11 @@ function Login({
 }: {
   params: { org: string }
 }) {
-  const { authenticated, ready } = usePrivy()
+  const { authenticated } = usePrivy()
   const [isVerifying, setIsVerifying] = useState(false)
   const [isVerified, setIsVerified] = useState(false)
   const [isZupassVerified, setIsZupassVerified] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [wallet, setWallet] = useState<string | null>(null)
 
   // Check if both conditions are met to enable the continue button

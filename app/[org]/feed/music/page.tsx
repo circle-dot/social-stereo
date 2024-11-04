@@ -28,7 +28,11 @@ export default function MusicPage({ params }: PageProps) {
   const { login, authenticated, ready, user } = usePrivy()
   const [sortOrder] = useState<'asc' | 'desc'>('asc')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const { data, isLoading, fetchNextPage, hasNextPage } = useMusic(sortOrder, debouncedSearchTerm)
+  const { data, isLoading, fetchNextPage, hasNextPage } = useMusic(
+    sortOrder, 
+    debouncedSearchTerm,
+    params.org
+  );
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value)
     debouncedSearch(e.target.value)
