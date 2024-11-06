@@ -5,6 +5,7 @@ import { showAlertWithRedirect } from '@/utils/alertUtils'
 
 function ZupassVerification({ params }: { params: { org: string } }) {
   const { ready, authenticated, user, getAccessToken } = usePrivy()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(true)
   const [hasStartedVerification, setHasStartedVerification] = useState(false)
 
