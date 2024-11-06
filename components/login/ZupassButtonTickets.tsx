@@ -18,30 +18,22 @@ export function ZupassButtonTickets({ org }: Props) {
   const handleZuAuth = async () => {
     try {
       const watermark = "0";
-      const config = Object.entries(whitelistedTickets).flatMap(
-        ([ticketType, tickets]) =>
-          tickets
-            .map((ticket) => {
-              if (ticket.eventId && ticket.productId) {
-                return {
-                  pcdType: ticket.pcdType,
-                  ticketType: ticketType as TicketTypeName,
-                  eventId: ticket.eventId,
-                  productId: ticket.productId,
-                  eventName: ticket.eventName || "",
-                  productName: ticket.productName || "",
-                  publicKey: ticket.publicKey
-                };
-              }
-              return null;
-            })
-            .filter((ticket): ticket is NonNullable<typeof ticket> => ticket !== null)
-      );
-
+      
+      // Find the matching config key case-insensitively
+      const configKey = Object.keys(whitelistedTickets).find(
+        key => key.toLowerCase() === org.toLowerCase()
+      ) as TicketTypeName | undefined;
+      
+      if (!configKey) {
+        throw new Error(`No ticket configuration found for ${org}`);
+      }
+      
+      const orgConfig = whitelistedTickets[configKey];
+      
       await zuAuthRedirect({
         returnUrl: `${window.location.origin}/${org}/login/zupass`,
         watermark,
-        config,
+        config: orgConfig,
         fieldsToReveal: {
           revealAttendeeEmail: true,
           revealEventId: true,
