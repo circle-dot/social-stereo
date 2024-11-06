@@ -25,6 +25,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Wallet and community are required' }, { status: 400 });
     }
 
+    // Add validation for wallet address format
+    if (!ethers.isAddress(wallet)) {
+      return NextResponse.json({ error: 'Invalid wallet address' }, { status: 400 });
+    }
+
     // Get community filters
     const communityData = communities[community as keyof typeof communities];
     if (!communityData) {
@@ -39,6 +44,9 @@ export async function POST(request: Request) {
 
     const verifiedClaims = await privy.verifyAuthToken(authorization);
 
+    // Standardize wallet address format early in the function
+    const normalizedWallet = ethers.getAddress(wallet).toLowerCase();
+
     // Check if user exists and create if not
     let dbUser = await prisma.user.findUnique({
       where: {
@@ -50,7 +58,7 @@ export async function POST(request: Request) {
       dbUser = await prisma.user.create({
         data: {
           id: verifiedClaims.userId,
-          wallet: ethers.getAddress(wallet)
+          wallet: normalizedWallet
         }
       });
     }
@@ -58,7 +66,7 @@ export async function POST(request: Request) {
     // First check if we already have this attestation in our DB
     const existingZupass = await prisma.zupass.findFirst({
       where: {
-        wallet: ethers.getAddress(wallet)
+        wallet: normalizedWallet
       }
     });
 

@@ -3,7 +3,6 @@ import React from 'react'
 import StyledButton from '@/components/ui/StyledButton'
 import { MoveRight } from 'lucide-react'
 import PrivyButton from '@/components/login/PrivyButton'
-import ZupassButtonPOD from '@/components/login/ZupassButtonPOD'
 import { ZupassButtonTickets } from '@/components/login/ZupassButtonTickets'
 import { useState, useEffect } from 'react'
 import { usePrivy } from '@privy-io/react-auth'
@@ -57,9 +56,9 @@ function Login({
             </p>        
             <PrivyButton />
           </section>
-
+          
           <section>
-            <h1 className='!font-extrabold text-4xl'>Stamp Passport</h1>
+            <h1 className='!font-extrabold text-4xl'>Connect Zupass</h1>
             <p className='text-regular font-normal my-4 md:text-lg lg:text-xl'>
               Play and experiment with the Ethereum stack and Programable Cryptography. Use Zupass, EAS and Stamp to vouch for songs, DJs and Karaoke enthusiasts.
             </p>        
@@ -68,9 +67,9 @@ function Login({
             ) : isVerified ? (
               <div>Stamp verified! ✅</div>
             ) : (
-              params.org === 'Devcon' ? 
-                <ZupassButtonPOD onVerified={(verified) => setIsZupassVerified(verified)} /> : 
-                <ZupassButtonTickets onVerified={(verified) => setIsZupassVerified(verified)} />
+                <ZupassButtonTickets 
+                  org={params.org}
+                />
             )}
           </section>
         </div>

@@ -1,5 +1,5 @@
 {
-    "MegaZu": {
+    "megazu": {
       "id": "MegaZu",
       "platform":"Stamp",
       "category":"MegaZu",
@@ -8,7 +8,7 @@
       "SecondFilter":"0x4d75736963000000000000000000000000000000000000000000000000000000",
       "ThirdFilter":"0x4d6567615a750000000000000000000000000000000000000000000000000000"
     },
-    "Devcon": {
+    "devcon": {
       "id": "Devcon",
       "platform":"Devcon",
       "category":"SocialStereo",

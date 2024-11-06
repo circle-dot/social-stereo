@@ -12,7 +12,7 @@ function PrivyButton() {
     
     return (
         <Button 
-            className={`py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg`} 
+            className={`py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg hover:bg-custom-lightGreen/80`} 
             onClick={handlePrivyLogin}
             disabled={!ready || authenticated}
         >
