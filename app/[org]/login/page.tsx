@@ -61,11 +61,11 @@ function Login({
               Play and experiment with the Ethereum stack and Programable Cryptography. Use Zupass, EAS and Stamp to vouch for songs, DJs and Karaoke enthusiasts.
             </p>        
             {isVerifying ? (
-              <Button className='py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
+              <Button className='hover:cursor-wait py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
                 Verifying zupass...
                 </Button>
             ) : isVerified ? (
-              <Button className='py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
+              <Button className='hover:cursor-default py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
                 Zupass verified! ✅
               </Button>
             ) : (
@@ -74,9 +74,14 @@ function Login({
                 />
             )}
             {isVerified && (
-              <Link href={`/${params.org}/feed/music`}>
-                Start vouching for music
+             <div className='flex justify-start items-center pt-4 animate-pulse'>
+               <Link 
+                href={`/${params.org}/feed/music`}
+                className="inline-block mt-4 py-2 px-8 rounded-full bg-custom-lightGreen text-black text-base md:text-lg hover:bg-opacity-90 transition-all"
+              >
+                Start vouching for music →
               </Link>
+             </div>
             )}
           </section>
         </div>
