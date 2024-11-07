@@ -14,7 +14,7 @@ function Login({
 }) {
   const [isVerifying, setIsVerifying] = useState(false)
   const [isVerified, setIsVerified] = useState(false)
-  const { ready, user, getAccessToken } = usePrivy()
+  const { user, getAccessToken } = usePrivy()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const wallet = user?.wallet?.address
   useEffect(() => {
@@ -23,7 +23,6 @@ function Login({
       if (!wallet) return
   const token = await getAccessToken()
       setIsVerifying(true)
-      console.log('checking pretrust')
       try {
         const response = await fetch('/api/checkPretrust', {
           method: 'POST',
