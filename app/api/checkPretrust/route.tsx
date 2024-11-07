@@ -30,8 +30,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid wallet address' }, { status: 400 });
     }
 
-    // Get community filters
-    const communityData = communities[community as keyof typeof communities];
+    // Get community filters with case-insensitive lookup
+    const communityKey = Object.keys(communities).find(
+      key => key.toLowerCase() === community.toLowerCase()
+    );
+    const communityData = communityKey ? communities[communityKey as keyof typeof communities] : null;
     if (!communityData) {
       return NextResponse.json({ error: 'Community not found' }, { status: 404 });
     }

@@ -1,36 +1,33 @@
 "use client"
 import React from 'react'
-import StyledButton from '@/components/ui/StyledButton'
-import { MoveRight } from 'lucide-react'
 import PrivyButton from '@/components/login/PrivyButton'
 import { ZupassButtonTickets } from '@/components/login/ZupassButtonTickets'
 import { useState, useEffect } from 'react'
 import { usePrivy } from '@privy-io/react-auth'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 function Login({
   params
 }: {
   params: { org: string }
 }) {
-  const { authenticated } = usePrivy()
   const [isVerifying, setIsVerifying] = useState(false)
   const [isVerified, setIsVerified] = useState(false)
-  const [isZupassVerified] = useState(false)
+  const { ready, user, getAccessToken } = usePrivy()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [wallet, setWallet] = useState<string | null>(null)
-
-  // Check if both conditions are met to enable the continue button
-  const isContinueEnabled = authenticated && (isVerified || isZupassVerified)
-
+  const wallet = user?.wallet?.address
   useEffect(() => {
     const checkPretrust = async () => {
+      console.log('wallet state:', wallet)
       if (!wallet) return
-      
+  const token = await getAccessToken()
       setIsVerifying(true)
+      console.log('checking pretrust')
       try {
         const response = await fetch('/api/checkPretrust', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ wallet, community: params.org })
         })
         const data = await response.json()
@@ -43,6 +40,7 @@ function Login({
     }
 
     checkPretrust()
+    console.log('isVerified', isVerified)
   }, [wallet, params.org])
 
   return (
@@ -63,25 +61,27 @@ function Login({
               Play and experiment with the Ethereum stack and Programable Cryptography. Use Zupass, EAS and Stamp to vouch for songs, DJs and Karaoke enthusiasts.
             </p>        
             {isVerifying ? (
-              <div>Verifying stamp...</div>
+              <Button className='py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
+                Verifying zupass...
+                </Button>
             ) : isVerified ? (
-              <div>Stamp verified! ✅</div>
+              <Button className='py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
+                Zupass verified! ✅
+              </Button>
             ) : (
                 <ZupassButtonTickets 
                   org={params.org}
                 />
             )}
+            {isVerified && (
+              <Link href={`/${params.org}/feed/music`}>
+                Start vouching for music
+              </Link>
+            )}
           </section>
         </div>
       </div>
 
-      <StyledButton 
-        href={`/${params.org}/feed/home`}
-        disabled={!isContinueEnabled}
-        className={!isContinueEnabled ? 'opacity-50 cursor-not-allowed' : ''}
-      >
-        Continue <MoveRight className='w-4 h-4' />
-      </StyledButton>
     </div>
   )
 }
