@@ -12,15 +12,9 @@ interface Stamp {
 }
 
 const StampCollection = () => {
-  const title = "My Stamps"
-  const initialStamps = [
-    { id: '1', title: 'Devcon Resident', icon: '/StampIt.png' },
-    { id: '2', title: 'First Upvote', icon: '/StampIt.png', isLocked: true },
-    { id: '3', title: 'Early Adopter', icon: '/StampIt.png', isLocked: true },
-    { id: '4', title: 'Top Contributor', icon: '/StampIt.png', isLocked: true },
-  ]
+  const title = "My Stamps";
 
-  const [stamps, setStamps] = useState<Stamp[]>(initialStamps)
+  const [stamps, setStamps] = useState<Stamp[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   const getStamps = async () => {
