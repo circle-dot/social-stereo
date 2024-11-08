@@ -149,7 +149,7 @@ export default function MusicPage({ params }: PageProps) {
           className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90"
           onClick={handleVotesClick}
         >
-          <Link href={authenticated ? `org/address/${user?.wallet?.address}` : '#'}>
+          <Link href={authenticated ? `/${params.org}/address/${user?.wallet?.address}` : '#'}>
             Your votes
           </Link>
         </Button>
