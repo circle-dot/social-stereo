@@ -175,7 +175,7 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
       <div className="my-6">
         {ready && authenticated && user?.wallet?.address && 
          ethers.getAddress(user.wallet.address) === ethers.getAddress(address) ? (
-          <h1 className="w-full bg-custom-darkPurple text-white rounded-2xl p-4 font-semibold">
+          <h1 className="w-full bg-custom-darkPurple text-white rounded-2xl p-4 font-semibold text-center">
             Your Profile
           </h1>
         ) : (
