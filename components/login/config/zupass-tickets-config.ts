@@ -356,18 +356,7 @@ export const whitelistedTickets: Record<
         eventName: "Devcon: Southeast Asia",
         productId: "7d4f5da2-9d5f-46ab-a28f-7cf38e016281",
         productName: "Day 4 Pass (Nov. 15)",
-      },
-      {
-        pcdType: "eddsa-ticket-pcd",
-        publicKey: [
-          "044e711fd3a1792a825aa896104da5276bbe710fd9b59dddea1aaf8d84535aaf",
-          "2b259329f0adf98c9b6cf2a11db7225fdcaa4f8796c61864e86154477da10663",
-        ],
-        eventId: "5074edf5-f079-4099-b036-22223c0c6995",
-        eventName: "Devcon: Southeast Asia",
-        productId: "a374ebe8-8d2d-46b2-a582-525aca266e80",
-        productName: '⛈️ Rain Coat: "Make Ethereum Cypherpunk"',
-      },
+      }
   ]
 };
 
