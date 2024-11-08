@@ -8,7 +8,7 @@ export default function RootLayout({
   params: { org: string };
 }>) {
   return (
-    <PalmTreeBackground>
+    <PalmTreeBackground bgOpacity={0.5}>
       <div className="min-h-screen flex flex-col">
         <TopNavigationWithoutProfile params={{ org: params.org }} />
         <main className="flex-grow ">

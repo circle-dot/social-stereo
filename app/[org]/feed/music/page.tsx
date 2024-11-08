@@ -29,7 +29,7 @@ export default function MusicPage({ params }: PageProps) {
   const [sortOrder] = useState<'asc' | 'desc'>('asc')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { data, isLoading, fetchNextPage, hasNextPage } = useMusic(
-    sortOrder, 
+    sortOrder,
     debouncedSearchTerm,
     params.org
   );
@@ -55,7 +55,7 @@ export default function MusicPage({ params }: PageProps) {
   const tracks = data?.pages.flatMap(page => page.music) || []
 
   return (
-    <div className="flex flex-col max-w-2xl mx-auto p-4">
+    <div className="flex flex-col flex-grow w-full h-full max-w-2xl mx-auto pt-4 px-4">
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogOverlay className="fixed inset-0 bg-black/50 z-[100]" />
         <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[110] bg-custom-purple p-6 rounded-lg shadow-xl w-[90%] max-w-[400px]" onPointerDownOutside={(e) => e.preventDefault()}>
@@ -64,20 +64,20 @@ export default function MusicPage({ params }: PageProps) {
             You need to be logged in to view your votes.
           </DialogDescription>
           <DialogFooter className="mt-6 flex flex-col space-y-2 !items-end w-full">
-            <Button 
-              onClick={() => { 
+            <Button
+              onClick={() => {
                 login({
-                  disableSignup: true, 
+                  disableSignup: true,
                 })
-                setIsDialogOpen(false); 
-              }} 
+                setIsDialogOpen(false);
+              }}
               className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3"
             >
               Log In
             </Button>
-            <Button 
-              variant="secondary" 
-              onClick={() => setIsDialogOpen(false)} 
+            <Button
+              variant="secondary"
+              onClick={() => setIsDialogOpen(false)}
               className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 py-3"
             >
               Cancel
@@ -93,7 +93,7 @@ export default function MusicPage({ params }: PageProps) {
       </Dialog>
 
       <div className="mb-4">
-      <TitleSection>{orgName} Music</TitleSection>
+        <TitleSection>{orgName} Music</TitleSection>
         <p className='text-sm text-white mb-4'>Updates every five minutes</p>
         <div className="relative ">
           <Input
@@ -103,8 +103,8 @@ export default function MusicPage({ params }: PageProps) {
             onChange={handleSearchChange}
             className="w-full pr-10 rounded-full bg-white text-custom-black placeholder-custom-lightGreen focus:outline-none focus:ring-2 focus:ring-custom-darkGreen"
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="absolute right-3 top-1/2 -translate-y-1/2"
             disabled={isLoading}
           >
@@ -116,9 +116,10 @@ export default function MusicPage({ params }: PageProps) {
           </button>
         </div>
       </div>
-      <div className="flex-grow">
+
+      <div className="flex flex-col flex-grow h-full">
         {tracks.length === 0 && !isLoading ? (
-          <div className="text-center py-8">
+          <div className="flex flex-col items-center justify-center flex-grow text-center py-8">
             <p className="text-white mb-4">
               Looks like this song isn&apos;t in the Top 100 yet!
             </p>
@@ -138,7 +139,8 @@ export default function MusicPage({ params }: PageProps) {
           />
         )}
       </div>
-      <div className='flex flex-row gap-4 fixed bottom-[6rem] left-0 right-0 px-4 max-w-2xl mx-auto'>
+
+      <div className='flex flex-row items-center gap-4 left-0 right-0 px-4 my-2'>
         <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90">
           <Link href={`/${params.org}/feed/music/propose`}>
             Propose your song
@@ -154,6 +156,7 @@ export default function MusicPage({ params }: PageProps) {
           </Link>
         </Button>
       </div>
+
     </div>
   )
 }

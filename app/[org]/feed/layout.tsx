@@ -20,12 +20,14 @@ export default function RootLayout({
   params,
 }: LayoutProps) {
   return (
-    <PalmTreeBackground>
-      <div className="min-h-screen flex flex-col">
-        <TopNavigation params={{ org: params.org }} />
-        <main className="flex-grow">
-          {children}
-        </main>
+    <PalmTreeBackground bgOpacity={0.5}>
+      <div className="flex flex-grow h-screen flex-col">
+        <div className="flex flex-col flex-grow overflow-auto">
+          <TopNavigation params={{ org: params.org }} />
+          <main className="flex-grow">
+            {children}
+          </main>
+        </div>
         <MainNavigation org={params.org} />
       </div>
     </PalmTreeBackground>
