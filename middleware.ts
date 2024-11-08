@@ -6,8 +6,16 @@ export function middleware(request: NextRequest) {
   // Get the organization from the pathname
   const org = request.nextUrl.pathname.split('/')[1]
 
-  // Skip middleware for non-org routes
-  if (!org || org === '_next' || org === 'api' || org === 'favicon.ico') {
+  // Skip middleware for non-org routes and static files
+  if (
+    !org || 
+    org === '_next' || 
+    org === 'api' || 
+    org === 'favicon.ico' ||
+    request.nextUrl.pathname.startsWith('/_next') ||
+    request.nextUrl.pathname.includes('/api/') ||
+    request.nextUrl.pathname.match(/\.(jpg|jpeg|png|gif|svg|ico)$/)
+  ) {
     return NextResponse.next()
   }
 
@@ -26,5 +34,8 @@ export function middleware(request: NextRequest) {
 
 // Configure matcher for the routes you want to protect
 export const config = {
-  matcher: '/:org/:path*'
+  matcher: [
+    '/:org/:path*',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+  ]
 }
