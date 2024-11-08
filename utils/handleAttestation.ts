@@ -6,6 +6,9 @@ import fetchNonce from './fetchNonce';
 import { signTypedData } from './signTypedData';
 import { EAS_CONFIG } from '@/config/site';
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000; // 2 seconds
+
 export const handleVouch = async (
     recipient: string,
     user: any,
@@ -16,8 +19,9 @@ export const handleVouch = async (
     platform: string,
     verifyingContract: string,
     category: string,
-    subcategory: string
-) => {
+    subcategory: string,
+    retryCount = 0
+): Promise<{ error?: string } | void> => {
     if (!user?.wallet?.address) {
         showErrorAlert('User wallet address is not defined.');
         return;
@@ -121,7 +125,25 @@ export const handleVouch = async (
         } else if (errorMessage.includes("You have already vouched for this user in this season")) {
             showErrorAlert("You have already vouched for this in this season.");
         } else {
-            showErrorAlert('An error occurred while creating the vouch.');
+            if (retryCount < MAX_RETRIES) {
+                console.log(`Retry attempt ${retryCount + 1} of ${MAX_RETRIES}`);
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+                return handleVouch(
+                    recipient,
+                    user,
+                    wallets,
+                    getAccessToken,
+                    schema,
+                    chain,
+                    platform,
+                    verifyingContract,
+                    category,
+                    subcategory,
+                    retryCount + 1
+                );
+            } else {
+                showErrorAlert(`An error occurred while creating the vouch after ${MAX_RETRIES} attempts.`);
+            }
         }
     }
 };
