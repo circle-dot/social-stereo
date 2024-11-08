@@ -1,6 +1,20 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import privy from '@/lib/privy';
+import { EAS_CONFIG } from "@/config/site";
+import { ethers } from 'ethers';
+
+let user: any; // We'll populate this from the request body
+
+function decodeBytes32(bytes32: string): string {
+    try {
+      // Remove trailing zeros and convert to string
+      return ethers.decodeBytes32String(bytes32.replace(/0+$/, ''));
+    } catch {
+      // If decoding fails, return the original value
+      return bytes32;
+    }
+  }
 
 export async function POST(request: Request) {
         try {
@@ -21,7 +35,8 @@ export async function POST(request: Request) {
     
             console.log('🟢 Starting ZuAuth verification...');
             const body = await request.json();
-            const { pcds, user } = body;
+            const { pcds, user: requestUser } = body;
+            user = requestUser; // Assign to our outer scoped variable
             console.log('📦 Received request body:', body);
             
             if (!pcds) {
@@ -129,13 +144,94 @@ export async function POST(request: Request) {
         }
 
         // Check for the specific "Already registered" error
-        if (parsedError?.message?.[0]?.error?.includes('Already registered')) {
+        if (parsedError?.message?.[0]?.error?.includes('POD is already registered')) {
+            // Check GraphQL for existing attestation
+            console.log("🔍 Checking GraphQL for existing attestation...");
+            const query = `
+                query Attestations($where: AttestationWhereInput) {
+                    attestations(where: $where) {
+                        id
+                        attester
+                        timeCreated
+                        recipient
+                        decodedDataJson
+                    }
+                }
+            `;
+
+            const variables = {
+                where: {
+                    schemaId: {
+                        equals: EAS_CONFIG.PRETRUST_SCHEMA
+                    },
+                    revoked: {
+                        equals: false
+                    },
+                    recipient: {
+                        equals: user.wallet.address
+                    }
+                }
+            };
+
+            const response = await fetch(EAS_CONFIG.GRAPHQL_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query,
+                    variables
+                })
+            });
+            
+            const data = await response.json();
+            console.log('GraphQL response:', data);
+
+            if (data.data?.attestations?.length > 0) {
+                const attestation = data.data.attestations[0];
+                console.log('attestation', attestation)
+                try {
+                    // The decodedDataJson is already a JSON string containing the array
+                    const decodedDataArray = JSON.parse(attestation.decodedDataJson);
+                    
+                    // Helper function to find and decode a specific field
+                    const getDecodedField = (fieldName: string) => {
+                        const field = decodedDataArray.find((item: any) => item.name === fieldName);
+                        if (field?.value?.value) {
+                            return decodeBytes32(field.value.value);
+                        }
+                        return '';
+                    };
+
+                    // Create new Zupass entry with decoded values
+                    const newZupass = await prisma.zupass.create({
+                        data: {
+                            wallet: attestation.recipient,
+                            nullifier: getDecodedField('nullifier'),
+                            attestationUID: attestation.id,
+                            category: getDecodedField('category'),
+                            subcategory: getDecodedField('subcategory'),
+                            credentialType: getDecodedField('credentialType'),
+                            platform: getDecodedField('platform'),
+                        }
+                    });
+
+                    return NextResponse.json({ 
+                        decodedDataJson: newZupass 
+                    });
+                } catch (parseError) {
+                    console.error('Error parsing attestation data:', parseError);
+                    throw new Error('Invalid attestation data format');
+                }
+            }
+
+            // If no attestation found, return the original error
             return NextResponse.json(
                 { 
                     error: 'Ticket already used',
                     details: 'This ticket has already been registered'
                 },
-                { status: 409 } // Using 409 Conflict for already used resources
+                { status: 409 }
             );
         }
 
