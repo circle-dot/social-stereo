@@ -19,7 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import VoteKaraokeButton from '@/components/ui/music/VoteKaraokeButton';
+// import VoteKaraokeButton from '@/components/ui/music/VoteKaraokeButton';
 
 export default function AddressPage({ params }: { params: { slug: string, org: string } }) {
   const { slug: rawAddress } = params;
@@ -179,7 +179,9 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
             Your Profile
           </h1>
         ) : (
-          <VoteKaraokeButton  walletAddress={address}/>
+          // <VoteKaraokeButton  walletAddress={address}/>
+          <>
+          </>
         )}
       </div>
       {/* Votes Counter */}
