@@ -64,8 +64,8 @@ function Login({
                 Verifying zupass...
                 </Button>
             ) : isVerified ? (
-              <Button className='hover:cursor-default py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
-                Zupass verified! ✅
+              <Button disabled className='hover:cursor-default py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
+                Zupass verified! <span className="ml-1">✓</span>
               </Button>
             ) : (
                 <ZupassButtonTickets 

@@ -54,8 +54,20 @@ function ZupassVerification({ params }: { params: { org: string } }) {
         })
 
         if (!verifyResponse.ok) {
-          const errorData = await verifyResponse.json()
-          throw new Error(errorData.error || 'Verification failed')
+          const errorData = await verifyResponse.json();
+          
+          // Check if the error is about POD already being registered
+          if (errorData.details && errorData.details.includes('POD is already registered')) {
+            await showAlertWithRedirect(
+              'This Zupass ticket has already been used with another account.',
+              'Back to Login',
+              `/${params.org}/login`,
+              true
+            );
+            return;
+          }
+          
+          throw new Error(errorData.error || 'Verification failed');
         }
 
         await showAlertWithRedirect(
@@ -87,7 +99,7 @@ function ZupassVerification({ params }: { params: { org: string } }) {
       <div className="text-center">
         <div className="animate-spin text-4xl mb-4">⚡</div>
         <h1 className="text-2xl font-bold mb-2">Verifying your Zupass ticket...</h1>
-        <p className="text-gray-600">Please wait while we process your verification</p>
+        <p className="text-white">Please wait while we process your verification</p>
       </div>
     </div>
   )
