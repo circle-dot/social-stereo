@@ -120,7 +120,7 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
           <h1 className="text-[#B4FF4C] text-2xl font-bold">
             {ensName || truncateAddress(address)}
           </h1>
-       
+
         </div>
       </div>
 
@@ -131,50 +131,50 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
         </div>
       </div>
       <TooltipProvider>
-            <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen}>
-              <TooltipTrigger asChild>
-                <div 
-                  className="flex items-center justify-center gap-2 text-white/60 text-sm cursor-pointer"
-                >
-                  <span className="font-mono">
-                    {truncateAddress(address)}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      copyAddress();
-                    }}
-                    className="text-[#B4FF4C] hover:text-[#B4FF4C]/80 h-6 w-6"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-white/60 hover:text-white h-6 w-6"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsTooltipOpen(!isTooltipOpen);
-                    }}
-                  >
-                    <Info className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent 
-                onPointerDownOutside={() => setIsTooltipOpen(false)}
-                className="select-all"
+        <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen}>
+          <TooltipTrigger asChild>
+            <div
+              className="flex items-center justify-center gap-2 text-white/60 text-sm cursor-pointer"
+            >
+              <span className="font-mono">
+                {truncateAddress(address)}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  copyAddress();
+                }}
+                className="text-[#B4FF4C] hover:text-[#B4FF4C]/80 h-6 w-6"
               >
-                <p className="font-mono text-sm">{address}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white/60 hover:text-white h-6 w-6"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsTooltipOpen(!isTooltipOpen);
+                }}
+              >
+                <Info className="h-4 w-4" />
+              </Button>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent
+            onPointerDownOutside={() => setIsTooltipOpen(false)}
+            className="select-all"
+          >
+            <p className="font-mono text-sm">{address}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       <div className="my-6">
-        {ready && authenticated && user?.wallet?.address && 
-         ethers.getAddress(user.wallet.address) === ethers.getAddress(address) ? (
+        {ready && authenticated && user?.wallet?.address &&
+          ethers.getAddress(user.wallet.address) === ethers.getAddress(address) ? (
           <h1 className="w-full bg-custom-darkPurple text-white rounded-2xl p-4 font-semibold text-center">
             Your Profile
           </h1>
@@ -208,7 +208,7 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
         </div>
       </div>
 
-  
+
     </div>
   );
 }

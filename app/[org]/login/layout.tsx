@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <PalmTreeBackground>
+    <PalmTreeBackground bgOpacity={0.5}>
       <div className="min-h-screen flex flex-col">
         <main className="flex-grow ">
           {children}

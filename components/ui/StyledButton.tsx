@@ -11,14 +11,13 @@ interface StyledButtonProps {
 
 function StyledButton({ href, children, className = '', disabled }: StyledButtonProps) {
   return (
-    <Link 
-      href={href} 
+    <Link
+      href={href}
       className={`w-full ${disabled ? 'pointer-events-none' : ''}`}
     >
-      <Button 
-        className={`py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg ${
-          disabled ? 'opacity-50 cursor-not-allowed' : ''
-        } ${className}`}
+      <Button
+        className={`py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg hover:bg-custom-darkGreen hover:text-custom-lightGreen ${disabled ? 'opacity-50 cursor-not-allowed' : ''
+          } ${className}`}
         disabled={disabled}
       >
         {children}
