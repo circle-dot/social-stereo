@@ -63,7 +63,8 @@ const config: Config = {
   				lightBlue: '#B9C3EC',
   				black: '#000000',
 				darkGreen: '#142200',
-				dark:'#191919'
+				dark:'#191919',
+				darkPurple: '#390892'
   			}
   		},
   		borderRadius: {
@@ -73,6 +74,12 @@ const config: Config = {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("tailwind-scrollbar")
+  ],
+  variants: {
+    scrollbar: ['rounded']
+  }
 };
 export default config;

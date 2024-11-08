@@ -5,12 +5,20 @@ import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogOverlay } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import Swal from 'sweetalert2'
+import Link from 'next/link'
+interface VoteSongButtonProps {
+  trackId: string;
+  params: {
+    org: string;
+  };
+}
 
-export default function VoteSongButton({ trackId }: { trackId: string }) {
-    const { login, authenticated, ready, getAccessToken, user } = usePrivy();
+export default function VoteSongButton({ trackId, params }: VoteSongButtonProps) {
+    const { login, authenticated, ready, getAccessToken, user, logout } = usePrivy();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { wallets, ready: walletsReady } = useWallets();
-
+    console.log('params',params)
     const handleVote = async () => {
         console.log(trackId);
         if (!authenticated && ready) {
@@ -19,10 +27,54 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
         }
         if (!user || !ready || !walletsReady) {
             console.error("User not ready or wallets not initialized");
+            await logout();
             return;
         }
+       
+        // Show loading state
+        Swal.fire({
+            title: 'Checking verification...',
+            text: 'Please wait while we verify your credentials',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+
+        // Check if user has Zupass verification
         try {
-            await handleMusicVote(trackId, user, wallets, getAccessToken);
+            const token = await getAccessToken();
+            const response = await fetch(`/api/user/${user?.wallet?.address}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            // Close loading state
+            await Swal.close();
+            
+            if (!response.ok) {
+                // Show dialog to redirect to login for Zupass verification
+                await Swal.fire({
+                    icon: 'warning',
+                    title: 'Zupass Required',
+                    text: 'You need to verify your Zupass before voting. Would you like to do that now?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, verify Zupass',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/${params.org}/login`;
+                    }
+                });
+                return;
+            }
+
+            // If Zupass verified, proceed with vote
+            const result = await handleMusicVote(trackId, user, wallets, getAccessToken, params.org);
+            if (result?.error === 'NO_VALID_WALLETS') {
+                await logout();
+            }
         } catch (error) {
             console.error("Error voting for track:", error);
         }
@@ -37,26 +89,45 @@ export default function VoteSongButton({ trackId }: { trackId: string }) {
                     <DialogDescription className="text-white mt-2">
                         You need to be logged in to vote for a track.
                     </DialogDescription>
-                    <DialogFooter className="mt-6 flex flex-col space-y-2">
-                        <Button 
-                            onClick={() => { login(); setIsDialogOpen(false); }} 
-                            className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3"
-                        >
-                            Log In
-                        </Button>
-                        <Button 
-                            variant="secondary" 
-                            onClick={() => setIsDialogOpen(false)} 
-                            className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 py-3"
-                        >
-                            Cancel
-                        </Button>
+                    <DialogFooter className="mt-6 flex !flex-col space-y-2 !items-end w-full">
+         <div className="flex flex-col space-y-2 w-full">
+         <Button 
+              onClick={() => { 
+                login({
+                  disableSignup: true, 
+                })
+                setIsDialogOpen(false); 
+              }} 
+              className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3"
+            >
+              Log In
+            </Button>
+            <Button 
+              variant="secondary" 
+              onClick={() => setIsDialogOpen(false)} 
+              className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 py-3"
+            >
+              Cancel
+            </Button>
+         </div>
+            <div className="w-full text-center text-sm text-white mt-2">
+              Dont have an account?{' '}
+              <Link href={`/${params.org}/login`} className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
+                Register here
+              </Link>
+                        </div>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>  
-            <button onClick={handleVote} className="bg-custom-lightGreen text-custom-black p-2 rounded-full w-10 h-10 flex items-center justify-center">
-      <ArrowUp className="w-5 h-5" />
-    </button>
+            <button 
+                onClick={handleVote} 
+                disabled={!ready || !walletsReady}
+                className={`bg-custom-lightGreen text-custom-black p-2 rounded-full w-10 h-10 flex items-center justify-center ${
+                    (!ready || !walletsReady) ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+            >
+                <ArrowUp className="w-5 h-5" />
+            </button>
         </>
 
     )

@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  //Only use standalone for docker
+  // output: 'standalone',
   //Remove this remote host on prod
   images: {
     remotePatterns: [

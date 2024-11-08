@@ -10,7 +10,7 @@ interface NavItemProps {
 
 export default function NavItem({ icon, href }: NavItemProps) {
   const pathname = usePathname()
-  const isActive = pathname === href
+  const isActive = pathname === href || pathname.startsWith(`${href}/`)
 
   return (
     <Link href={href} className="flex flex-col items-center">

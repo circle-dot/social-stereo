@@ -8,19 +8,25 @@ export const metadata: Metadata = {
   description: "Social Stereo",
 };
 
+interface LayoutProps {
+  children: React.ReactNode;
+  params: {
+    org: string;
+  };
+}
+
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+  params,
+}: LayoutProps) {
   return (
     <PalmTreeBackground>
       <div className="min-h-screen flex flex-col">
-        <TopNavigation />
-        <main className="flex-grow ">
+        <TopNavigation params={{ org: params.org }} />
+        <main className="flex-grow">
           {children}
         </main>
-        <MainNavigation />
+        <MainNavigation org={params.org} />
       </div>
     </PalmTreeBackground>
   );

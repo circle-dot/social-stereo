@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MoveRight } from 'lucide-react';
 import StyledButton from '@/components/ui/StyledButton'
+import Link from 'next/link';
 
 function Home() {
   return (
@@ -20,12 +21,18 @@ function Home() {
         />
         <Skeleton className="absolute inset-0 rounded-2xl" />
       </div>
-      <div className='mt-12 md:mt-0 md:w-7/12 lg:w-8/12 md:flex md:flex-col md:justify-center md:pl-8 lg:pl-12'>
+      <div className='mt-6 md:mt-0 md:w-7/12 lg:w-8/12 md:flex md:flex-col md:justify-center md:pl-8 lg:pl-12'>
         <h1 className='!font-extrabold text-2xl md:text-3xl lg:text-4xl'>Social Stereo</h1>
-        <p className='text-regular font-normal my-4 md:text-lg lg:text-xl'>Lorem ipsum dolor sit amet consectetur. Lobortis orci malesuada nunc lobortis turpis proin lectus nibh.</p>
-        <StyledButton href="/feed">
+        <p className='text-sm font-normal my-4 '>
+          Play and experiment with the Ethereum stack and Programable Cryptography. Use Zupass, EAS and Stamp to vouch for songs, DJs and Karaoke enthusiasts.
+        </p>
+        <StyledButton href="/devcon/login">
           Login <MoveRight className='w-4 h-4' />
         </StyledButton>
+        <Link href="/devcon/feed/home" className='text-regular font-normal my-4 md:text-lg lg:text-xl flex items-center gap-2 flex-row'>
+          Continue without login <MoveRight className='w-4 h-4' />
+        </Link>
+
       </div>
     </div>
   )

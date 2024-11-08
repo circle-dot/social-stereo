@@ -1,4 +1,25 @@
 import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
+
+export const showAlertWithRedirect = async (
+  title: string,
+  buttonText: string,
+  redirectUrl: string,
+  isError: boolean = false
+) => {
+  await Swal.fire({
+    icon: isError ? 'error' : 'success',
+    title,
+    confirmButtonText: buttonText,
+    confirmButtonColor: isError ? '#dc2626' : '#10b981', // red-600 for error, emerald-500 for success
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = redirectUrl;
+    }
+  });
+};
 
 export const showLoadingAlert = () => {
     Swal.fire({
