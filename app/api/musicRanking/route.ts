@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
         if (!tableName) {
             return NextResponse.json({ error: 'Invalid community' }, { status: 400 });
         }
-
+        console.log('tableName', tableName)
         if (!Array.isArray(recipients)) {
             return NextResponse.json(
                 { error: 'Recipients must be an array' },

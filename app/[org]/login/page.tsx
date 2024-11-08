@@ -73,14 +73,25 @@ function Login({
                 />
             )}
             {isVerified && (
-             <div className='flex justify-start items-center pt-4 animate-pulse'>
-               <Link 
-                href={`/${params.org}/feed/music`}
-                className="inline-block mt-4 py-2 px-8 rounded-full bg-custom-lightGreen text-black text-base md:text-lg hover:bg-opacity-90 transition-all"
-              >
-                Start vouching for music →
-              </Link>
-             </div>
+              <div className='flex justify-start items-center pt-4'>
+                <Link 
+                  href={`/${params.org}/feed/music`}
+                  className="group relative inline-flex items-center justify-center mt-4 py-3 px-8 
+                    rounded-full bg-custom-lightGreen text-black font-semibold text-base md:text-lg
+                    overflow-hidden transition-all duration-300 ease-in-out
+                    hover:shadow-[0_0_20px_rgba(180,255,76,0.4)] 
+                    hover:scale-105 
+                    active:scale-95"
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    Shape the Playlist
+                    <span className="transform transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </span>
+                  <div className="absolute inset-0 bg-white/20 translate-y-full 
+                    transition-transform duration-300 group-hover:translate-y-0" 
+                  />
+                </Link>
+              </div>
             )}
           </section>
         </div>

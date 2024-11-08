@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
 import privy from '@/lib/privy';
 
 const stamps = [
@@ -34,7 +33,7 @@ export async function GET(request: Request) {
             console.error('Token verification failed:', error);
             return NextResponse.json({ error: 'Token verification failed' }, { status: 401 });
         }
-
+        console.log('verifiedClaims', verifiedClaims)
         // Get user's stamps from Zupass table
         // const stamps = await prisma.stamps.findMany({
         //     where: {
