@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useVoteDetails } from '@/utils/hooks/useMusicVotes';
 import { useVoteCounts } from '@/utils/hooks/useMusicVotes';
 import { useEnsName } from '@/utils/hooks/useEnsName';
@@ -43,6 +43,7 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
   };
 
   const [musicData, setMusicData] = useState<any[]>([]);
+  const hasFetched = useRef(false);
 
   const fetchMusicData = async () => {
     const community = params.org;
@@ -68,10 +69,13 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
     }
   };
 
-  // Call it once when attestations are loaded
-  if (!isVotesLoading && attestations && musicData.length === 0) {
-    fetchMusicData();
-  }
+  // Move the fetch logic into useEffect
+  useEffect(() => {
+    if (!hasFetched.current && !isVotesLoading && attestations && recipients.length > 0) {
+      fetchMusicData();
+      hasFetched.current = true;
+    }
+  }, [isVotesLoading, attestations, recipients, params.org]);
 
   const totalVotesMade = vouchesMade?.data?.aggregateAttestation?._count?.attester ?? 0;
   const maxVotes = 20;
@@ -171,9 +175,9 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
       <div className="my-6">
         {ready && authenticated && user?.wallet?.address && 
          ethers.getAddress(user.wallet.address) === ethers.getAddress(address) ? (
-          <button className="w-full bg-[#B4FF4C] text-black rounded-2xl p-4 font-semibold">
+          <h1 className="w-full bg-custom-darkPurple text-white rounded-2xl p-4 font-semibold">
             Your Profile
-          </button>
+          </h1>
         ) : (
           <VoteKaraokeButton  walletAddress={address}/>
         )}
