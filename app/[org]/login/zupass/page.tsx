@@ -58,6 +58,8 @@ function ZupassVerification({ params }: { params: { org: string } }) {
           
           // Check if the error is about POD already being registered
           if (errorData.details && errorData.details.includes('POD is already registered')) {
+
+            
             await showAlertWithRedirect(
               'This Zupass ticket has already been used with another account.',
               'Back to Login',
