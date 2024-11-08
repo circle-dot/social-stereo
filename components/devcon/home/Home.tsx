@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 function Home() {
   return (
-    <div className='min-h-screen bg-custom-purple flex flex-col items-center justify-center p-4 md:flex-row md:items-center md:p-8 lg:p-12'>
+    <div className='h-screen bg-custom-purple flex flex-col items-center justify-center p-4 md:flex-row md:items-center md:p-8 lg:p-12'>
       <div className='h-4/6 w-full relative md:w-5/12 lg:w-3/12 md:h-auto'>
         <Image
           src="/Header.png"
