@@ -3,8 +3,15 @@ import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MoveRight } from 'lucide-react';
 import StyledButton from '@/components/ui/StyledButton'
+import { notFound } from 'next/navigation'
+import communities from '@/data/communities.json'
 
 function Home({ params }: { params: { org: string } }) {
+  // Check if the organization exists in communities
+  if (!Object.keys(communities).includes(params.org)) {
+    notFound()
+  }
+
   return (
     <div className='min-h-screen bg-custom-purple flex flex-col items-center justify-center p-4 md:flex-row md:items-center md:p-8 lg:p-12'>
       <div className='h-4/6 w-full relative md:w-5/12 lg:w-3/12 md:h-auto'>
