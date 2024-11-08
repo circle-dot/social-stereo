@@ -20,7 +20,6 @@ export default function VoteSongButton({ trackId, params }: VoteSongButtonProps)
     const { login, authenticated, ready, getAccessToken, user, logout } = usePrivy();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { wallets, ready: walletsReady } = useWallets();
-    console.log('params',params)
     const handleVote = async () => {
         console.log(trackId);
         if (!authenticated && ready) {
