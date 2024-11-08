@@ -1,6 +1,5 @@
 import PalmTreeBackground from "@/components/ui/music/PalmTreeBackground";
-import TopNavigation from "@/components/ui/TopNavigation";
-
+import TopNavigationWithoutProfile from "@/components/profile/TopNavigationWithoutProfile";
 export default function RootLayout({
   children,
   params,
@@ -11,7 +10,7 @@ export default function RootLayout({
   return (
     <PalmTreeBackground>
       <div className="min-h-screen flex flex-col">
-        <TopNavigation params={{ org: params.org }} />
+        <TopNavigationWithoutProfile params={{ org: params.org }} />
         <main className="flex-grow ">
           {children}
         </main>
