@@ -46,7 +46,6 @@ export const handleVouch = async (
         return;
     }
 
-
     try {
         const chainId = typeof chain === 'string' ? parseInt(chain) : chain;
         const schemaUID = schema;
@@ -116,8 +115,15 @@ export const handleVouch = async (
 
         showSuccessAlert('Vouch created successfully.', 'Go to vouch', attestationViewUrl);
 
-    } catch (error) {
+    } catch (error: any) {
         const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+        
+        // Check for maximum vouches error
+        if (error.message?.includes('Maximum number of vouches reached')) {
+            showErrorAlert('You have reached the maximum number of allowed vouches.');
+            return;
+        }
+
         if (errorMessage === '550') {
             showErrorAlert("You don't have any vouches available.");
         } else if (errorMessage === "You can't vouch yourself.") {
