@@ -23,13 +23,6 @@ const cardData = [
   }
 ];
 
-const stamps = [
-  { id: '1', title: 'Devcon Resident', icon: '/StampIt.png' },
-  { id: '2', title: 'First Upvote', icon: '/StampIt.png', isLocked: true },
-  { id: '3', title: 'Early Adopter', icon: '/StampIt.png', isLocked: true },
-  { id: '4', title: 'Top Contributor', icon: '/StampIt.png', isLocked: true },
-]
-
 export default function HomePage({ params }: PageProps) {
   const orgName = params.org
     .split(/[-_]/)
@@ -42,8 +35,8 @@ export default function HomePage({ params }: PageProps) {
         <h1 className='!font-extrabold text-2xl md:text-3xl lg:text-4xl pb-2'>
           Welcome to {orgName}
         </h1>
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nisi sit distinctio vel, ut facilis labore maxime nemo aliquid similique accusantium.</p>
-        <StampCollection stamps={stamps} />
+        <p>This app lets you vote for your favorite music and collect stamps. An artifact with all the decentralized playlist will be minted once the event is over.</p>
+        <StampCollection />
       </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {cardData.map((card, index) => (

@@ -35,7 +35,7 @@ function SongSkeleton() {
 }
 
 function SongListItem({ track, params }: { track: Track, params: { org: string } }) {
-  const truncate = (str: string, maxLength: number) => 
+  const truncate = (str: string, maxLength: number) =>
     str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
 
   return (
@@ -76,11 +76,10 @@ interface MusicGridProps {
   params: { org: string };
 }
 
-
-export default function MusicGrid({ 
-  tracks, 
-  isLoading, 
-  fetchNextPage, 
+export default function MusicGrid({
+  tracks,
+  isLoading,
+  fetchNextPage,
   hasNextPage,
   params
 }: MusicGridProps) {
@@ -88,6 +87,8 @@ export default function MusicGrid({
   const { ref, inView } = useInView({
     threshold: 0.5
   });
+
+  console.log("🚀 ~ tracks:", tracks)
 
   useEffect(() => {
     if (inView && hasNextPage && !isLoading && fetchNextPage) {
@@ -99,12 +100,12 @@ export default function MusicGrid({
     <div className="w-full h-[300px] bg-transparent overflow-y-auto scrollbar-thin scrollbar-thumb-custom-lightGreen scrollbar-track-custom-darkGreen">
       <div className="w-full">
         {tracks.map((track) => (
-          <SongListItem key={track.id} track={track} params={params} />
+          track?.id && <SongListItem key={track?.id} track={track} params={params} />
         ))}
-        
+
         {isLoading && (
           <div className="w-full">
-            {[...Array(2)].map((_, i) => (
+            {[...Array(7)].map((_, i) => (
               <SongSkeleton key={i} />
             ))}
           </div>

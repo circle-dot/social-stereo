@@ -74,8 +74,8 @@ export async function POST(request: Request) {
     });
 
     if (existingZupass) {
-      return NextResponse.json({ 
-        decodedDataJson: existingZupass 
+      return NextResponse.json({
+        decodedDataJson: existingZupass
       });
     }
 
@@ -136,7 +136,7 @@ export async function POST(request: Request) {
     });
 
     const data = await response.json();
-    
+
     if (data.data?.attestations?.length > 0) {
       const attestation = data.data.attestations[0];
       const rawDecodedData = JSON.parse(attestation.decodedDataJson);
@@ -165,8 +165,8 @@ export async function POST(request: Request) {
         }
       });
 
-      return NextResponse.json({ 
-        decodedDataJson: newZupass 
+      return NextResponse.json({
+        decodedDataJson: newZupass
       });
     }
 
