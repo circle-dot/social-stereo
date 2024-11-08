@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     const verifiedClaims = await privy.verifyAuthToken(authorization);
 
     // Standardize wallet address format early in the function
-    const normalizedWallet = ethers.getAddress(wallet).toLowerCase();
+    const normalizedWallet = ethers.getAddress(wallet);
 
     // Check if user exists and create if not
     let dbUser = await prisma.user.findUnique({
@@ -155,7 +155,7 @@ export async function POST(request: Request) {
       // Create new Zupass entry with decoded values
       const newZupass = await prisma.zupass.create({
         data: {
-          wallet: attestation.recipient.toLowerCase(),
+          wallet: attestation.recipient,
           nullifier: getDecodedField('nullifier'),
           attestationUID: attestation.id,
           category: getDecodedField('category'),
