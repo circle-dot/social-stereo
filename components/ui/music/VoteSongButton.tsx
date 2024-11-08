@@ -7,6 +7,8 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, Di
 import { Button } from '@/components/ui/button'
 import Swal from 'sweetalert2'
 import Link from 'next/link'
+import { ethers } from 'ethers'
+
 interface VoteSongButtonProps {
   trackId: string;
   params: {
@@ -44,7 +46,8 @@ export default function VoteSongButton({ trackId, params }: VoteSongButtonProps)
         // Check if user has Zupass verification
         try {
             const token = await getAccessToken();
-            const response = await fetch(`/api/user/${user?.wallet?.address}`, {
+            const normalizedAddress = ethers.getAddress(user?.wallet?.address || '')
+            const response = await fetch(`/api/user/${normalizedAddress}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
