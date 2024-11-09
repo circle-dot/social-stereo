@@ -21,7 +21,7 @@ function Login({
     const checkPretrust = async () => {
       console.log('wallet state:', wallet)
       if (!wallet) return
-  const token = await getAccessToken()
+      const token = await getAccessToken()
       setIsVerifying(true)
       try {
         const response = await fetch('/api/checkPretrust', {
@@ -30,6 +30,7 @@ function Login({
           body: JSON.stringify({ wallet, community: params.org })
         })
         const data = await response.json()
+        console.log("🚀 ~ checkPretrust ~ data:", data)
         setIsVerified(!!data.decodedDataJson)
       } catch (error) {
         console.error('Error checking pretrust:', error)
@@ -49,32 +50,33 @@ function Login({
           <section>
             <h1 className='!font-extrabold text-4xl'>Connect Wallet</h1>
             <p className='text-regular font-normal my-4 md:text-lg lg:text-xl'>
-              Play and experiment with the Ethereum stack and Programable Cryptography. Use Zupass, EAS and Stamp to vouch for songs, DJs and Karaoke enthusiasts.
-            </p>        
+              Connect your existing wallet or create a new one using any email.
+              This address will be used for your badges and it doesn't need to be related to your Zupass account.
+            </p>
             <PrivyButton />
           </section>
-          
+
           <section>
             <h1 className='!font-extrabold text-4xl'>Connect Zupass</h1>
             <p className='text-regular font-normal my-4 md:text-lg lg:text-xl'>
-              Play and experiment with the Ethereum stack and Programable Cryptography. Use Zupass, EAS and Stamp to vouch for songs, DJs and Karaoke enthusiasts.
-            </p>        
+              Connect to verify your DevCon ticket.
+            </p>
             {isVerifying ? (
               <Button className='hover:cursor-wait py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
                 Verifying zupass...
-                </Button>
+              </Button>
             ) : isVerified ? (
               <Button disabled className='hover:cursor-default py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
                 Zupass verified! <span className="ml-1">✓</span>
               </Button>
             ) : (
-                <ZupassButtonTickets 
-                  org={params.org}
-                />
+              <ZupassButtonTickets
+                org={params.org}
+              />
             )}
             {isVerified && (
               <div className='flex justify-start items-center pt-4'>
-                <Link 
+                <Link
                   href={`/${params.org}/feed/music`}
                   className="group relative inline-flex items-center justify-center mt-4 py-3 px-8 
                     rounded-full bg-custom-lightGreen text-black font-semibold text-base md:text-lg
@@ -88,7 +90,7 @@ function Login({
                     <span className="transform transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </span>
                   <div className="absolute inset-0 bg-white/20 translate-y-full 
-                    transition-transform duration-300 group-hover:translate-y-0" 
+                    transition-transform duration-300 group-hover:translate-y-0"
                   />
                 </Link>
               </div>
