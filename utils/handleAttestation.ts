@@ -6,7 +6,7 @@ import fetchNonce from './fetchNonce';
 import { signTypedData } from './signTypedData';
 import { EAS_CONFIG } from '@/config/site';
 
-const MAX_RETRIES = 3;
+const MAX_RETRIES = 2;
 const RETRY_DELAY = 2000; // 2 seconds
 
 export const handleVouch = async (
@@ -50,8 +50,10 @@ export const handleVouch = async (
         const chainId = typeof chain === 'string' ? parseInt(chain) : chain;
         const schemaUID = schema;
         const attester = user?.wallet.address;
-        // Use default values if endorsementType or power are not defined
         const schemaEncoder = new SchemaEncoder("bytes32 platform,bytes32 category,bytes32 subCategory");
+        console.log("platform:", platform);
+        console.log("category:", category);
+        console.log("subcategory:", subcategory);
         const encodedData = schemaEncoder.encodeData([
             { name: "platform", value: ethers.encodeBytes32String(platform), type: "bytes32" },
             { name: "category", value: ethers.encodeBytes32String(category), type: "bytes32" },
@@ -59,7 +61,7 @@ export const handleVouch = async (
         ]);
         const domain = {
             name: 'EAS',
-            version: '1.2.0',
+            version: '1.0.1',
             chainId: chainId,
             verifyingContract: verifyingContract
         };
@@ -72,31 +74,28 @@ export const handleVouch = async (
                 { name: 'revocable', type: 'bool' },
                 { name: 'refUID', type: 'bytes32' },
                 { name: 'data', type: 'bytes' },
-                { name: 'value', type: 'uint256' },
                 { name: 'nonce', type: 'uint256' },
-                { name: 'deadline', type: 'uint64' }
             ]
         };
 
         const value = {
+            attester: attester,
             schema: schemaUID,
             recipient: recipient,
-            expirationTime: 0,
+            expirationTime: BigInt(0),
             revocable: true,
             refUID: '0x0000000000000000000000000000000000000000000000000000000000000000',
             data: encodedData,
-            deadline: 0,
-            value: 0,
-            nonce: nonce
+            nonce: BigInt(nonce),
         };
 
         const typedData = {
-            types: types,
             domain: domain,
             primaryType: 'Attest',
             message: value,
+            types: types,
         };
-
+        console.log('typedData:', typedData);
         console.log('wallets', wallets);
         if (!wallets || !Array.isArray(wallets) || wallets.length === 0) {
             showErrorAlert('No valid wallets found. Please log in again.');
