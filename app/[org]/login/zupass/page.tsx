@@ -40,22 +40,22 @@ function ZupassVerification({ params }: { params: { org: string } }) {
       try {
         const token = await getAccessToken()
         const parsedProof = JSON.parse(proofFromUrl)
-        
+
         const verifyResponse = await fetch('/api/verifyZupass', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             pcds: [parsedProof],
-            user 
+            user
           }),
         })
 
         if (!verifyResponse.ok) {
           const errorData = await verifyResponse.json();
-          
+
           // Check if the error is about ticket already being used
           if (errorData.error === 'Ticket already used') {
             await showAlertWithRedirect(
@@ -66,7 +66,7 @@ function ZupassVerification({ params }: { params: { org: string } }) {
             );
             return;
           }
-          
+
           throw new Error(errorData.error || 'Verification failed');
         }
 
