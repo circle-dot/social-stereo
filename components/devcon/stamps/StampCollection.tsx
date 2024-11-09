@@ -245,7 +245,7 @@ const StampCollection = () => {
         </button>
       </div>
 
-      <div className="overflow-x-auto pb-4 -mx-4 px-4">
+      <div className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-thin scrollbar-thumb-custom-lightGreen scrollbar-track-custom-darkGreen">
         <div className="flex gap-4 min-w-max">
           {stamps.map((stamp) => (
             <div
