@@ -1,5 +1,6 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
+'use client';
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import { useEffect, useState } from "react"
