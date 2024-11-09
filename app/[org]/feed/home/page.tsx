@@ -1,4 +1,4 @@
-import { Headphones, Gift } from 'lucide-react';
+import { Headphones } from 'lucide-react';
 import NavigationCard from '@/components/ui/NavigationCard';
 import StampCollection from '@/components/devcon/stamps/StampCollection';
 

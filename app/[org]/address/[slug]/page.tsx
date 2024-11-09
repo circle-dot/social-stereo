@@ -26,7 +26,7 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
   const { slug: rawAddress } = params;
   const address = ethers.getAddress(rawAddress);
   const graphqlEndpoint = EAS_CONFIG.GRAPHQL_URL;
-  const { user, ready, authenticated, getAccessToken } = usePrivy();
+  const { user, ready, getAccessToken } = usePrivy();
   const { vouchesMade, isLoading: isCountsLoading } = useVoteCounts(graphqlEndpoint, address);
   const { attestations, isLoading: isVotesLoading } = useVoteDetails(graphqlEndpoint, address);
   const [isVerifying, setIsVerifying] = useState(false)

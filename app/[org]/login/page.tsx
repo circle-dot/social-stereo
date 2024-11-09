@@ -51,7 +51,7 @@ function Login({
             <h1 className='!font-extrabold text-4xl'>Connect Wallet</h1>
             <p className='text-regular font-normal my-4 md:text-lg lg:text-xl'>
               Connect your existing wallet or create a new one using any email.
-              This address will be used for your badges and it doesn't need to be related to your Zupass account.
+              This address will be used for your badges and it doesn&apos;t need to be related to your Zupass account.
             </p>
             <PrivyButton />
           </section>
