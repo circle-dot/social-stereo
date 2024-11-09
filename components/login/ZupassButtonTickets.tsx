@@ -3,7 +3,7 @@ import React from 'react'
 import { zuAuthRedirect } from '@pcd/zuauth'
 import { whitelistedTickets } from '@/components/login/config/zupass-tickets-config'
 import { TicketTypeName } from '@/components/login/config/zupass-tickets-config'
-import Swal from 'sweetalert2'
+import { showErrorAlert } from '@/utils/alertUtils';
 import { usePrivy } from '@privy-io/react-auth'
 import { Button } from '@/components/ui/button'
 import { MoveRight } from 'lucide-react'
@@ -45,20 +45,15 @@ export function ZupassButtonTickets({ org }: Props) {
       });
     } catch (error) {
       console.error('ZuAuth error:', error);
-      await Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to initiate Zupass verification',
-        confirmButtonText: 'OK'
-      });
+      showErrorAlert('Failed to initiate Zupass verification');
     }
   };
 
   return (
     <Button
       className={`py-2 px-8 rounded-full gap-3 ${!authenticated
-          ? 'bg-gray-300'
-          : 'bg-custom-lightGreen'
+        ? 'bg-gray-300'
+        : 'bg-custom-lightGreen'
         } text-black text-base md:text-lg`}
       onClick={handleZuAuth}
       disabled={!ready || !authenticated}

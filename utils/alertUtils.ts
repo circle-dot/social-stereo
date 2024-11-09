@@ -46,10 +46,25 @@ export const showAlertWithRedirect = async (
     });
 };
 
-export const showLoadingAlert = () => {
+export const showZupassWarningAlert = async (params: { org: string }) => {
+    Toast.fire({
+        icon: 'warning',
+        title: 'Zupass Required',
+        text: 'You need to verify your Zupass before voting. Would you like to do that now?',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, verify Zupass',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/${params.org}/login`;
+        }
+    });
+};
+
+export const showLoadingAlert = (title: string, text: string) => {
     Swal.fire({
-        title: 'Processing...',
-        text: 'Please wait while your request is being processed.',
+        title: title,
+        text: text,
         allowOutsideClick: false,
         background: colors.darkPurple,
         color: colors.white,

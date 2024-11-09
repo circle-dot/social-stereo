@@ -31,7 +31,7 @@ export const handleVouch = async (
         showErrorAlert("You can't vouch yourself.");
         return;
     }
-    showLoadingAlert();
+    showLoadingAlert('Processing...', 'Please wait while your request is being processed.');
 
     const token = await getAccessToken();
     if (!token) {
@@ -50,8 +50,8 @@ export const handleVouch = async (
         const chainId = typeof chain === 'string' ? parseInt(chain) : chain;
         const schemaUID = schema;
         const attester = user?.wallet.address;
-         // Use default values if endorsementType or power are not defined
-         const schemaEncoder = new SchemaEncoder("bytes32 platform,bytes32 category,bytes32 subCategory");
+        // Use default values if endorsementType or power are not defined
+        const schemaEncoder = new SchemaEncoder("bytes32 platform,bytes32 category,bytes32 subCategory");
         const encodedData = schemaEncoder.encodeData([
             { name: "platform", value: ethers.encodeBytes32String(platform), type: "bytes32" },
             { name: "category", value: ethers.encodeBytes32String(category), type: "bytes32" },
@@ -96,7 +96,7 @@ export const handleVouch = async (
             primaryType: 'Attest',
             message: value,
         };
-        
+
         console.log('wallets', wallets);
         if (!wallets || !Array.isArray(wallets) || wallets.length === 0) {
             showErrorAlert('No valid wallets found. Please log in again.');
@@ -106,7 +106,7 @@ export const handleVouch = async (
 
 
         //TO CONSIDER, we can pass encoded data instead of doing it server side as well, but should we?
-        const resultAttestation = await generateAttestation(token, platform, recipient, attester, signature,category,subcategory);
+        const resultAttestation = await generateAttestation(token, platform, recipient, attester, signature, category, subcategory);
         console.log('resultAttestation:', resultAttestation);
 
         // Construct the attestation view URL
@@ -117,7 +117,7 @@ export const handleVouch = async (
 
     } catch (error: any) {
         const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
-        
+
         // Check for maximum vouches error
         if (error.message?.includes('Maximum number of vouches reached')) {
             showErrorAlert('You have reached the maximum number of allowed vouches.');

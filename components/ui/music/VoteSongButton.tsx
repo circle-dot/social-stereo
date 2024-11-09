@@ -4,16 +4,17 @@ import { handleMusicVote } from './logic/handleMusicVote'
 import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogOverlay } from '@/components/ui/dialog'
+import { showLoadingAlert } from '@/utils/alertUtils';
 import { Button } from '@/components/ui/button'
-import Swal from 'sweetalert2'
+import { showZupassWarningAlert } from '@/utils/alertUtils';
 import Link from 'next/link'
 import { ethers } from 'ethers'
 
 interface VoteSongButtonProps {
-  trackId: string;
-  params: {
-    org: string;
-  };
+    trackId: string;
+    params: {
+        org: string;
+    };
 }
 
 export default function VoteSongButton({ trackId, params }: VoteSongButtonProps) {
@@ -31,16 +32,8 @@ export default function VoteSongButton({ trackId, params }: VoteSongButtonProps)
             await logout();
             return;
         }
-       
-        // Show loading state
-        Swal.fire({
-            title: 'Checking verification...',
-            text: 'Please wait while we verify your credentials',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading()
-            }
-        });
+
+        showLoadingAlert('Checking verification...', 'Please wait while we verify your credentials');
 
         // Check if user has Zupass verification
         try {
@@ -51,24 +44,10 @@ export default function VoteSongButton({ trackId, params }: VoteSongButtonProps)
                     'Authorization': `Bearer ${token}`
                 }
             });
-            
-            // Close loading state
-            await Swal.close();
-            
+
             if (!response.ok) {
-                // Show dialog to redirect to login for Zupass verification
-                await Swal.fire({
-                    icon: 'warning',
-                    title: 'Zupass Required',
-                    text: 'You need to verify your Zupass before voting. Would you like to do that now?',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, verify Zupass',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = `/${params.org}/login`;
-                    }
-                });
+                // Show toast to redirect to login for Zupass verification
+                showZupassWarningAlert(params);
                 return;
             }
 
@@ -92,41 +71,40 @@ export default function VoteSongButton({ trackId, params }: VoteSongButtonProps)
                         You need to be logged in to vote for a track.
                     </DialogDescription>
                     <DialogFooter className="mt-6 flex !flex-col space-y-2 !items-end w-full">
-         <div className="flex flex-col space-y-2 w-full">
-         <Button 
-              onClick={() => { 
-                login({
-                  disableSignup: true, 
-                })
-                setIsDialogOpen(false); 
-              }} 
-              className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3"
-            >
-              Log In
-            </Button>
-            <Button 
-              variant="secondary" 
-              onClick={() => setIsDialogOpen(false)} 
-              className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 py-3"
-            >
-              Cancel
-            </Button>
-         </div>
-            <div className="w-full text-center text-sm text-white mt-2">
-              Dont have an account?{' '}
-              <Link href={`/${params.org}/login`} className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
-                Register here
-              </Link>
+                        <div className="flex flex-col space-y-2 w-full">
+                            <Button
+                                onClick={() => {
+                                    login({
+                                        disableSignup: true,
+                                    })
+                                    setIsDialogOpen(false);
+                                }}
+                                className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3"
+                            >
+                                Log In
+                            </Button>
+                            <Button
+                                variant="secondary"
+                                onClick={() => setIsDialogOpen(false)}
+                                className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 py-3"
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                        <div className="w-full text-center text-sm text-white mt-2">
+                            Dont have an account?{' '}
+                            <Link href={`/${params.org}/login`} className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
+                                Register here
+                            </Link>
                         </div>
                     </DialogFooter>
                 </DialogContent>
-            </Dialog>  
-            <button 
-                onClick={handleVote} 
+            </Dialog>
+            <button
+                onClick={handleVote}
                 disabled={!ready || !walletsReady}
-                className={`bg-custom-lightGreen text-custom-black p-2 rounded-full w-10 h-10 flex items-center justify-center ${
-                    (!ready || !walletsReady) ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+                className={`bg-custom-lightGreen text-custom-black p-2 rounded-full w-10 h-10 flex items-center justify-center ${(!ready || !walletsReady) ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
             >
                 <ArrowUp className="w-5 h-5" />
             </button>
