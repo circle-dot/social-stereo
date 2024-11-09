@@ -148,22 +148,16 @@ const StampCollection = () => {
       
       // Transform stamps data based on response
       const processedStamps = stampsHistory.map(stamp => {
-        const stampKey = `Stamp${stamp.id}`;
-        // Check if the stamp exists in currentStamps
-        const isEarned = stampKey in data.currentStamps;
-        
-        // Can claim if we meet the conditions but don't have the stamp yet
-        const canClaim = stampKey in data.earnedStamps && 
-                        data.earnedStamps[stampKey] !== null && 
-                        !isEarned;
+        const isEarned = `Stamp${stamp.id}` in data.currentStamps;
+        const canClaim = stamp.id in data.missingStamps;
         
         return {
             id: stamp.id,
             title: stamp.title,
             icon: stamp.imageurl,
-            isLocked: !isEarned,
+            isLocked: !isEarned && !canClaim,
             canClaim,
-            attestationUID: canClaim ? data.earnedStamps[stampKey] : undefined
+            attestationUID: canClaim ? data.missingStamps[stamp.id] : undefined
         }
       });
       

@@ -4,6 +4,7 @@
 import { NextResponse } from 'next/server';
 import { EAS_CONFIG } from "@/config/site";
 import communities from '@/data/communities.json';
+import { ethers } from 'ethers';
 
 export interface StampInfo {
     id: string;
@@ -250,7 +251,6 @@ export async function POST(request: Request) {
         };
 
         console.log('earned stamps', result);
-
         // Create AND conditions for non-null stamps
         const stampConditions = Object.entries(result)
             .filter(([_, value]) => value !== null)
@@ -455,9 +455,19 @@ export async function PUT(request: Request) {
                 break;
             case "5":
                 const earlyMorningAtt = attestations.find((att: any) => {
-                    const bangkokTime = new Date(att.timeCreated * 1000);
-                    bangkokTime.setHours(bangkokTime.getHours() + 7);
-                    const hour = bangkokTime.getHours();
+                    // Create date in UTC from timestamp
+                    const utcDate = new Date(att.timeCreated * 1000);
+                    
+                    // Create formatter for Bangkok time (UTC+7)
+                    const bangkokFormatter = new Intl.DateTimeFormat('en-US', {
+                        timeZone: 'Asia/Bangkok',
+                        hour: 'numeric',
+                        hour12: false
+                    });
+                    
+                    // Get hour in Bangkok time
+                    const hour = parseInt(bangkokFormatter.format(utcDate));
+                    
                     return hour >= 3 && hour < 6;
                 });
                 isEligible = !!earlyMorningAtt;
@@ -634,12 +644,21 @@ export async function GET(request: Request) {
 
         // Calculate earned stamps
         const earlyMorningAttestation = attestations.find((att: { timeCreated: number; }) => {
-            const bangkokTime = new Date(att.timeCreated * 1000);
-            bangkokTime.setHours(bangkokTime.getHours() + 7);
-            const hour = bangkokTime.getHours();
+            // Create date in UTC from timestamp
+            const utcDate = new Date(att.timeCreated * 1000);
+            
+            // Create formatter for Bangkok time (UTC+7)
+            const bangkokFormatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Asia/Bangkok',
+                hour: 'numeric',
+                hour12: false
+            });
+            
+            // Get hour in Bangkok time
+            const hour = parseInt(bangkokFormatter.format(utcDate));
+            
             return hour >= 3 && hour < 6;
         });
-
         // Check DevCon attendance and get attestation ID
         const devconAttestationId = await checkDevconAttendance(wallet!);
 
@@ -668,16 +687,35 @@ export async function GET(request: Request) {
 
         // Transform currentStamps into an object with stamp IDs and UIDs
         const currentStamps = stampAttestations.reduce((acc: Record<string, string>, att: { id: string, decodedDataJson: string }) => {
-            // Find which stamp this attestation belongs to by checking the decodedDataJson
-            const stampNumber = stampsHistory.findIndex(stamp => 
-                att.decodedDataJson.includes(stamp.title)
-            ) + 1;
-            
-            if (stampNumber > 0) {
-                acc[`Stamp${stampNumber}`] = att.id;
+            try {
+                const decodedData = JSON.parse(att.decodedDataJson);
+                const stampIdField = decodedData.find((field: any) => 
+                    field.name === 'stampId' && field.value?.value
+                );
+                
+                if (stampIdField) {
+                    const stampIdHex = stampIdField.value.value;
+                    const stampNumber = parseInt(ethers.decodeBytes32String(stampIdHex));
+                    
+                    if (!isNaN(stampNumber)) {
+                        acc[`Stamp${stampNumber}`] = att.id;
+                    }
+                }
+                return acc;
+            } catch (error) {
+                console.error('Error processing attestation:', error);
+                return acc;
             }
-            return acc;
         }, {});
+
+        // Log the results
+        console.log('Stamp processing:', {
+            attestations: stampAttestations.map((att: { id: string, decodedDataJson: string }) => ({
+                id: att.id,
+                decodedData: JSON.parse(att.decodedDataJson)
+            })),
+            currentStamps
+        });
 
         // Find the stamp 14 attestation if it exists
         const stamp14Attestation = stampAttestations.find((att: any) => 
@@ -690,29 +728,26 @@ export async function GET(request: Request) {
             Stamp3: attestations.length >= 10 ? attestations[9].id : null,
             Stamp4: attestations.length === 25 ? attestations[24].id : null,
             Stamp5: earlyMorningAttestation?.id || null,
-            // Use the actual stamp attestation ID if it exists, otherwise use null
             Stamp14: stamp14Attestation ? stamp14Attestation.id : null
         };
-
-        // Calculate missing stamps - if we have the condition but not the stamp
+        console.log(' earnedStamps', earnedStamps)
+        console.log('attestations', Object.entries(attestations).length)
+        // Calculate missing stamps - stamps that are earned but not yet attested
         const missingStamps = Object.entries(earnedStamps)
             .filter(([stampKey, stampId]) => {
-                if (stampId !== null) return false;
+                // Skip if not earned (null)
+                if (stampId === null) return false;
                 
-                // Special handling for stamp 14
-                if (stampKey === 'Stamp14') {
-                    return devconAttestationId !== null && !stamp14Attestation;
-                }
-                
-                return false;
+                // It's missing if we earned it but don't have it in currentStamps
+                return !currentStamps[stampKey];
             })
-            .reduce((acc, [key, _]) => ({
+            .reduce((acc, [key, value]) => ({
                 ...acc,
-                [key.replace('Stamp', '')]: key === 'Stamp14' ? devconAttestationId : null
+                [key.replace('Stamp', '')]: value
             }), {});
 
         return NextResponse.json({
-            currentStamps,  // Now it will be { Stamp1: "0x123...", Stamp2: "0x456..." }
+            currentStamps,
             missingStamps,
             earnedStamps
         });
