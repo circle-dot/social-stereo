@@ -30,7 +30,7 @@ export default function HomePage({ params }: PageProps) {
     .join(' ');
 
   return (
-    <div className="flex flex-col flex-grow w-full h-full max-w-2xl mx-auto pt-4 px-4">
+    <div className="flex flex-col flex-grow w-full h-full max-w-2xl mx-auto px-4">
       <div className="max-w-4xl">
         <h1 className='!font-extrabold text-2xl md:text-3xl lg:text-4xl pb-2'>
           Welcome to {orgName}

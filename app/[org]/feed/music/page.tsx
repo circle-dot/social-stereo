@@ -55,7 +55,7 @@ export default function MusicPage({ params }: PageProps) {
   const tracks = data?.pages.flatMap(page => page.music) || []
 
   return (
-    <div className="flex flex-col flex-grow w-full h-full max-w-2xl mx-auto pt-4 px-4">
+    <div className="flex flex-col flex-grow w-full h-full max-w-2xl mx-auto px-4">
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogOverlay className="fixed inset-0 bg-black/50 z-[100]" />
         <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[110] bg-custom-purple p-6 rounded-lg shadow-xl w-[90%] max-w-[400px]" onPointerDownOutside={(e) => e.preventDefault()}>
@@ -143,7 +143,7 @@ export default function MusicPage({ params }: PageProps) {
         )}
       </div>
 
-      <div className='flex flex-row items-center gap-4 left-0 right-0 px-4 my-2'>
+      <div className='flex flex-row items-center gap-4 left-0 right-0 px-4 mt-2'>
         <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90">
           <Link href={`/${params.org}/feed/music/propose`}>
             Propose your song

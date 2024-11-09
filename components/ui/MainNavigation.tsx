@@ -10,7 +10,7 @@ interface MainNavigationProps {
 
 export default function MainNavigation({ org }: MainNavigationProps) {
   return (
-    <div className="z-30 m-4">
+    <div className="z-30 mx-4 my-2">
       <nav className="bg-custom-darkGreen border border-gray-800 rounded-3xl relative shadow-lg">
         <div className="flex justify-around items-center h-16 px-4">
           <NavItem icon={navIcon} href={`/${org}/feed/home`} />

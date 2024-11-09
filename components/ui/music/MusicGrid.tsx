@@ -34,41 +34,40 @@ function SongSkeleton() {
   )
 }
 
-function SongListItem({ track, params, hideVoteButton }: { 
-  track: Track, 
+function SongListItem({ track, params, hideVoteButton }: {
+  track: Track,
   params: { org: string },
-  hideVoteButton?: boolean 
+  hideVoteButton?: boolean
 }) {
-  const truncate = (str: string, maxLength: number) =>
-    str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
-
   return (
-    <div className="flex items-stretch mb-2 h-16">
-      <div className="flex items-center justify-center w-16 border border-custom-lightGreen bg-custom-darkGreen text-custom-lightGreen font-bold text-2xl rounded-lg mr-2">
+    <div className="flex mb-2 h-16">
+      <div className="flex items-center justify-center min-w-16 border border-custom-lightGreen bg-custom-darkGreen text-custom-lightGreen font-bold text-2xl rounded-lg mr-2">
         {track.rank ? `#${track.rank.toString().padStart(2, '0')}` : 'N/A'}
       </div>
-      <div className="flex items-center flex-grow bg-white rounded-lg overflow-hidden">
-        <div className="h-full w-16 relative">
-          <Image
-            src={track.imageUrl}
-            alt={`${track.title} album cover`}
-            fill
-            className="rounded-lg border border-custom-lightGreen object-cover"
-          />
-        </div>
-        <div className="flex-grow px-3 py-2">
-          <h3 className="font-bold text-custom-dark truncate">
-            {truncate(track.title, 10)}
-          </h3>
-          <p className="text-sm text-custom-dark truncate">
-            {truncate(track.artist, 10)}
-          </p>
-        </div>
-        {!hideVoteButton && (
-          <div className="pr-2">
-            <VoteSongButton trackId={track.spotify_id} params={params} />
+      <div className="flex justify-between flex-grow bg-white rounded-lg overflow-hidden">
+        <div className="flex items-center flex-grow bg-white rounded-lg overflow-hidden">
+          <div className="h-full min-w-16 relative">
+            <Image
+              src={track.imageUrl}
+              alt={`${track.title} album cover`}
+              fill
+              className="rounded-lg border border-custom-lightGreen object-cover"
+            />
           </div>
-        )}
+          <div className="flex-grow px-3 py-2 text-left max-w-[70%]">
+            <h3 className="font-bold text-custom-dark truncate">
+              {track.title}
+            </h3>
+            <p className="text-sm text-custom-dark truncate">
+              {track.artist}
+            </p>
+          </div>
+        </div>
+        <div className="flex pr-2 min-w-12 flex justify-end items-center">
+          {!hideVoteButton && (
+            <VoteSongButton trackId={track.spotify_id} params={params} />
+          )}
+        </div>
       </div>
     </div>
   )
@@ -106,9 +105,9 @@ export default function MusicGrid({
     <div className="flex h-[280px] flex-col flex-grow bg-transparent overflow-y-auto scrollbar-thin scrollbar-thumb-custom-lightGreen scrollbar-track-custom-darkGreen">
       <div className="flex-grow">
         {tracks.map((track) => (
-          track?.id && <SongListItem 
-            key={track?.id} 
-            track={track} 
+          track?.id && <SongListItem
+            key={track?.id}
+            track={track}
             params={params}
             hideVoteButton={hideVoteButton}
           />
