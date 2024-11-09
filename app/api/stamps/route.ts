@@ -324,15 +324,95 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
     try {
-        const { wallet, stampId, attestationUID } = await request.json();
+        const { wallet, stampId, attestationUID, org } = await request.json();
 
-        if (!wallet || !stampId || !attestationUID) {
+        if (!wallet || !stampId || !attestationUID || !org) {
             return NextResponse.json(
-                { error: 'Wallet address, stampId, and attestationUID are required' },
+                { error: 'Wallet address, stampId, attestationUID, and org are required' },
                 { status: 400 }
             );
         }
 
+        // Verify conditions for the specific stamp
+        const query = `
+            query Attestations($where: AttestationWhereInput) {
+                attestations(where: $where) {
+                    id
+                    timeCreated
+                }
+            }
+        `;
+
+        // Find community config
+        const communityKey = Object.keys(communities).find(
+            key => key.toLowerCase() === org.toLowerCase()
+        );
+
+        if (!communityKey) {
+            throw new Error(`Community ${org} not found in configuration`);
+        }
+        const communityConfig = communities[communityKey as keyof typeof communities];
+
+        // Query attestations to verify conditions
+        const variables = {
+            where: {
+                schemaId: { equals: EAS_CONFIG.VOUCH_SCHEMA },
+                revoked: { equals: false },
+                attester: { equals: wallet },
+                AND: [
+                    { decodedDataJson: { contains: communityConfig.FirstFilter } },
+                    { decodedDataJson: { contains: communityConfig.SecondFilter } },
+                    { decodedDataJson: { contains: communityConfig.ThirdFilter } }
+                ]
+            }
+        };
+
+        const response = await fetch(EAS_CONFIG.GRAPHQL_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables })
+        });
+        const data = await response.json();
+        const attestations = data.data.attestations;
+
+        // Verify conditions based on stampId
+        let isEligible = false;
+        switch (stampId) {
+            case "1":
+                isEligible = attestations.length > 0;
+                break;
+            case "2":
+                isEligible = attestations.length >= 5;
+                break;
+            case "3":
+                isEligible = attestations.length >= 10;
+                break;
+            case "4":
+                isEligible = attestations.length === 25;
+                break;
+            case "5":
+                isEligible = attestations.some((att: any) => {
+                    const bangkokTime = new Date(att.timeCreated * 1000);
+                    bangkokTime.setHours(bangkokTime.getHours() + 7);
+                    const hour = bangkokTime.getHours();
+                    return hour >= 3 && hour < 6;
+                });
+                break;
+            default:
+                return NextResponse.json(
+                    { error: 'Invalid stampId' },
+                    { status: 400 }
+                );
+        }
+
+        if (!isEligible) {
+            return NextResponse.json(
+                { error: 'Wallet does not meet conditions for this stamp' },
+                { status: 403 }
+            );
+        }
+
+        // If eligible, proceed with stamp creation
         const stampApiResponse = await fetch(
             `${process.env.NEXT_PUBLIC_STAMP_API_URL}/attestation/stamp`,
             {
