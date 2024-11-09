@@ -4,24 +4,27 @@ import communities from '@/data/communities.json';
 
 // Add these utility functions at the top of the file
 function ethAddressToSpotifyId(ethAddress: string): string {
-    // Since we can't directly use the Rust bigint libraries,
-    // we'll implement a simplified version for JavaScript
     const BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    const address = ethAddress.toLowerCase().replace("0x", "");
+    const address = ethAddress.toLowerCase().trim().replace("0x", "");
     
     // Convert hex to decimal
-    const decimal = BigInt("0x" + address);
+    let decimal = BigInt("0x" + address);
+    
+    // Handle zero case
+    if (decimal === 0n) {
+        return "0";
+    }
     
     // Convert decimal to base62
     let result = "";
-    let n = decimal;
-    while (n > 0n) {
-        const remainder = Number(n % 62n);
+    const base = 62n;
+    while (decimal > 0n) {
+        const remainder = Number(decimal % base);
         result = BASE62[remainder] + result;
-        n = n / 62n;
+        decimal = decimal / base;
     }
     
-    return result || "0";
+    return result;
 }
 
 
@@ -135,7 +138,7 @@ export async function POST(req: NextRequest) {
 
         // Convert ETH addresses to Spotify IDs
         const spotifyIds = recipients.map(ethAddressToSpotifyId);
-
+        console.log('spotifyIds', spotifyIds);
         // Use dynamic table name with prisma
         // @ts-expect-error - Prisma doesn't type dynamic table names well
         const musicEntries = await prisma[tableName].findMany({

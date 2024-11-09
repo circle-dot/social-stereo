@@ -2,12 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import ATTESTATION_DETAILS from '../../graphql/queries/UserProfile/AttestationDetails';
 import COUNT_ATTESTATIONS_MADE from '@/graphql/queries/AttestationsMadeCount';
 import { EAS_CONFIG } from '@/config/site';
-export const useVoteCounts = (graphqlEndpoint: string, formattedAddress: string | undefined) => {
+import communities from '@/data/communities.json';
+
+export const useVoteCounts = (graphqlEndpoint: string, formattedAddress: string | undefined, org: string) => {
+  const communityFilters = communities[org as keyof typeof communities];
 
   const { data: vouchesMade, isLoading: isVouchesMadeLoading } = useQuery({
-    queryKey: ['vouchesMade', formattedAddress],
+    queryKey: ['vouchesMade', formattedAddress, org],
     queryFn: async () => {
-      if (!formattedAddress) return null;
+      if (!formattedAddress || !communityFilters) return null;
       const response = await fetch(graphqlEndpoint, {
         method: 'POST',
         headers: {
@@ -22,17 +25,17 @@ export const useVoteCounts = (graphqlEndpoint: string, formattedAddress: string 
               AND: [
                 {
                   decodedDataJson: {
-                    contains: EAS_CONFIG.FirstFilter
+                    contains: communityFilters.FirstFilter
                   }
                 },
                 {
                   decodedDataJson: {
-                    contains: EAS_CONFIG.SecondFilter
+                    contains: communityFilters.SecondFilter
                   }
                 },
                 {
                   decodedDataJson: {
-                    contains: EAS_CONFIG.ThirdFilter
+                    contains: communityFilters.ThirdFilter
                   }
                 }
               ],
@@ -46,7 +49,7 @@ export const useVoteCounts = (graphqlEndpoint: string, formattedAddress: string 
       }
       return response.json();
     },
-    enabled: !!formattedAddress,
+    enabled: !!formattedAddress && !!communityFilters,
   });
 
   return {
@@ -54,16 +57,20 @@ export const useVoteCounts = (graphqlEndpoint: string, formattedAddress: string 
     isLoading: isVouchesMadeLoading
   };
 };
+
 export const useVoteDetails = (
   graphqlEndpoint: string,
   attester: string | undefined,
+  org: string,
   pageSize: number = 10,
   pageNumber: number = 1
 ) => {
+  const communityFilters = communities[org as keyof typeof communities];
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ['attestationDetails', attester, pageSize, pageNumber],
+    queryKey: ['attestationDetails', attester, org, pageSize, pageNumber],
     queryFn: async () => {
-      if (!attester) return null;
+      if (!attester || !communityFilters) return null;
       const response = await fetch(graphqlEndpoint, {
         method: 'POST',
         headers: {
@@ -78,17 +85,17 @@ export const useVoteDetails = (
               AND: [
                 {
                   decodedDataJson: {
-                    contains: EAS_CONFIG.FirstFilter
+                    contains: communityFilters.FirstFilter
                   }
                 },
                 {
                   decodedDataJson: {
-                    contains: EAS_CONFIG.SecondFilter
+                    contains: communityFilters.SecondFilter
                   }
                 },
                 {
                   decodedDataJson: {
-                    contains: EAS_CONFIG.ThirdFilter
+                    contains: communityFilters.ThirdFilter
                   }
                 }
               ],
@@ -104,7 +111,7 @@ export const useVoteDetails = (
       }
       return response.json();
     },
-    enabled: !!attester,
+    enabled: !!attester && !!communityFilters,
   });
 
   return {
