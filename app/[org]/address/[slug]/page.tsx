@@ -13,7 +13,6 @@ import ProfileAvatar from '@/components/ui/ProfileAvatar';
 import MusicGrid from '@/components/ui/music/MusicGrid';
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePrivy } from '@privy-io/react-auth';
-import { ZupassButtonTickets } from '@/components/login/ZupassButtonTickets'
 import {
   Tooltip,
   TooltipContent,
@@ -26,37 +25,9 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
   const { slug: rawAddress } = params;
   const address = ethers.getAddress(rawAddress);
   const graphqlEndpoint = EAS_CONFIG.GRAPHQL_URL;
-  const { user, ready, authenticated, getAccessToken } = usePrivy();
+  const { user, ready, authenticated } = usePrivy();
   const { vouchesMade, isLoading: isCountsLoading } = useVoteCounts(graphqlEndpoint, address);
   const { attestations, isLoading: isVotesLoading } = useVoteDetails(graphqlEndpoint, address);
-  const [isVerifying, setIsVerifying] = useState(false)
-  const [isVerified, setIsVerified] = useState(false)
-
-  const wallet = user?.wallet?.address;
-  useEffect(() => {
-    const checkPretrust = async () => {
-      try {
-        const token = await getAccessToken()
-        console.log('wallet state:', wallet)
-        if (!wallet) return
-
-        const response = await fetch('/api/checkPretrust', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ wallet, community: params.org })
-        })
-        const data = await response.json()
-        console.log("🚀 ~ checkPretrust ~ data:", data)
-        setIsVerified(!!data.decodedDataJson)
-      } catch (error) {
-        console.error('Error checking pretrust:', error)
-      } finally {
-        setIsVerifying(false)
-      }
-    }
-
-    checkPretrust()
-  }, [wallet, params.org])
 
   // Extract unique recipients from attestations
   const recipients = attestations ? Array.from(new Set(attestations.map((att: { recipient: string; }) => att.recipient as string))) : [];
@@ -107,7 +78,7 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
   }, [isVotesLoading, attestations, recipients, params.org]);
 
   const totalVotesMade = vouchesMade?.data?.aggregateAttestation?._count?.attester ?? 0;
-  const maxVotes = 25;
+  const maxVotes = 20;
   const votesRemaining = Math.max(0, maxVotes - totalVotesMade);
 
 
@@ -201,25 +172,23 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
         </Tooltip>
       </TooltipProvider>
 
-      <div className="flex justify-center my-4">
-        {isVerifying ? (
-          <Button disabled className='hover:cursor-wait py-1.5 px-6 rounded-full gap-2 bg-custom-lightGreen text-black text-sm md:text-base'>
-            Verifying zupass...
-          </Button>
-        ) : isVerified ? (
-          <div className='hover:cursor-default py-1.5 px-6 rounded-full gap-2 bg-custom-darkPurpl text-sm md:text-base border border-custom-lightGreen'>
-            Zupass verified! <span className="ml-1">✓</span>
-          </div>
+      <div className="my-6">
+        {ready && authenticated && user?.wallet?.address &&
+          ethers.getAddress(user.wallet.address) === ethers.getAddress(address) ? (
+          <h1 className="w-full bg-custom-darkPurple text-white rounded-2xl p-4 font-semibold text-center">
+            Your Profile
+          </h1>
         ) : (
-          <ZupassButtonTickets org={params.org} />
+          // <VoteKaraokeButton  walletAddress={address}/>
+          <>
+          </>
         )}
       </div>
-
       {/* Votes Counter */}
       <div className="mb-6">
         <label className="text-white/80 text-sm block mb-2">Votes Remaining</label>
         <div className="w-full bg-white/10 rounded-2xl p-4 text-[#B4FF4C]">
-          {votesRemaining}
+          {votesRemaining} / {maxVotes}
         </div>
       </div>
 

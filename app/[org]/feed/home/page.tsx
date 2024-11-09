@@ -15,12 +15,12 @@ const cardData = [
     description: "Vote for the music you like to contribute to the playlist.",
     path: "music"
   },
-  // {
-  //   icon: <Gift />,
-  //   title: "DevCon Pack",
-  //   description: "Coming soon...",
-  //   path: "special-box"
-  // }
+  {
+    icon: <Gift />,
+    title: "DevCon Pack",
+    description: "Coming soon...",
+    path: "special-box"
+  }
 ];
 
 export default function HomePage({ params }: PageProps) {

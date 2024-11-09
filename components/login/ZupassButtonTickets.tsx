@@ -18,18 +18,18 @@ export function ZupassButtonTickets({ org }: Props) {
   const handleZuAuth = async () => {
     try {
       const watermark = "0";
-
+      
       // Find the matching config key case-insensitively
       const configKey = Object.keys(whitelistedTickets).find(
         key => key.toLowerCase() === org.toLowerCase()
       ) as TicketTypeName | undefined;
-
+      
       if (!configKey) {
         throw new Error(`No ticket configuration found for ${org}`);
       }
-
+      
       const orgConfig = whitelistedTickets[configKey];
-
+      
       await zuAuthRedirect({
         returnUrl: `${window.location.origin}/${org}/login/zupass`,
         watermark,
@@ -55,18 +55,19 @@ export function ZupassButtonTickets({ org }: Props) {
   };
 
   return (
-    <Button
-      className={`py-2 px-8 rounded-full gap-3 ${!authenticated
-          ? 'bg-gray-300'
+    <Button 
+      className={`py-2 px-8 rounded-full gap-3 ${
+        !authenticated 
+          ? 'bg-gray-300' 
           : 'bg-custom-lightGreen'
-        } text-black text-base md:text-lg`}
+      } text-black text-base md:text-lg`}
       onClick={handleZuAuth}
       disabled={!ready || !authenticated}
     >
       {!authenticated ? (
         <>Connect wallet first ↑</>
       ) : (
-        <>Validate Zupass <MoveRight className='w-4 h-4' /></>
+        <>Validate Zupass Ticket <MoveRight className='w-4 h-4' /></>
       )}
     </Button>
   );

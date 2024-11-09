@@ -1,34 +1,24 @@
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 
-// Using Tailwind CSS custom colors from config
-const colors = {
-    lightGreen: '#B9FE5E', // custom.lightGreen
-    darkPurple: '#390892', // custom.darkPurple 
-    white: '#FFFFFF', // custom.white
-    error: '#dc2626', // Keeping Tailwind red-600 for error state
-}
-
 export const showAlertWithRedirect = async (
-    title: string,
-    buttonText: string,
-    redirectUrl: string,
-    isError: boolean = false
+  title: string,
+  buttonText: string,
+  redirectUrl: string,
+  isError: boolean = false
 ) => {
-    await Swal.fire({
-        icon: isError ? 'error' : 'success',
-        title,
-        confirmButtonText: buttonText,
-        confirmButtonColor: isError ? colors.error : colors.lightGreen,
-        background: colors.darkPurple,
-        color: colors.white,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = redirectUrl;
-        }
-    });
+  await Swal.fire({
+    icon: isError ? 'error' : 'success',
+    title,
+    confirmButtonText: buttonText,
+    confirmButtonColor: isError ? '#dc2626' : '#10b981', // red-600 for error, emerald-500 for success
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = redirectUrl;
+    }
+  });
 };
 
 export const showLoadingAlert = () => {
@@ -36,8 +26,6 @@ export const showLoadingAlert = () => {
         title: 'Processing...',
         text: 'Please wait while your request is being processed.',
         allowOutsideClick: false,
-        background: colors.darkPurple,
-        color: colors.white,
         didOpen: () => {
             Swal.showLoading();
         },
@@ -49,9 +37,6 @@ export const showErrorAlert = (message: string) => {
         icon: 'error',
         title: 'Error!',
         text: message,
-        background: colors.darkPurple,
-        color: colors.white,
-        confirmButtonColor: colors.error,
     });
 };
 
@@ -63,10 +48,8 @@ export const showSuccessAlert = (message: string, confirmText: string, redirectU
         showCancelButton: true,
         confirmButtonText: confirmText,
         cancelButtonText: 'Close',
-        cancelButtonColor: colors.error,
-        confirmButtonColor: colors.lightGreen,
-        background: colors.darkPurple,
-        color: colors.white,
+        cancelButtonColor: '#d33',
+        confirmButtonColor: '#3085d6',
     }).then((result: { isConfirmed: any; }) => {
         if (result.isConfirmed) {
             window.open(redirectUrl, '_blank');
@@ -79,16 +62,15 @@ export const showOnlySucessWithRedirect = (message: string, confirmText: string,
         title: "Zupass connected!",
         text: message,
         confirmButtonText: confirmText,
-        confirmButtonColor: colors.lightGreen,
         allowOutsideClick: false,
-        background: colors.darkPurple,
-        color: colors.white,
         icon: "success"
-    }).then((result: { isConfirmed: any; }) => {
+      }).then((result: { isConfirmed: any; }) => {
         if (result.isConfirmed) {
+            // router.push(redirectUrl)
             window.location.href = redirectUrl;
         }
     });
+
 };
 
 export const showCopySuccessAlert = () => {
@@ -98,8 +80,6 @@ export const showCopySuccessAlert = () => {
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
-        background: colors.darkPurple,
-        color: colors.white,
         didOpen: (toast: { addEventListener: (arg0: string, arg1: any) => void; }) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
             toast.addEventListener('mouseleave', Swal.resumeTimer)
@@ -117,9 +97,6 @@ export const showErrorAlertWithSpace = (title: string, message: string) => {
         icon: 'error',
         title: title,
         html: message.replace(/\n/g, '<br>'),
-        background: colors.darkPurple,
-        color: colors.white,
-        confirmButtonColor: colors.error,
     });
 };
 
@@ -129,8 +106,6 @@ export const showSuccessAlertWithoutRedirect = (message: string, confirmText: st
         title: 'Success!',
         text: message,
         confirmButtonText: confirmText,
-        confirmButtonColor: colors.lightGreen,
-        background: colors.darkPurple,
-        color: colors.white,
+        confirmButtonColor: '#3085d6',
     });
 };

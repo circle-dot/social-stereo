@@ -30,7 +30,7 @@ function Home({ params }: { params: { org: string } }) {
       <div className='mt-6 md:mt-0 md:w-7/12 lg:w-8/12 md:flex md:flex-col md:justify-center md:pl-8 lg:pl-12'>
         <h1 className='!font-extrabold text-2xl md:text-3xl lg:text-4xl'>Social Stereo</h1>
         <p className='text-sm font-normal my-4 md:text-base lg:text-lg'>
-          Play and experiment with the Ethereum stack and Programable Cryptography. Use Zupass, EAS and Stamp to vote for songs and create DevCon's decentralized playlit.
+          Play and experiment with the Ethereum stack and Programable Cryptography. Use Zupass, EAS and Stamp to vouch for songs, DJs and Karaoke enthusiasts.
         </p>
         <StyledButton href={`/${params.org}/feed/home`}>
           Get Started <MoveRight className='w-4 h-4' />
