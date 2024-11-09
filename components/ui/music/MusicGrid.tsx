@@ -63,7 +63,7 @@ function SongListItem({ track, params, hideVoteButton }: {
             </p>
           </div>
         </div>
-        <div className="flex pr-2 min-w-12 flex justify-end items-center">
+        <div className="flex pr-2 min-w-12 justify-end items-center">
           {!hideVoteButton && (
             <VoteSongButton trackId={track.spotify_id} params={params} />
           )}
