@@ -21,6 +21,9 @@ const Toast = Swal.mixin({
     didOpen: (toast: { addEventListener: (arg0: string, arg1: any) => void; }) => {
         toast.addEventListener('mouseenter', Swal.stopTimer)
         toast.addEventListener('mouseleave', Swal.resumeTimer)
+    },
+    customClass: {
+        loader: 'custom-loader'
     }
 })
 
@@ -74,6 +77,9 @@ export const showLoadingAlert = (title: string, text: string) => {
         didOpen: () => {
             Swal.showLoading();
         },
+        customClass: {
+            loader: 'custom-loader'
+        }
     });
 };
 
