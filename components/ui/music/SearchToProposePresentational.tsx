@@ -6,9 +6,6 @@ import { Loader2, Search } from 'lucide-react'
 import VoteSongButton from './VoteSongButton'
 import Image from 'next/image';
 
-const truncate = (str: string, maxLength: number) =>
-  str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
-
 interface SearchToProposePresentationalProps {
   searchTerm: string
   handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void
