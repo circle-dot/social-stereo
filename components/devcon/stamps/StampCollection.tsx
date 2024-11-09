@@ -294,12 +294,12 @@ const StampCollection = () => {
                     : "opacity-50"
                 )}
               >
-                <div className="relative min-w-[96px] min-h-[96px] mb-3">
+                <div className="relative min-w-[96px] min-h-[96px] mb-3 rounded-full overflow-hidden">
                   <Image
                     src={`/stamps/${stamp.icon.split('/').pop()}`}
                     alt={stamp.title}
                     fill
-                    className="rounded-full"
+                    className="object-cover scale-110"
                     priority
                   />
                 </div>
