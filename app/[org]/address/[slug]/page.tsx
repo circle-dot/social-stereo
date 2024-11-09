@@ -233,6 +233,7 @@ export default function AddressPage({ params }: { params: { slug: string, org: s
               tracks={musicData}
               isLoading={isVotesLoading}
               params={params}
+              hideVoteButton={true}
             />
           )}
         </div>

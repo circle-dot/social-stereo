@@ -12,7 +12,7 @@ interface Track {
   imageUrl: string;
   spotifyUrl: string;
   createdAt: string;
-  rank: number;
+  rank: number | null;
   spotify_id: string;
 }
 
@@ -34,14 +34,18 @@ function SongSkeleton() {
   )
 }
 
-function SongListItem({ track, params }: { track: Track, params: { org: string } }) {
+function SongListItem({ track, params, hideVoteButton }: { 
+  track: Track, 
+  params: { org: string },
+  hideVoteButton?: boolean 
+}) {
   const truncate = (str: string, maxLength: number) =>
     str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
 
   return (
     <div className="flex items-stretch mb-2 h-16">
       <div className="flex items-center justify-center w-16 border border-custom-lightGreen bg-custom-darkGreen text-custom-lightGreen font-bold text-2xl rounded-lg mr-2">
-        #{track.rank.toString().padStart(2, '0')}
+        {track.rank ? `#${track.rank.toString().padStart(2, '0')}` : 'N/A'}
       </div>
       <div className="flex items-center flex-grow bg-white rounded-lg overflow-hidden">
         <div className="h-full w-16 relative">
@@ -60,9 +64,11 @@ function SongListItem({ track, params }: { track: Track, params: { org: string }
             {truncate(track.artist, 10)}
           </p>
         </div>
-        <div className="pr-2">
-          <VoteSongButton trackId={track.spotify_id} params={params} />
-        </div>
+        {!hideVoteButton && (
+          <div className="pr-2">
+            <VoteSongButton trackId={track.spotify_id} params={params} />
+          </div>
+        )}
       </div>
     </div>
   )
@@ -74,6 +80,7 @@ interface MusicGridProps {
   fetchNextPage?: () => void;
   hasNextPage?: boolean;
   params: { org: string };
+  hideVoteButton?: boolean;
 }
 
 export default function MusicGrid({
@@ -81,7 +88,8 @@ export default function MusicGrid({
   isLoading,
   fetchNextPage,
   hasNextPage,
-  params
+  params,
+  hideVoteButton
 }: MusicGridProps) {
   // Set up intersection observer for infinite scroll
   const { ref, inView } = useInView({
@@ -98,7 +106,12 @@ export default function MusicGrid({
     <div className="flex h-[280px] flex-col flex-grow bg-transparent overflow-y-auto scrollbar-thin scrollbar-thumb-custom-lightGreen scrollbar-track-custom-darkGreen">
       <div className="flex-grow">
         {tracks.map((track) => (
-          track?.id && <SongListItem key={track?.id} track={track} params={params} />
+          track?.id && <SongListItem 
+            key={track?.id} 
+            track={track} 
+            params={params}
+            hideVoteButton={hideVoteButton}
+          />
         ))}
       </div>
 
