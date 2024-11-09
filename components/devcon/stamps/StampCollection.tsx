@@ -98,7 +98,7 @@ const StampCollection = () => {
     },
     {
       id: '14',
-      title: 'DevCon Sea Atendee',
+      title: 'DevCon SEA Attendee',
       description: 'You attended the DevCon SEA event.',
       imageurl: 'https://stereo.stamp.network/stamps/attendee.png'
     },

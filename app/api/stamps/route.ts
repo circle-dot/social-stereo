@@ -94,7 +94,7 @@ const stampsHistory: StampInfo[] = [
     },
     {
         id: '14',
-        title: 'DevCon Sea Atendee',
+        title: 'DevCon SEA Attendee',
         description: 'You attended the DevCon SEA event.',
         imageurl: 'https://stereo.stamp.network/stamps/attendee.png'
     },
@@ -142,6 +142,7 @@ async function checkDevconAttendance(wallet: string): Promise<string | null> {
     });
     
     const data = await response.json();
+    console.log('DevCon attendance length', data.data.attestations.length);
     return data.data.attestations.length > 0 ? data.data.attestations[0].id : null;
 }
 
@@ -497,7 +498,7 @@ export async function PUT(request: Request) {
                                     revoked: { equals: false },
                                     recipient: { equals: wallet },
                                     decodedDataJson: {
-                                        contains: "DevCon Sea Atendee"
+                                        contains: "DevCon SEA Attendee"
                                     }
                                 }
                             }
@@ -761,7 +762,7 @@ export async function GET(request: Request) {
 
         // Find the stamp 14 attestation if it exists
         const stamp14Attestation = stampAttestations.find((att: any) => 
-            att.decodedDataJson.includes("DevCon Sea Atendee")
+            att.decodedDataJson.includes("DevCon SEA Attendee")
         );
 
         const earnedStamps = {
