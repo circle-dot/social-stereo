@@ -21,7 +21,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                 // Customize Privy's appearance in your app
                 appearance: {
                     theme: 'light',
-                    accentColor: '#B9FE5E',
+                    accentColor: '#0C101A',
                     logo: '/agora.png',
                     landingHeader: `Welcome to ${SITE_CONFIG.name}`,
                 },
