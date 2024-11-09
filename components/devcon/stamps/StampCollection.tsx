@@ -148,16 +148,17 @@ const StampCollection = () => {
       
       // Transform stamps data based on response
       const processedStamps = stampsHistory.map(stamp => {
-        const isEarned = `Stamp${stamp.id}` in data.earnedStamps;
-        const canClaim = stamp.id in data.missingStamps;
+        // Check if the stamp exists in earnedStamps AND has a non-null value
+        const isEarned = `Stamp${stamp.id}` in data.earnedStamps && 
+                         data.earnedStamps[`Stamp${stamp.id}`] !== null;
         
         return {
           id: stamp.id,
           title: stamp.title,
           icon: stamp.imageurl,
           isLocked: !isEarned,
-          canClaim,
-          attestationUID: canClaim ? data.missingStamps[stamp.id] : undefined
+          canClaim: stamp.id in data.missingStamps,
+          attestationUID: data.missingStamps[stamp.id]
         }
       });
       
@@ -197,8 +198,16 @@ const StampCollection = () => {
             throw new Error('Failed to claim stamp');
         }
 
-        // Refresh stamps after successful claim
-        await getStamps();
+        const data = await response.json();
+        
+        // If we have successful attestations, refresh the stamps
+        if (data.newAttestations && data.newAttestations.length > 0) {
+            await getStamps();
+        } else if (data.failedAttestations && data.failedAttestations.length > 0) {
+            // Handle failed attestations (optional)
+            console.error('Failed to claim stamp:', data.failedAttestations);
+        }
+
     } catch (error) {
         console.error('Error claiming stamp:', error);
     } finally {

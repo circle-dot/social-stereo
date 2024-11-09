@@ -473,12 +473,18 @@ export async function PUT(request: Request) {
                                     revoked: { equals: false },
                                     recipient: { equals: wallet },
                                     decodedDataJson: {
-                                        contains: verifiedAttestationId
+                                        contains: "DevCon Sea Atendee"
                                     }
                                 }
                             }
                         })
                     }).then(res => res.json());
+
+                    console.log('Stamp exists query response:', {
+                        wallet,
+                        stampId,
+                        response: stampExists
+                    });
 
                     if (stampExists.data.attestations.length > 0) {
                         isEligible = false; // They already have the stamp
@@ -629,65 +635,66 @@ export async function GET(request: Request) {
         // Check DevCon attendance and get attestation ID
         const devconAttestationId = await checkDevconAttendance(wallet!);
 
-        const earnedStamps = Object.entries({
+        // Query for existing stamp attestations
+        const stampVariables = {
+            where: {
+                schemaId: {
+                    equals: EAS_CONFIG.STAMP_SCHEMA
+                },
+                revoked: {
+                    equals: false
+                },
+                recipient: {
+                    equals: wallet
+                }
+            }
+        };
+
+        const stampResponse = await fetch(EAS_CONFIG.GRAPHQL_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: stampVariables })
+        });
+        const stampData = await stampResponse.json();
+        const stampAttestations = stampData.data.attestations;
+
+        // Find the stamp 14 attestation if it exists
+        const stamp14Attestation = stampAttestations.find((att: any) => 
+            att.decodedDataJson.includes("DevCon Sea Atendee")
+        );
+
+        const earnedStamps = {
             Stamp1: attestations.length > 0 ? attestations[0].id : null,
             Stamp2: attestations.length >= 5 ? attestations[4].id : null,
             Stamp3: attestations.length >= 10 ? attestations[9].id : null,
             Stamp4: attestations.length === 25 ? attestations[24].id : null,
             Stamp5: earlyMorningAttestation?.id || null,
-            Stamp14: devconAttestationId
-        }).reduce((acc, [key, value]) => {
-            if (value !== null) {
-                acc[key] = value;
-            }
-            return acc;
-        }, {} as Record<string, string>);
+            // Use the actual stamp attestation ID if it exists, otherwise use null
+            Stamp14: stamp14Attestation ? stamp14Attestation.id : null
+        };
 
+        // Calculate missing stamps - if we have the condition but not the stamp
+        const missingStamps = Object.entries(earnedStamps)
+            .filter(([stampKey, stampId]) => {
+                if (stampId !== null) return false;
+                
+                // Special handling for stamp 14
+                if (stampKey === 'Stamp14') {
+                    return devconAttestationId !== null && !stamp14Attestation;
+                }
+                
+                return false;
+            })
+            .reduce((acc, [key, _]) => ({
+                ...acc,
+                [key.replace('Stamp', '')]: key === 'Stamp14' ? devconAttestationId : null
+            }), {});
 
-// Query existing stamp attestations
-const stampVariables = {
-    where: {
-        schemaId: {
-            equals: EAS_CONFIG.STAMP_SCHEMA
-        },
-        revoked: {
-            equals: false
-        },
-        recipient: {
-            equals: wallet
-        }
-    }
-};
-
-const stampResponse = await fetch(EAS_CONFIG.GRAPHQL_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, variables: stampVariables })
-});
-const stampData = await stampResponse.json();
-const stampAttestations = stampData.data.attestations;
-
-// Extract just the IDs from stampAttestations
-const currentStampIds = stampAttestations.map((att: any) => att.id);
-
-// Calculate missing stamps
-const missingStamps = Object.entries(earnedStamps)
-    .filter(([_, stampId]) => {
-        if (stampId === null) return false;
-        return !stampAttestations.some((att: any) => 
-            att.decodedDataJson.includes(stampId)
-        );
-    })
-    .reduce((acc, [key, value]) => ({
-        ...acc,
-        [key.replace('Stamp', '')]: value
-    }), {});
-
-return NextResponse.json({
-    currentStamps: currentStampIds,
-    missingStamps,
-    earnedStamps
-});
+        return NextResponse.json({
+            currentStamps: stampAttestations.map((att: any) => att.id),
+            missingStamps,
+            earnedStamps
+        });
 
     } catch (error) {
         console.error('Error fetching stamps:', error);
