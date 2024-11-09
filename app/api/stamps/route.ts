@@ -451,15 +451,19 @@ export async function GET(request: Request) {
             return hour >= 3 && hour < 6;
         });
 
-        const earnedStamps = {
+        const earnedStamps = Object.entries({
             Stamp1: attestations.length > 0 ? attestations[0].id : null,
             Stamp2: attestations.length >= 5 ? attestations[4].id : null,
             Stamp3: attestations.length >= 10 ? attestations[9].id : null,
             Stamp4: attestations.length === 25 ? attestations[24].id : null,
             Stamp5: earlyMorningAttestation?.id || null
-        };
+        }).reduce((acc, [key, value]) => {
+            if (value !== null) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {} as Record<string, string>);
 
-      // ... existing code ...
 
 // Query existing stamp attestations
 const stampVariables = {
