@@ -9,6 +9,21 @@ const colors = {
     error: '#dc2626', // Keeping Tailwind red-600 for error state
 }
 
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'bottom-end',
+    showConfirmButton: false,
+    timer: 7000,
+    showCloseButton: true,
+    timerProgressBar: true,
+    background: colors.darkPurple,
+    color: colors.white,
+    didOpen: (toast: { addEventListener: (arg0: string, arg1: any) => void; }) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+
 export const showAlertWithRedirect = async (
     title: string,
     buttonText: string,
@@ -45,28 +60,16 @@ export const showLoadingAlert = () => {
 };
 
 export const showErrorAlert = (message: string) => {
-    Swal.fire({
+    Toast.fire({
         icon: 'error',
-        title: 'Error!',
-        text: message,
-        background: colors.darkPurple,
-        color: colors.white,
-        confirmButtonColor: colors.error,
-    });
+        title: message
+    })
 };
 
 export const showSuccessAlert = (message: string, confirmText: string, redirectUrl: string) => {
-    Swal.fire({
+    Toast.fire({
         icon: 'success',
-        title: 'Success!',
-        text: message,
-        showCancelButton: true,
-        confirmButtonText: confirmText,
-        cancelButtonText: 'Close',
-        cancelButtonColor: colors.error,
-        confirmButtonColor: colors.lightGreen,
-        background: colors.darkPurple,
-        color: colors.white,
+        title: message
     }).then((result: { isConfirmed: any; }) => {
         if (result.isConfirmed) {
             window.open(redirectUrl, '_blank');
@@ -75,15 +78,10 @@ export const showSuccessAlert = (message: string, confirmText: string, redirectU
 };
 
 export const showOnlySucessWithRedirect = (message: string, confirmText: string, redirectUrl: string) => {
-    Swal.fire({
-        title: "Zupass connected!",
+    Toast.fire({
+        icon: 'success',
         text: message,
         confirmButtonText: confirmText,
-        confirmButtonColor: colors.lightGreen,
-        allowOutsideClick: false,
-        background: colors.darkPurple,
-        color: colors.white,
-        icon: "success"
     }).then((result: { isConfirmed: any; }) => {
         if (result.isConfirmed) {
             window.location.href = redirectUrl;
@@ -92,20 +90,6 @@ export const showOnlySucessWithRedirect = (message: string, confirmText: string,
 };
 
 export const showCopySuccessAlert = () => {
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'bottom-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        background: colors.darkPurple,
-        color: colors.white,
-        didOpen: (toast: { addEventListener: (arg0: string, arg1: any) => void; }) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-    })
-
     Toast.fire({
         icon: 'success',
         title: 'Address copied to clipboard'
@@ -113,24 +97,18 @@ export const showCopySuccessAlert = () => {
 }
 
 export const showErrorAlertWithSpace = (title: string, message: string) => {
-    Swal.fire({
+    Toast.fire({
         icon: 'error',
         title: title,
         html: message.replace(/\n/g, '<br>'),
-        background: colors.darkPurple,
-        color: colors.white,
-        confirmButtonColor: colors.error,
-    });
+    })
 };
 
 export const showSuccessAlertWithoutRedirect = (message: string, confirmText: string = 'OK') => {
-    Swal.fire({
+    Toast.fire({
         icon: 'success',
         title: 'Success!',
         text: message,
         confirmButtonText: confirmText,
-        confirmButtonColor: colors.lightGreen,
-        background: colors.darkPurple,
-        color: colors.white,
-    });
+    })
 };
