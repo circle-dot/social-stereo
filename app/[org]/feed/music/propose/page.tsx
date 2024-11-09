@@ -5,19 +5,19 @@ import { useSearchParams } from 'next/navigation'
 import { Skeleton } from '@/components/ui/skeleton'
 
 interface PageProps {
-  params: {
-    org: string
-  }
+    params: {
+        org: string
+    }
 }
 
 function ProposeMusicContent({ params }: PageProps) {
     const searchParams = useSearchParams()
     const initialSearch = searchParams.get('search') || ''
-    
+
     const orgName = params.org
-      .split(/[-_]/)
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
+        .split(/[-_]/)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
 
     return (
         <div className='flex flex-col items-center justify-center min-h-screen p-4'>

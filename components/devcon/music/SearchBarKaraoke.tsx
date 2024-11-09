@@ -47,7 +47,7 @@ function SearchBarKaraoke() {
         setResults([]);
         return;
       }
-      
+
       if (ethers.isAddress(searchTerm)) {
         setResults([{ name: searchTerm, id: searchTerm }]);
         return;
@@ -75,8 +75,9 @@ function SearchBarKaraoke() {
         onChange={handleInputChange}
         placeholder="Enter ENS name or ETH address"
         className="w-full p-3 rounded-lg bg-custom-darkGreen border border-custom-lightGreen text-white"
+        style={{ fontSize: '16px' }}
       />
-      
+
       {loading && (
         <div className="absolute right-3 top-3">
           <div className="animate-spin h-5 w-5 border-2 border-custom-lightGreen border-t-transparent rounded-full" />

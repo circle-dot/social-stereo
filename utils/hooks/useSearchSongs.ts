@@ -2,12 +2,12 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 
 const fetchMusic = async ({ pageParam = 1, queryKey }: any) => {
     const [, sortOrder, searchQuery, community] = queryKey;
-    const queryString = new URLSearchParams({ 
-        page: String(pageParam), 
-        limit: '20', 
-        sortOrder, 
+    const queryString = new URLSearchParams({
+        page: String(pageParam),
+        limit: '20',
+        sortOrder,
         searchQuery,
-        community 
+        community
     }).toString();
     const response = await fetch(`/api/musicRanking?${queryString}`);
     return response.json();
