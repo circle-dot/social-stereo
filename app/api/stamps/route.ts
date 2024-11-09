@@ -704,6 +704,7 @@ export async function GET(request: Request) {
         });
         // Check DevCon attendance and get attestation ID
         const devconAttestationId = await checkDevconAttendance(wallet!);
+        console.log('DevCon attestation ID:', devconAttestationId);
 
         // Query for existing stamp attestations
         const stampVariables = {
@@ -771,7 +772,7 @@ export async function GET(request: Request) {
             Stamp3: attestations.length >= 10 ? attestations[9].id : null,
             Stamp4: attestations.length === 25 ? attestations[24].id : null,
             Stamp5: earlyMorningAttestation?.id || null,
-            Stamp14: stamp14Attestation ? stamp14Attestation.id : null
+            Stamp14: devconAttestationId
         };
         console.log(' earnedStamps', earnedStamps)
         console.log('attestations', Object.entries(attestations).length)
