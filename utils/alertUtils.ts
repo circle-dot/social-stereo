@@ -65,9 +65,12 @@ export const showLoadingAlert = (title: string, text: string) => {
     Swal.fire({
         title: title,
         text: text,
-        allowOutsideClick: false,
+        allowOutsideClick: true,
+        allowEscapeKey: true,
+        showCloseButton: true,
         background: colors.darkPurple,
         color: colors.white,
+        iconColor: colors.lightGreen,
         didOpen: () => {
             Swal.showLoading();
         },
