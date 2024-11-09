@@ -13,13 +13,6 @@ interface StampResponse {
   earnedStamps: Record<string, string>
 }
 
-interface Stamp {
-  id: string
-  title: string
-  icon: string
-  isLocked?: boolean
-  canClaim?: boolean
-}
 
 const StampCollection = () => {
   const title = "My Stamps";
@@ -112,7 +105,7 @@ const StampCollection = () => {
   ];
 
   // Initialize with locked stamps immediately
-  const [stamps, setStamps] = useState<Stamp[]>(() => 
+  const [stamps, setStamps] = useState<any[]>(() => 
     stampsHistory.map(stamp => ({
       id: stamp.id,
       title: stamp.title,
@@ -152,25 +145,25 @@ const StampCollection = () => {
       
       // Transform stamps data based on response
       const processedStamps = stampsHistory.map(stamp => {
-        // Always unlock DevCon Sea Attendee stamp (id: '14')
-        // For other stamps, check if they exist in earnedStamps
-        const isEarned = stamp.id === '14' || `Stamp${stamp.id}` in data.earnedStamps
+        const isEarned = `Stamp${stamp.id}` in data.earnedStamps;
+        const canClaim = stamp.id in data.missingStamps;
         
         return {
           id: stamp.id,
           title: stamp.title,
           icon: stamp.imageurl,
           isLocked: !isEarned,
-          canClaim: false
+          canClaim,
+          attestationUID: canClaim ? data.missingStamps[stamp.id] : undefined
         }
-      })
+      });
       
       // Sort stamps: earned first, then locked
       const sortedStamps = processedStamps.sort((a, b) => {
         if (!a.isLocked && b.isLocked) return -1
         if (a.isLocked && !b.isLocked) return 1
         return 0
-      })
+      });
       
       setStamps(sortedStamps)
     } catch (error) {
@@ -179,6 +172,32 @@ const StampCollection = () => {
       setIsLoading(false)
     }
   }
+
+  const claimStamp = async (stampId: string, attestationUID: string) => {
+    try {
+      const response = await fetch('/api/stamps', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          wallet: user?.wallet?.address,
+          stampId,
+          attestationUID,
+          org: 'devcon'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to claim stamp');
+      }
+
+      // Refresh stamps after successful claim
+      await getStamps();
+    } catch (error) {
+      console.error('Error claiming stamp:', error);
+    }
+  };
 
   return (
     <div className="w-full max-w-3xl mx-auto my-4">
@@ -208,37 +227,42 @@ const StampCollection = () => {
           {stamps.map((stamp) => (
             <div
               key={stamp.id}
-              className={cn(
-                "flex flex-col items-center p-4 rounded-xl w-[160px]",
-                "bg-custom-darkPurple border border-custom-lightGreen",
-                "transition-all duration-200",
-                (stamp.isLocked || isLoading) && "opacity-50",
-                !stamp.isLocked && !isLoading && "hover:border-custom-lightGreen/50"
-              )}
+              className="relative"
             >
-              {stamp.canClaim && (
-                <button
-                  className="mb-2 px-3 py-1 text-sm bg-custom-lightGreen text-custom-darkPurple rounded-full hover:bg-custom-lightGreen/90 transition-colors"
-                  onClick={() => {/* Add claim handling here */}}
-                >
-                  Claim
-                </button>
+              {stamp.canClaim && stamp.attestationUID && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50 rounded-xl">
+                  <button
+                    className="px-3 py-1 text-sm bg-custom-lightGreen text-custom-darkPurple rounded-full hover:bg-custom-lightGreen/90 transition-colors"
+                    onClick={() => claimStamp(stamp.id, stamp.attestationUID!)}
+                    disabled={isLoading}
+                  >
+                    Claim
+                  </button>
+                </div>
               )}
-              <div className="relative min-w-[96px] min-h-[96px] mb-3">
-                <Image
-                  src={`/stamps/${stamp.icon.split('/').pop()}`}
-                  alt={stamp.title}
-                  fill
-                  className="rounded-full"
-                  priority
-                />
+              <div
+                className={cn(
+                  "flex flex-col items-center p-4 rounded-xl w-[160px] h-[200px]",
+                  "bg-custom-darkPurple border border-custom-lightGreen",
+                  "transition-all duration-200",
+                  (!stamp.isLocked && !isLoading) 
+                    ? "hover:border-custom-lightGreen/50" 
+                    : "opacity-50"
+                )}
+              >
+                <div className="relative min-w-[96px] min-h-[96px] mb-3">
+                  <Image
+                    src={`/stamps/${stamp.icon.split('/').pop()}`}
+                    alt={stamp.title}
+                    fill
+                    className="rounded-full"
+                    priority
+                  />
+                </div>
+                <span className="text-center text-white/50 line-clamp-2">
+                  {stamp.title}
+                </span>
               </div>
-              <span className={cn(
-                "text-center",
-                stamp.isLocked ? "text-white/50" : "text-white"
-              )}>
-                {stamp.title}
-              </span>
             </div>
           ))}
         </div>

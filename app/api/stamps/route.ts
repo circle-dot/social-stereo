@@ -5,6 +5,51 @@ import { NextResponse } from 'next/server';
 import { EAS_CONFIG } from "@/config/site";
 import communities from '@/data/communities.json';
 
+async function checkDevconAttendance(wallet: string): Promise<string | null> {
+    const query = `
+        query Attestations($where: AttestationWhereInput) {
+            attestations(where: $where) {
+                id
+                attester
+                timeCreated
+                recipient
+                decodedDataJson
+            }
+        }
+    `;
+
+    const variables = {
+        where: {
+            schemaId: {
+                equals: EAS_CONFIG.PRETRUST_SCHEMA
+            },
+            revoked: {
+                equals: false
+            },
+            recipient: {
+                equals: wallet
+            },
+            decodedDataJson: {
+                contains: '0x446576636f6e0000000000000000000000000000000000000000000000000000'
+            }
+        }
+    };
+
+    const response = await fetch(EAS_CONFIG.GRAPHQL_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables
+        })
+    });
+    
+    const data = await response.json();
+    return data.data.attestations.length > 0 ? data.data.attestations[0].id : null;
+}
+
 export async function POST(request: Request) {
     try {
         const { wallet, org } = await request.json();
@@ -98,12 +143,16 @@ export async function POST(request: Request) {
             return hour >= 3 && hour < 6;
         });
 
+        // Check DevCon attendance and get attestation ID
+        const devconAttestationId = await checkDevconAttendance(wallet);
+
         const result = {
             Stamp1: attestations.length > 0 ? attestations[0].id : null,
             Stamp2: attestations.length >= 5 ? attestations[4].id : null,
             Stamp3: attestations.length >= 10 ? attestations[9].id : null,
             Stamp4: attestations.length === 25 ? attestations[24].id : null,
-            Stamp5: earlyMorningAttestation?.id || null
+            Stamp5: earlyMorningAttestation?.id || null,
+            Stamp14: devconAttestationId
         };
 
         console.log('earned stamps', result);
@@ -377,26 +426,64 @@ export async function PUT(request: Request) {
 
         // Verify conditions based on stampId
         let isEligible = false;
+        let verifiedAttestationId: string | null = null;
+
         switch (stampId) {
             case "1":
                 isEligible = attestations.length > 0;
+                verifiedAttestationId = isEligible ? attestations[0].id : null;
                 break;
             case "2":
                 isEligible = attestations.length >= 5;
+                verifiedAttestationId = isEligible ? attestations[4].id : null;
                 break;
             case "3":
                 isEligible = attestations.length >= 10;
+                verifiedAttestationId = isEligible ? attestations[9].id : null;
                 break;
             case "4":
                 isEligible = attestations.length === 25;
+                verifiedAttestationId = isEligible ? attestations[24].id : null;
                 break;
             case "5":
-                isEligible = attestations.some((att: any) => {
+                const earlyMorningAtt = attestations.find((att: any) => {
                     const bangkokTime = new Date(att.timeCreated * 1000);
                     bangkokTime.setHours(bangkokTime.getHours() + 7);
                     const hour = bangkokTime.getHours();
                     return hour >= 3 && hour < 6;
                 });
+                isEligible = !!earlyMorningAtt;
+                verifiedAttestationId = earlyMorningAtt?.id || null;
+                break;
+            case "14":
+                // First check if they have the DevCon attestation
+                verifiedAttestationId = await checkDevconAttendance(wallet);
+                isEligible = verifiedAttestationId !== null;
+
+                // Then check if they already have the stamp
+                if (isEligible) {
+                    const stampExists = await fetch(EAS_CONFIG.GRAPHQL_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            query,
+                            variables: {
+                                where: {
+                                    schemaId: { equals: EAS_CONFIG.STAMP_SCHEMA },
+                                    revoked: { equals: false },
+                                    recipient: { equals: wallet },
+                                    decodedDataJson: {
+                                        contains: verifiedAttestationId
+                                    }
+                                }
+                            }
+                        })
+                    }).then(res => res.json());
+
+                    if (stampExists.data.attestations.length > 0) {
+                        isEligible = false; // They already have the stamp
+                    }
+                }
                 break;
             default:
                 return NextResponse.json(
@@ -409,6 +496,14 @@ export async function PUT(request: Request) {
             return NextResponse.json(
                 { error: 'Wallet does not meet conditions for this stamp' },
                 { status: 403 }
+            );
+        }
+
+        // Verify that the attestationUID matches the verified attestation
+        if (stampId === "14" && attestationUID !== verifiedAttestationId) {
+            return NextResponse.json(
+                { error: 'Invalid attestation UID for this stamp' },
+                { status: 400 }
             );
         }
 
@@ -531,12 +626,16 @@ export async function GET(request: Request) {
             return hour >= 3 && hour < 6;
         });
 
+        // Check DevCon attendance and get attestation ID
+        const devconAttestationId = await checkDevconAttendance(wallet!);
+
         const earnedStamps = Object.entries({
             Stamp1: attestations.length > 0 ? attestations[0].id : null,
             Stamp2: attestations.length >= 5 ? attestations[4].id : null,
             Stamp3: attestations.length >= 10 ? attestations[9].id : null,
             Stamp4: attestations.length === 25 ? attestations[24].id : null,
-            Stamp5: earlyMorningAttestation?.id || null
+            Stamp5: earlyMorningAttestation?.id || null,
+            Stamp14: devconAttestationId
         }).reduce((acc, [key, value]) => {
             if (value !== null) {
                 acc[key] = value;
