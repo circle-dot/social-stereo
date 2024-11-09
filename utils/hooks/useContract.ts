@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { createPublicClient, http } from 'viem';
-import { baseSepolia } from 'viem/chains';
+import { base } from 'viem/chains';
 import { abi } from '@/config/smartContract/contractABI';
 
-const CONTRACT_ADDRESS = '0x0000001513e2e9C7990Dcc8A7E99E0B4b32605fd';
+const CONTRACT_ADDRESS = '0x00000006f52ab519ce4fF755Ec62990D0F509d66';
 
 // Create the client outside of the hook to ensure it's only created once
 const client = createPublicClient({
-  chain: baseSepolia,
+  chain: base,
   transport: http(),
 });
 
