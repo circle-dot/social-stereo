@@ -383,6 +383,12 @@ export async function PUT(request: Request) {
     try {
         const { wallet, stampId, attestationUID, org } = await request.json();
 
+        // Debug environment variables
+        console.log('Environment check:', {
+            apiUrl: process.env.NEXT_PUBLIC_STAMP_API_URL,
+            hasApiKey: !!process.env.STAMP_API_KEY
+        });
+
         if (!wallet || !stampId || !attestationUID || !org) {
             return NextResponse.json(
                 { error: 'Wallet address, stampId, attestationUID, and org are required' },
@@ -531,9 +537,11 @@ export async function PUT(request: Request) {
             );
         }
 
-        // If eligible, proceed with stamp creation
+        const stampApiUrl = `${process.env.NEXT_PUBLIC_STAMP_API_URL}/attestation/stamp`;
+        console.log('Making request to:', stampApiUrl);
+
         const stampApiResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_STAMP_API_URL}/attestation/stamp`,
+            stampApiUrl,
             {
                 method: 'POST',
                 headers: {
@@ -549,17 +557,51 @@ export async function PUT(request: Request) {
             }
         );
 
-        const stampApiResponseBody = await stampApiResponse.json();
+        // Log the raw response
+        console.log('Response status:', stampApiResponse.status);
+        const rawResponse = await stampApiResponse.text();
+        console.log('Raw response:', rawResponse);
+
+        // Parse the response only if it's valid JSON
+        let stampApiResponseBody;
+        try {
+            stampApiResponseBody = JSON.parse(rawResponse);
+        } catch (e) {
+            console.error('Failed to parse response:', e);
+            throw new Error('Invalid JSON response from stamp API');
+        }
+
+        // Add debug logging
+        console.log('Stamp API Response:', stampApiResponseBody);
+
+        // Check if response has the expected structure
+        if (!stampApiResponseBody || typeof stampApiResponseBody !== 'object') {
+            throw new Error('Invalid response from stamp API');
+        }
+
+        // Handle different response structures
+        const successful = stampApiResponseBody.results?.successful || stampApiResponseBody.successful || [];
+        const failed = stampApiResponseBody.results?.failed || stampApiResponseBody.failed || [];
 
         return NextResponse.json({
-            newAttestations: stampApiResponseBody.results.successful,
-            failedAttestations: stampApiResponseBody.results.failed
+            newAttestations: successful.map((stamp: any) => ({
+                stampId: stamp.stampId || stampId,
+                attestationUID: stamp.attestationUID || stamp.id
+            })),
+            failedAttestations: failed
         });
 
     } catch (error) {
         console.error('Error creating stamp:', error);
+        if (error instanceof Error) {
+            console.error('Error stack:', error.stack);
+        }
         return NextResponse.json(
-            { error: 'Failed to create stamp' },
+            { 
+                error: 'Failed to create stamp', 
+                details: error instanceof Error ? error.message : 'Unknown error',
+                stack: error instanceof Error ? error.stack : undefined
+            },
             { status: 500 }
         );
     }
