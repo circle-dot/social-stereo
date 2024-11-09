@@ -148,25 +148,32 @@ const StampCollection = () => {
       
       // Transform stamps data based on response
       const processedStamps = stampsHistory.map(stamp => {
-        // Check if the stamp exists in earnedStamps AND has a non-null value
-        const isEarned = `Stamp${stamp.id}` in data.earnedStamps && 
-                         data.earnedStamps[`Stamp${stamp.id}`] !== null;
+        const stampKey = `Stamp${stamp.id}`;
+        // Check if the stamp exists in currentStamps
+        const isEarned = stampKey in data.currentStamps;
+        
+        // Can claim if we meet the conditions but don't have the stamp yet
+        const canClaim = stampKey in data.earnedStamps && 
+                        data.earnedStamps[stampKey] !== null && 
+                        !isEarned;
         
         return {
-          id: stamp.id,
-          title: stamp.title,
-          icon: stamp.imageurl,
-          isLocked: !isEarned,
-          canClaim: stamp.id in data.missingStamps,
-          attestationUID: data.missingStamps[stamp.id]
+            id: stamp.id,
+            title: stamp.title,
+            icon: stamp.imageurl,
+            isLocked: !isEarned,
+            canClaim,
+            attestationUID: canClaim ? data.earnedStamps[stampKey] : undefined
         }
       });
       
-      // Sort stamps: earned first, then locked
+      // Sort stamps: claimable first, then earned, then locked
       const sortedStamps = processedStamps.sort((a, b) => {
-        if (!a.isLocked && b.isLocked) return -1
-        if (a.isLocked && !b.isLocked) return 1
-        return 0
+        if (a.canClaim && !b.canClaim) return -1;
+        if (!a.canClaim && b.canClaim) return 1;
+        if (!a.isLocked && b.isLocked) return -1;
+        if (a.isLocked && !b.isLocked) return 1;
+        return 0;
       });
       
       setStamps(sortedStamps)
