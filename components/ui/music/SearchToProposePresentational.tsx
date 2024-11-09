@@ -64,29 +64,32 @@ function SearchToProposePresentational({
         <>
           {searchResults.map((track: any) => (
             <div key={track.id} className="flex items-stretch mb-2 h-16">
-              <div className="flex items-center flex-grow bg-white rounded-lg overflow-hidden">
-                <div className="h-full w-16 relative">
-                  <Image
-                    src={track.imageUrl}
-                    alt={`${track.title} album cover`}
-                    width={100}
-                    height={100}
-                    className="rounded-lg border border-custom-lightGreen object-cover"
-                  />
-                </div>
-                <div className="flex-grow px-3 py-2">
-                  <h3 className="font-bold text-custom-dark truncate">
-                    {truncate(track.title, 10)}
-                  </h3>
-                  <p className="text-sm text-custom-dark truncate">
-                    {truncate(track.artist, 10)}
-                  </p>
-                </div>
-                <div className="pr-2">
-                  <VoteSongButton trackId={track.id} params={params} />
+              <div className="flex justify-between flex-grow bg-white rounded-lg overflow-hidden">
+                <div className="flex items-center flex-grow bg-white rounded-lg overflow-hidden">
+                  <div className="h-full min-w-16 relative">
+                    <Image
+                      src={track.imageUrl}
+                      alt={`${track.title} album cover`}
+                      fill
+                      className="rounded-lg border border-custom-lightGreen object-cover"
+                    />
+                  </div>
+                  <div className="flex-grow px-3 py-1 text-left max-w-[60%]">
+                    <h3 className="font-bold text-custom-dark truncate">
+                      {track.title}
+                    </h3>
+                    <p className="text-sm text-custom-dark truncate">
+                      {track.artist}
+                    </p>
+                  </div>
+                  <div className="pr-2">
+                    <VoteSongButton trackId={track.id} params={params} />
+                  </div>
                 </div>
               </div>
             </div>
+
+
           ))}
         </>
       ) : (
