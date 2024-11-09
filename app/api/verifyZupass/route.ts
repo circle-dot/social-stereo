@@ -171,6 +171,9 @@ export async function POST(request: Request) {
                     },
                     recipient: {
                         equals: user.wallet.address
+                    },
+                    decodedDataJson:{
+                        contains: '0x446576636f6e0000000000000000000000000000000000000000000000000000'
                     }
                 }
             };
