@@ -110,95 +110,88 @@ export async function POST(request: Request) {
 
         const stampsHistory = [
             {
+              id: '0',
+              title: 'DevCon Sea Atendee',
+              description: 'You attended the DevCon SEA event.',
+              imageurl: 'https://stereo.stamp.network/stamps/attendee.png'
+            },
+            {
               id: '1',
               title: 'Love at First Sight',
               description: 'You proposed a song.',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/loveatfirstsight.png'
             },
             {
               id: '2',
               title: 'Getting there',
               description: 'You vouched for 5 songs',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps.png'
             },
             {
               id: '3',
               title: 'Livin on a prayer',
               description: 'You vouched for 10 songs.',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/livinonaprayer.png'
             },
             {
               id: '4',
               title: 'All In',
               description: 'You used ALL your vouches.',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/allin.png'
             },
             {
               id: '5',
               title: 'Midnight DJ',
               description: 'You proposed or voted on songs during the "dead hours" and kept the playlist alive.',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/midnightdj.png'
             },
             {
               id: '6',
               title: 'Music Prophet',
               description: 'You voted for three songs that ended up in the top 10. You\'ve got the magic touch!',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/musicprophet.png'
             },
             {
               id: '7',
               title: 'Passionate Proposer',
               description: 'You\'ve proposed 10+ songs that have entered the top 100. You bring the hits!',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/passionateproposer.png'
             },
             {
               id: '8',
               title: 'Lone Listener',
               description: 'You voted for a song that no one else dared to. We see you.',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/lonelistener.png'
             },
             {
               id: '9',
               title: 'Party Catalyst',
               description: 'Your song was the first to reach 10 votes.',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/partycatalyst.png'
             },
             {
               id: '10',
               title: 'Genre Guru',
               description: 'You\'ve voted for 10+ songs of the same genre. You\'re kind of an expert, aren\'t you?',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/genregu.png'
             },
             {
               id: '11',
               title: 'Diamond Curator',
               description: 'A song you voted ended up in the top 10.',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/diamondcurator.png'
             },
             {
               id: '12',
               title: 'Gold Curator',
               description: 'A song you voted ended up in the top 50.',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/goldcurator.png'
             },
             {
               id: '13',
               title: 'Silver Curator',
               description: 'A song you voted ended up in the top 100.',
-              icon: '/StampIt.png',
-              isLocked: true
+              imageurl: 'https://stereo.stamp.network/stamps/silvercurator.png'
             }
           ];
         // Create AND conditions for non-null stamps
@@ -317,6 +310,201 @@ export async function POST(request: Request) {
             earnedStamps: result,
             missingAttestations: missingStamps
         });
+
+    } catch (error) {
+        console.error('Error fetching stamps:', error);
+        return NextResponse.json(
+            { error: 'Failed to fetch stamps' },
+            { status: 500 }
+        );
+    }
+}
+
+
+
+export async function PUT(request: Request) {
+    try {
+        const { wallet, stampId, attestationUID } = await request.json();
+
+        if (!wallet || !stampId || !attestationUID) {
+            return NextResponse.json(
+                { error: 'Wallet address, stampId, and attestationUID are required' },
+                { status: 400 }
+            );
+        }
+
+        const stampApiResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_STAMP_API_URL}/attestation/stamp`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': process.env.STAMP_API_KEY || ""
+                },
+                body: JSON.stringify({
+                    wallet,
+                    stamps: {
+                        [stampId]: attestationUID
+                    }
+                })
+            }
+        );
+
+        const stampApiResponseBody = await stampApiResponse.json();
+
+        return NextResponse.json({
+            newAttestations: stampApiResponseBody.results.successful,
+            failedAttestations: stampApiResponseBody.results.failed
+        });
+
+    } catch (error) {
+        console.error('Error creating stamp:', error);
+        return NextResponse.json(
+            { error: 'Failed to create stamp' },
+            { status: 500 }
+        );
+    }
+}
+
+export async function GET(request: Request) {
+    try {
+        // Get wallet and org from URL parameters
+        const { searchParams } = new URL(request.url);
+        const wallet = searchParams.get('wallet');
+        const org = searchParams.get('org');
+
+        if (!wallet || !org) {
+            return NextResponse.json(
+                { error: 'Wallet address and org are required' },
+                { status: 400 }
+            );
+        }
+
+        // Reuse the same GraphQL query from POST
+        const query = `
+            query Attestations($where: AttestationWhereInput) {
+                attestations(where: $where) {
+                    id
+                    attester
+                    timeCreated
+                    recipient
+                    decodedDataJson
+                }
+            }
+        `;
+
+        // Find community config case-insensitively
+        const communityKey = Object.keys(communities).find(
+            key => key.toLowerCase() === org.toLowerCase()
+        );
+
+        if (!communityKey) {
+            throw new Error(`Community ${org} not found in configuration`);
+        }
+        const communityConfig = communities[communityKey as keyof typeof communities];
+
+        // First query to get earned stamps
+        const variables = {
+            where: {
+                schemaId: {
+                    equals: EAS_CONFIG.VOUCH_SCHEMA
+                },
+                revoked: {
+                    equals: false
+                },
+                attester: {
+                    equals: wallet
+                },
+                AND: [
+                    {
+                        decodedDataJson: {
+                            contains: communityConfig.FirstFilter
+                        }
+                    },
+                    {
+                        decodedDataJson: {
+                            contains: communityConfig.SecondFilter
+                        }
+                    },
+                    {
+                        decodedDataJson: {
+                            contains: communityConfig.ThirdFilter
+                        }
+                    }
+                ]
+            }
+        };
+
+        const response = await fetch(EAS_CONFIG.GRAPHQL_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables })
+        });
+        const data = await response.json();
+        const attestations = data.data.attestations;
+
+        // Calculate earned stamps
+        const earlyMorningAttestation = attestations.find((att: { timeCreated: number; }) => {
+            const bangkokTime = new Date(att.timeCreated * 1000);
+            bangkokTime.setHours(bangkokTime.getHours() + 7);
+            const hour = bangkokTime.getHours();
+            return hour >= 3 && hour < 6;
+        });
+
+        const earnedStamps = {
+            Stamp1: attestations.length > 0 ? attestations[0].id : null,
+            Stamp2: attestations.length >= 5 ? attestations[4].id : null,
+            Stamp3: attestations.length >= 10 ? attestations[9].id : null,
+            Stamp4: attestations.length === 25 ? attestations[24].id : null,
+            Stamp5: earlyMorningAttestation?.id || null
+        };
+
+      // ... existing code ...
+
+// Query existing stamp attestations
+const stampVariables = {
+    where: {
+        schemaId: {
+            equals: EAS_CONFIG.STAMP_SCHEMA
+        },
+        revoked: {
+            equals: false
+        },
+        recipient: {
+            equals: wallet
+        }
+    }
+};
+
+const stampResponse = await fetch(EAS_CONFIG.GRAPHQL_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables: stampVariables })
+});
+const stampData = await stampResponse.json();
+const stampAttestations = stampData.data.attestations;
+
+// Extract just the IDs from stampAttestations
+const currentStampIds = stampAttestations.map((att: any) => att.id);
+
+// Calculate missing stamps
+const missingStamps = Object.entries(earnedStamps)
+    .filter(([_, stampId]) => {
+        if (stampId === null) return false;
+        return !stampAttestations.some((att: any) => 
+            att.decodedDataJson.includes(stampId)
+        );
+    })
+    .reduce((acc, [key, value]) => ({
+        ...acc,
+        [key.replace('Stamp', '')]: value
+    }), {});
+
+return NextResponse.json({
+    currentStamps: currentStampIds,
+    missingStamps,
+    earnedStamps
+});
 
     } catch (error) {
         console.error('Error fetching stamps:', error);
