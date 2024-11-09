@@ -201,11 +201,26 @@ const StampCollection = () => {
 
         const data = await response.json();
         
-        // If we have successful attestations, refresh the stamps
+        // If we have successful attestations, update the stamps locally
         if (data.newAttestations && data.newAttestations.length > 0) {
-            await getStamps();
+            setStamps(currentStamps => 
+                currentStamps.map(stamp => {
+                    const newAttestation = data.newAttestations.find(
+                        (att: { stampId: string }) => att.stampId === stamp.id
+                    );
+                    
+                    if (newAttestation) {
+                        return {
+                            ...stamp,
+                            isLocked: false,
+                            canClaim: false,
+                            attestationUID: newAttestation.attestationUID
+                        };
+                    }
+                    return stamp;
+                })
+            );
         } else if (data.failedAttestations && data.failedAttestations.length > 0) {
-            // Handle failed attestations (optional)
             console.error('Failed to claim stamp:', data.failedAttestations);
         }
 
