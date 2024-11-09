@@ -131,7 +131,7 @@ export const handleVouch = async (
             showErrorAlert("You have already vouched for this in this season.");
         } else {
             if (retryCount < MAX_RETRIES) {
-                console.log(`Retry attempt ${retryCount + 1} of ${MAX_RETRIES}`);
+                console.log(`Retry attempt ${retryCount} of ${MAX_RETRIES}`);
                 await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
                 return handleVouch(
                     recipient,
@@ -147,7 +147,7 @@ export const handleVouch = async (
                     retryCount + 1
                 );
             } else {
-                showErrorAlert(`An error occurred while creating the vouch after ${MAX_RETRIES} attempts.`);
+                showErrorAlert(`An error occurred while creating the vouch after ${MAX_RETRIES + 1} attempts.`);
             }
         }
     }
