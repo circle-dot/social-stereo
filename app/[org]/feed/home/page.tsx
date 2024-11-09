@@ -38,7 +38,7 @@ export default function HomePage({ params }: PageProps) {
         <p>This app lets you vote for your favorite music and collect stamps. An artifact with all the decentralized playlist will be minted once the event is over.</p>
         <StampCollection />
       </div>
-      <div className="flex flex-row flex-col gap-4">
+      <div className="flex flex-col gap-4">
         {cardData.map((card, index) => (
           <NavigationCard
             key={index}

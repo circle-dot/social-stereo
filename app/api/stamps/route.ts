@@ -110,12 +110,6 @@ export async function POST(request: Request) {
 
         const stampsHistory = [
             {
-              id: '0',
-              title: 'DevCon Sea Atendee',
-              description: 'You attended the DevCon SEA event.',
-              imageurl: 'https://stereo.stamp.network/stamps/attendee.png'
-            },
-            {
               id: '1',
               title: 'Love at First Sight',
               description: 'You proposed a song.',
@@ -192,7 +186,13 @@ export async function POST(request: Request) {
               title: 'Silver Curator',
               description: 'A song you voted ended up in the top 100.',
               imageurl: 'https://stereo.stamp.network/stamps/silvercurator.png'
-            }
+            },
+            {
+              id: '14',
+              title: 'DevCon Sea Atendee',
+              description: 'You attended the DevCon SEA event.',
+              imageurl: 'https://stereo.stamp.network/stamps/attendee.png'
+            },
           ];
         // Create AND conditions for non-null stamps
         const stampConditions = Object.entries(result)
