@@ -117,6 +117,9 @@ const StampCollection = () => {
   // Set initial loading state to true if we need to authenticate
   const [isLoading, setIsLoading] = useState(true)
 
+  // Add a state to track which stamp is being claimed
+  const [claimingStampId, setClaimingStampId] = useState<string | null>(null);
+
   useEffect(() => {
     if (ready && authenticated && user?.wallet?.address) {
       getStamps()
@@ -173,31 +176,35 @@ const StampCollection = () => {
     }
   }
 
+  // Update the claimStamp function to handle loading state
   const claimStamp = async (stampId: string, attestationUID: string) => {
     try {
-      const response = await fetch('/api/stamps', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          wallet: user?.wallet?.address,
-          stampId,
-          attestationUID,
-          org: 'devcon'
-        })
-      });
+        setClaimingStampId(stampId);
+        const response = await fetch('/api/stamps', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                wallet: user?.wallet?.address,
+                stampId,
+                attestationUID,
+                org: 'devcon'
+            })
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to claim stamp');
-      }
+        if (!response.ok) {
+            throw new Error('Failed to claim stamp');
+        }
 
-      // Refresh stamps after successful claim
-      await getStamps();
+        // Refresh stamps after successful claim
+        await getStamps();
     } catch (error) {
-      console.error('Error claiming stamp:', error);
+        console.error('Error claiming stamp:', error);
+    } finally {
+        setClaimingStampId(null);
     }
-  };
+};
 
   return (
     <div className="w-full max-w-3xl mx-auto my-4">
@@ -232,11 +239,23 @@ const StampCollection = () => {
               {stamp.canClaim && stamp.attestationUID && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50 rounded-xl">
                   <button
-                    className="px-3 py-1 text-sm bg-custom-lightGreen text-custom-darkPurple rounded-full hover:bg-custom-lightGreen/90 transition-colors"
+                    className={cn(
+                      "px-3 py-1 text-sm rounded-full transition-colors",
+                      claimingStampId === stamp.id
+                          ? "bg-white/10 cursor-not-allowed"
+                          : "bg-custom-lightGreen text-custom-darkPurple hover:bg-custom-lightGreen/90"
+                    )}
                     onClick={() => claimStamp(stamp.id, stamp.attestationUID!)}
-                    disabled={isLoading}
+                    disabled={isLoading || claimingStampId === stamp.id}
                   >
-                    Claim
+                    {claimingStampId === stamp.id ? (
+                      <RefreshCcw 
+                        className="w-4 h-4 animate-spin" 
+                        stroke="#B9FE5E"
+                      />
+                    ) : (
+                      "Claim"
+                    )}
                   </button>
                 </div>
               )}
