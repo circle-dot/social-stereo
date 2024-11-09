@@ -1,5 +1,5 @@
 import { createWalletClient, custom } from 'viem';
-import { base, baseSepolia } from 'viem/chains';
+import { base } from 'viem/chains';
 
 export const signTypedData = async (user: { wallet: { walletClientType: string; }; }, wallets: any[], chainId: number, typedData: { types: any; domain: any; primaryType: any; message: any; }) => {
     let signature;
