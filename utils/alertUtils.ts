@@ -37,10 +37,10 @@ export const showAlertWithRedirect = async (
         icon: isError ? 'error' : 'success',
         title,
         confirmButtonText: buttonText,
-        confirmButtonColor: isError ? colors.error : colors.lightGreen,
+        confirmButtonColor: isError ? colors.error : colors.darkPurple,
         background: colors.darkPurple,
-        color: colors.white,
         allowOutsideClick: false,
+        // color: colors.white,
         allowEscapeKey: false,
     }).then((result) => {
         if (result.isConfirmed) {
