@@ -376,7 +376,7 @@ const StampCollection = () => {
             <motion.div
               layoutId={`card-${stamp.id}-${id}`}
               key={stamp.id}
-              onClick={() => setActiveStamp(stamp)}
+              onClick={() => !stamp.canClaim && setActiveStamp(stamp)}
               className="relative cursor-pointer group"
             >
               <div
@@ -389,32 +389,61 @@ const StampCollection = () => {
                     : "opacity-50"
                 )}
               >
-                {stamp.canClaim && stamp.attestationUID && (
-                  <>
-                    <div className="absolute top-3 right-3 flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-custom-lightGreen animate-pulse" />
+                <div className="relative">
+                  <motion.div 
+                    layoutId={`image-${stamp.id}-${id}`}
+                    className="relative min-w-[96px] min-h-[96px] mb-3 rounded-full overflow-hidden"
+                  >
+                    <Image
+                      src={`/stamps/${stamp.icon.split('/').pop()}`}
+                      alt={stamp.title}
+                      fill
+                      className="object-cover scale-110"
+                      priority
+                    />
+                  </motion.div>
+
+                  {/* Claim button overlay */}
+                  {stamp.canClaim && stamp.attestationUID && (
+                    <div 
+                      className="absolute inset-0 flex items-center justify-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        claimStamp(stamp.id, stamp.attestationUID!);
+                      }}
+                    >
+                      <button
+                        className={cn(
+                          "absolute inset-0 flex items-center justify-center rounded-full transition-all",
+                          claimingStampId === stamp.id
+                            ? "bg-black/50 cursor-not-allowed"
+                            : "bg-black/60 hover:bg-black/70"
+                        )}
+                        disabled={claimingStampId === stamp.id}
+                      >
+                        {claimingStampId === stamp.id ? (
+                          <RefreshCcw className="w-5 h-5 animate-spin text-white" />
+                        ) : (
+                          <div className="bg-custom-lightGreen text-custom-darkPurple px-4 py-2 rounded-full font-medium">
+                            Claim
+                          </div>
+                        )}
+                      </button>
                     </div>
-                    
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                      <div className="bg-custom-lightGreen text-custom-darkPurple px-4 py-2 rounded-full font-medium">
-                        Click to Claim
+                  )}
+
+                  {/* Show claimed indicator if just claimed */}
+                  {!stamp.canClaim && !stamp.isLocked && claimingStampId === stamp.id && (
+                    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60">
+                      <div className="bg-custom-darkGreen text-custom-lightGreen px-4 py-2 rounded-full font-medium">
+                        Claimed
                       </div>
                     </div>
-                  </>
-                )}
+                  )}
 
-                <motion.div 
-                  layoutId={`image-${stamp.id}-${id}`}
-                  className="relative min-w-[96px] min-h-[96px] mb-3 rounded-full overflow-hidden"
-                >
-                  <Image
-                    src={`/stamps/${stamp.icon.split('/').pop()}`}
-                    alt={stamp.title}
-                    fill
-                    className="object-cover scale-110"
-                    priority
-                  />
-                </motion.div>
+                 
+                </div>
+
                 <motion.span
                   layoutId={`title-${stamp.id}-${id}`}
                   className="text-center text-white/50 line-clamp-2"
