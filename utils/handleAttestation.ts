@@ -78,16 +78,28 @@ export const handleVouch = async (
             ]
         };
 
-        const value = {
-            attester: attester,
-            schema: schemaUID,
-            recipient: recipient,
-            expirationTime: BigInt(0),
-            revocable: true,
-            refUID: '0x0000000000000000000000000000000000000000000000000000000000000000',
-            data: encodedData,
-            nonce: BigInt(nonce),
-        };
+        const value = user.wallet.walletClientType === 'privy' 
+            ? {
+                schema: schemaUID,
+                recipient: recipient,
+                expirationTime: 0,
+                revocable: true,
+                refUID: '0x0000000000000000000000000000000000000000000000000000000000000000',
+                data: encodedData,
+                deadline: 0,
+                value: 0,
+                nonce: nonce
+            }
+            : {
+                attester: attester,
+                schema: schemaUID,
+                recipient: recipient,
+                expirationTime: BigInt(0),
+                revocable: true,
+                refUID: '0x0000000000000000000000000000000000000000000000000000000000000000',
+                data: encodedData,
+                nonce: BigInt(nonce)
+            };
 
         const typedData = {
             domain: domain,
