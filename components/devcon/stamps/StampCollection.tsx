@@ -351,23 +351,25 @@ const StampCollection = () => {
     <div className="w-full max-w-3xl mx-auto my-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-white">{title}</h2>
-        <button
-          onClick={() => getStamps()}
-          className={cn(
-            "p-2 rounded-full transition-colors",
-            isLoading 
-              ? "opacity-50 cursor-not-allowed bg-white/10" 
-              : "text-white/60 hover:text-custom-lightGreen hover:bg-white/10"
-          )}
-          disabled={isLoading}
-          aria-label="Refresh stamps"
-        >
-          <RefreshCcw 
-            className={cn("w-5 h-5", isLoading && "animate-spin")} 
-            stroke="#B9FE5E" 
-            strokeWidth={3}
-          />
-        </button>
+        {authenticated && (
+          <button
+            onClick={() => getStamps()}
+            className={cn(
+              "p-2 rounded-full transition-colors",
+              isLoading 
+                ? "opacity-50 cursor-not-allowed bg-white/10" 
+                : "text-white/60 hover:text-custom-lightGreen hover:bg-white/10"
+            )}
+            disabled={isLoading}
+            aria-label="Refresh stamps"
+          >
+            <RefreshCcw 
+              className={cn("w-5 h-5", isLoading && "animate-spin")} 
+              stroke="#B9FE5E" 
+              strokeWidth={3}
+            />
+          </button>
+        )}
       </div>
 
       <div className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-thin scrollbar-thumb-custom-lightGreen scrollbar-track-custom-darkGreen">
