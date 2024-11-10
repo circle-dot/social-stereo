@@ -3,16 +3,117 @@
 'use client';
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import { useEffect, useState } from "react"
-import { RefreshCcw } from 'lucide-react';
+import { useEffect, useId, useRef, useState } from "react"
+import { CircleX, RefreshCcw } from 'lucide-react';
 import { usePrivy } from "@privy-io/react-auth";
-
+import { AnimatePresence, motion } from "framer-motion";
+import { useOutsideClick } from "@/utils/hooks/useOutsideClick";
 interface StampResponse {
   currentStamps: string[]
   missingStamps: Record<string, any>
   earnedStamps: Record<string, string>
 }
 
+const ExpandableStamp = ({ 
+  stamp, 
+  stampInfo,
+  onClaim, 
+  isLoading, 
+  claimingStampId,
+  id,
+  onClose
+}: {
+  stamp: any;
+  stampInfo: any;
+  onClaim: (id: string, attestationUID: string) => void;
+  isLoading: boolean;
+  claimingStampId: string | null;
+  id: string;
+  onClose: () => void;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useOutsideClick(ref, onClose);
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/50 z-[99]"
+      />
+
+      <div className="fixed inset-0 grid place-items-center z-[100]">
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white"
+          onClick={onClose}
+        >
+          <CircleX className="w-5 h-5" />
+        </motion.button>
+        
+        <motion.div
+          layoutId={`card-${stamp.id}-${id}`}
+          ref={ref}
+          className="w-full max-w-[500px] bg-custom-darkPurple rounded-xl overflow-hidden"
+        >
+          <motion.div 
+            layoutId={`image-${stamp.id}-${id}`}
+            className="relative w-full h-[370px]"
+          >
+                   <Image
+              src={`/stamps/${stamp.icon.split('/').pop()}`}
+              alt={stamp.title}
+              fill
+              className="object-cover object-[center_center] -ml-[3px] scale-[1.03]"
+              priority
+            />
+          </motion.div>
+          
+          <div className="p-6">
+            <motion.h3
+              layoutId={`title-${stamp.id}-${id}`}
+              className="text-xl text-white text-center mb-4"
+            >
+              {stamp.title}
+            </motion.h3>
+            
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-white/70 text-center mb-6"
+            >
+              {stampInfo?.description}
+            </motion.p>
+
+            {stamp.canClaim && stamp.attestationUID && (
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className={cn(
+                  "w-full px-4 py-2 rounded-full text-center",
+                  claimingStampId === stamp.id
+                    ? "bg-white/10 cursor-not-allowed"
+                    : "bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90"
+                )}
+                onClick={() => onClaim(stamp.id, stamp.attestationUID!)}
+                disabled={isLoading || claimingStampId === stamp.id}
+              >
+                {claimingStampId === stamp.id ? (
+                  <RefreshCcw className="w-4 h-4 animate-spin mx-auto" />
+                ) : (
+                  "Claim Stamp"
+                )}
+              </motion.button>
+            )}
+          </div>
+        </motion.div>
+      </div>
+    </>
+  );
+};
 
 const StampCollection = () => {
   const title = "My Stamps";
@@ -119,6 +220,21 @@ const StampCollection = () => {
 
   // Add a state to track which stamp is being claimed
   const [claimingStampId, setClaimingStampId] = useState<string | null>(null);
+
+  const [activeStamp, setActiveStamp] = useState<any | null>(null);
+  const id = useId();
+
+  // Add this effect to handle body scroll
+  useEffect(() => {
+    if (activeStamp) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [activeStamp]);
 
   useEffect(() => {
     if (ready && authenticated && user?.wallet?.address) {
@@ -257,44 +373,40 @@ const StampCollection = () => {
       <div className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-thin scrollbar-thumb-custom-lightGreen scrollbar-track-custom-darkGreen">
         <div className="flex gap-4 min-w-max">
           {stamps.map((stamp) => (
-            <div
+            <motion.div
+              layoutId={`card-${stamp.id}-${id}`}
               key={stamp.id}
-              className="relative"
+              onClick={() => setActiveStamp(stamp)}
+              className="relative cursor-pointer group"
             >
-              {stamp.canClaim && stamp.attestationUID && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/50 rounded-xl">
-                  <button
-                    className={cn(
-                      "px-3 py-1 text-sm rounded-full transition-colors",
-                      claimingStampId === stamp.id
-                          ? "bg-white/10 cursor-not-allowed"
-                          : "bg-custom-lightGreen text-custom-darkPurple hover:bg-custom-lightGreen/90"
-                    )}
-                    onClick={() => claimStamp(stamp.id, stamp.attestationUID!)}
-                    disabled={isLoading || claimingStampId === stamp.id}
-                  >
-                    {claimingStampId === stamp.id ? (
-                      <RefreshCcw 
-                        className="w-4 h-4 animate-spin" 
-                        stroke="#B9FE5E"
-                      />
-                    ) : (
-                      "Claim"
-                    )}
-                  </button>
-                </div>
-              )}
               <div
                 className={cn(
                   "flex flex-col items-center p-4 rounded-xl w-[160px] h-[200px]",
-                  "bg-custom-darkPurple border border-custom-lightGreen",
-                  "transition-all duration-200",
+                  "bg-custom-darkPurple",
+                  "transition-all duration-200 relative",
                   (!stamp.isLocked && !isLoading) 
-                    ? "hover:border-custom-lightGreen/50" 
+                    ? "" 
                     : "opacity-50"
                 )}
               >
-                <div className="relative min-w-[96px] min-h-[96px] mb-3 rounded-full overflow-hidden">
+                {stamp.canClaim && stamp.attestationUID && (
+                  <>
+                    <div className="absolute top-3 right-3 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-custom-lightGreen animate-pulse" />
+                    </div>
+                    
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                      <div className="bg-custom-lightGreen text-custom-darkPurple px-4 py-2 rounded-full font-medium">
+                        Click to Claim
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <motion.div 
+                  layoutId={`image-${stamp.id}-${id}`}
+                  className="relative min-w-[96px] min-h-[96px] mb-3 rounded-full overflow-hidden"
+                >
                   <Image
                     src={`/stamps/${stamp.icon.split('/').pop()}`}
                     alt={stamp.title}
@@ -302,15 +414,32 @@ const StampCollection = () => {
                     className="object-cover scale-110"
                     priority
                   />
-                </div>
-                <span className="text-center text-white/50 line-clamp-2">
+                </motion.div>
+                <motion.span
+                  layoutId={`title-${stamp.id}-${id}`}
+                  className="text-center text-white/50 line-clamp-2"
+                >
                   {stamp.title}
-                </span>
+                </motion.span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {activeStamp && (
+          <ExpandableStamp
+            stamp={activeStamp}
+            stampInfo={stampsHistory.find(s => s.id === activeStamp.id)}
+            onClaim={claimStamp}
+            isLoading={isLoading}
+            claimingStampId={claimingStampId}
+            id={id}
+            onClose={() => setActiveStamp(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
