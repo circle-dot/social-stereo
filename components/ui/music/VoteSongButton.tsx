@@ -5,7 +5,6 @@ import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogOverlay } from '@/components/ui/dialog'
 import { showLoadingAlert } from '@/utils/alertUtils';
-import { Button } from '@/components/ui/button'
 import { showZupassWarningAlert } from '@/utils/alertUtils';
 import Link from 'next/link'
 import { ethers } from 'ethers'
@@ -18,7 +17,7 @@ interface VoteSongButtonProps {
 }
 
 export default function VoteSongButton({ trackId, params }: VoteSongButtonProps) {
-    const { login, authenticated, ready, getAccessToken, user, logout } = usePrivy();
+    const { authenticated, ready, getAccessToken, user, logout } = usePrivy();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { wallets, ready: walletsReady } = useWallets();
     const handleVote = async () => {

@@ -25,7 +25,7 @@ export default function MusicPage({ params }: PageProps) {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
-  const { login, authenticated, ready, user } = usePrivy()
+  const { authenticated, ready, user } = usePrivy()
   const [sortOrder] = useState<'asc' | 'desc'>('asc')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { data, isLoading, fetchNextPage, hasNextPage } = useMusic(
