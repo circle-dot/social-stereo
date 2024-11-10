@@ -59,39 +59,22 @@ export default function MusicPage({ params }: PageProps) {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogOverlay className="fixed inset-0 bg-black/50 z-[100]" />
         <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[110] bg-custom-purple p-6 rounded-lg shadow-xl w-[90%] max-w-[400px]" onPointerDownOutside={(e) => e.preventDefault()}>
-          <DialogTitle className="text-xl font-semibold text-custom-lightGreen">Login Required</DialogTitle>
-          <DialogDescription className="text-white mt-2">
-            You need to be logged in to view your votes.
-          </DialogDescription>
-          <DialogFooter className="mt-6 flex flex-col space-y-2 !items-end w-full">
-            <div className='flex flex-row items-center gap-2'>
-              <Button
-                onClick={() => {
-                  login({
-                    disableSignup: true,
-                  })
-                  setIsDialogOpen(false);
-                }}
-                className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3"
-              >
-                Log In
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => setIsDialogOpen(false)}
-                className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 py-3"
-              >
-                Cancel
-              </Button>
-            </div>
-            <div className="w-full text-center text-sm text-white mt-2">
-              Dont have an account?{' '}
-              <Link href="/login" className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
-                Register here
-              </Link>
-            </div>
-          </DialogFooter>
-        </DialogContent>
+                    <DialogTitle className="text-xl font-semibold text-custom-lightGreen">Login Required</DialogTitle>
+                    <DialogDescription className="text-white mt-2">
+                        You need to be logged in to view your votes.
+                    </DialogDescription>
+                    <DialogFooter className="mt-6 flex !flex-col space-y-2 !items-end w-full">
+                        <div className="flex flex-col space-y-2 w-full">
+                            <Link
+                                href={`/${params.org}/login`}
+                                onClick={() => setIsDialogOpen(false)}
+                                className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3 flex items-center justify-center rounded-md"
+                            >
+                                Log In
+                            </Link>
+                        </div>
+                    </DialogFooter>
+                </DialogContent>
       </Dialog>
 
       <div className="mb-4">

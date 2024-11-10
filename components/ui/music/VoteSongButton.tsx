@@ -72,29 +72,12 @@ export default function VoteSongButton({ trackId, params }: VoteSongButtonProps)
                     </DialogDescription>
                     <DialogFooter className="mt-6 flex !flex-col space-y-2 !items-end w-full">
                         <div className="flex flex-col space-y-2 w-full">
-                            <Button
-                                onClick={() => {
-                                    login({
-                                        disableSignup: true,
-                                    })
-                                    setIsDialogOpen(false);
-                                }}
-                                className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3"
+                            <Link
+                                href={`/${params.org}/login`}
+                                onClick={() => setIsDialogOpen(false)}
+                                className="w-full bg-custom-lightGreen text-custom-black hover:bg-custom-lightGreen/90 py-3 flex items-center justify-center rounded-md"
                             >
                                 Log In
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                onClick={() => setIsDialogOpen(false)}
-                                className="w-full bg-custom-darkGreen text-white hover:bg-custom-darkGreen/90 py-3"
-                            >
-                                Cancel
-                            </Button>
-                        </div>
-                        <div className="w-full text-center text-sm text-white mt-2">
-                            Dont have an account?{' '}
-                            <Link href={`/${params.org}/login`} className="text-custom-lightGreen hover:underline" onClick={() => setIsDialogOpen(false)}>
-                                Register here
                             </Link>
                         </div>
                     </DialogFooter>
