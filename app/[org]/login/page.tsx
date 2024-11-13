@@ -78,6 +78,7 @@ function Login({
               <div className='flex justify-start items-center pt-4'>
                 <Link
                   href={`/${params.org}/feed/music`}
+                  prefetch={true}
                   className="group relative inline-flex items-center justify-center mt-4 py-3 px-8 
                     rounded-full bg-custom-lightGreen text-black font-semibold text-base md:text-lg
                     overflow-hidden transition-all duration-300 ease-in-out

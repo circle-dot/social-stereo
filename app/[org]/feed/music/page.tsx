@@ -128,7 +128,7 @@ export default function MusicPage({ params }: PageProps) {
 
       <div className='flex flex-row items-center gap-4 left-0 right-0 px-4 mt-2'>
         <Button asChild className="bg-custom-lightGreen text-custom-black h-10 py-4 px-6 rounded-full w-full text-center hover:bg-custom-lightGreen/90">
-          <Link href={`/${params.org}/feed/music/propose`}>
+          <Link href={`/${params.org}/feed/music/propose`} prefetch={true}>
             Propose your song
           </Link>
         </Button>
