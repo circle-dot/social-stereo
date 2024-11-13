@@ -14,6 +14,28 @@ interface StampResponse {
   earnedStamps: Record<string, string>
 }
 
+const StampImage = ({ src, alt, className }: { src: string, alt: string, className?: string }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  
+  return (
+    <div className="relative aspect-square w-full">
+      {isLoading && (
+        <div className="absolute inset-0 bg-custom-darkPurple/50 animate-pulse rounded-full" />
+      )}
+      <Image
+        src={`/stamps/${src.split('/').pop()}`}
+        alt={alt}
+        fill
+        className={cn(className, "transition-opacity duration-300", 
+          isLoading ? "opacity-0" : "opacity-100"
+        )}
+        onLoad={() => setIsLoading(false)}
+        loading="lazy"
+      />
+    </div>
+  );
+};
+
 const ExpandableStamp = ({ 
   stamp, 
   stampInfo,
@@ -63,12 +85,10 @@ const ExpandableStamp = ({
             layoutId={`image-${stamp.id}-${id}`}
             className="relative w-full h-[370px]"
           >
-                   <Image
-              src={`/stamps/${stamp.icon.split('/').pop()}`}
+            <StampImage
+              src={stamp.icon}
               alt={stamp.title}
-              fill
               className="object-cover object-[center_center] -ml-[3px] scale-[1.03]"
-              priority
             />
           </motion.div>
           
@@ -399,12 +419,10 @@ const StampCollection = () => {
                     layoutId={`image-${stamp.id}-${id}`}
                     className="relative min-w-[96px] min-h-[96px] mb-3 rounded-full overflow-hidden"
                   >
-                    <Image
-                      src={`/stamps/${stamp.icon.split('/').pop()}`}
+                    <StampImage
+                      src={stamp.icon}
                       alt={stamp.title}
-                      fill
                       className="object-cover scale-110"
-                      priority
                     />
                   </motion.div>
 
