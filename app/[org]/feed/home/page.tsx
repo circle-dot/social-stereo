@@ -1,27 +1,12 @@
-import { Headphones } from 'lucide-react';
-import NavigationCard from '@/components/ui/NavigationCard';
+import { Headphones, MoveRight } from 'lucide-react';
 import StampCollection from '@/components/devcon/stamps/StampCollection';
+import Link from 'next/link';
 
 interface PageProps {
   params: {
     org: string
   }
 }
-
-const cardData = [
-  {
-    icon: <Headphones />,
-    title: "Decentralized Playlist",
-    description: "Vote for the music you like to contribute to the playlist.",
-    path: "music"
-  },
-  // {
-  //   icon: <Gift />,
-  //   title: "DevCon Pack",
-  //   description: "Coming soon...",
-  //   path: "special-box"
-  // }
-];
 
 export default function HomePage({ params }: PageProps) {
   const orgName = params.org
@@ -38,17 +23,21 @@ export default function HomePage({ params }: PageProps) {
         <p>This app lets you vote for your favorite music and collect stamps. An artifact with all the decentralized playlist will be minted once the event is over.</p>
         <StampCollection />
       </div>
-      <div className="flex flex-col gap-4">
-        {cardData.map((card, index) => (
-          <NavigationCard
-            key={index}
-            icon={card.icon}
-            title={card.title}
-            description={card.description}
-            href={`/${params.org}/feed/${card.path}`}
-          />
-        ))}
-      </div>
+      
+      <Link 
+        href={`/${params.org}/feed/music`}
+        prefetch={true}
+        className="bg-custom-darkGreen rounded-xl p-4 flex flex-col space-y-2 max-w-lg hover:bg-custom-darkGreen/90 transition-colors duration-200"
+      >
+        <div className="text-2xl text-custom-lightGreen">
+          <Headphones />
+        </div>
+        <h2 className="text-lg font-semibold text-white">Decentralized Playlist</h2>
+        <p className="text-xs text-gray-300">Vote for the music you like to contribute to the playlist.</p>
+        <div className="mt-4 py-2 px-8 rounded-full gap-3 inline-flex items-center justify-center bg-custom-lightGreen text-black text-base md:text-lg hover:bg-custom-lightGreen/50 hover:text-custom-white transition-colors duration-200">
+          Play <MoveRight className='w-3 h-3 ml-2' />
+        </div>
+      </Link>
     </div>
   );
 }
