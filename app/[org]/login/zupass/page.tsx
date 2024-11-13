@@ -73,7 +73,7 @@ function ZupassVerification({ params }: { params: { org: string } }) {
         await showAlertWithRedirect(
           'Successfully verified your Zupass ticket!',
           'Continue to Feed',
-          `/${params.org}/feed/home`,
+          `/${params.org}/feed/music`,
           false
         )
       } catch (error) {
