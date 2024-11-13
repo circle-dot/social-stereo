@@ -54,7 +54,7 @@ export function ZupassButtonTickets({ org }: Props) {
       className={`py-2 px-8 rounded-full gap-3 ${!authenticated
         ? 'bg-gray-300'
         : 'bg-custom-lightGreen'
-        } text-black text-base md:text-lg`}
+        } text-black text-base md:text-lg hover:bg-custom-lightGreen/50`}
       onClick={handleZuAuth}
       disabled={!ready || !authenticated}
     >
