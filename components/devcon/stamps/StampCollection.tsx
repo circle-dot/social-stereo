@@ -294,8 +294,11 @@ const StampCollection = () => {
     }
   }
 
-  // Update the claimStamp function to handle loading state
+  // Update the claimStamp function to check if any stamp is being claimed
   const claimStamp = async (stampId: string, attestationUID: string) => {
+    // Don't allow claiming if another stamp is already being claimed
+    if (claimingStampId) return;
+
     try {
         setClaimingStampId(stampId);
         const response = await fetch('/api/stamps', {
@@ -405,23 +408,25 @@ const StampCollection = () => {
                     />
                   </motion.div>
 
-                  {/* Claim button overlay */}
+                  {/* Update the claim button overlay to be disabled if any stamp is being claimed */}
                   {stamp.canClaim && stamp.attestationUID && (
                     <div 
                       className="absolute inset-0 flex items-center justify-center"
                       onClick={(e) => {
                         e.stopPropagation();
-                        claimStamp(stamp.id, stamp.attestationUID!);
+                        if (!claimingStampId) {  // Only allow claiming if no other stamp is being claimed
+                          claimStamp(stamp.id, stamp.attestationUID!);
+                        }
                       }}
                     >
                       <button
                         className={cn(
                           "absolute inset-0 flex items-center justify-center rounded-full transition-all",
-                          claimingStampId === stamp.id
+                          claimingStampId
                             ? "bg-black/50 cursor-not-allowed"
                             : "bg-black/60 hover:bg-black/70"
                         )}
-                        disabled={claimingStampId === stamp.id}
+                        disabled={Boolean(claimingStampId)}  // Disable if any stamp is being claimed
                       >
                         {claimingStampId === stamp.id ? (
                           <RefreshCcw className="w-5 h-5 animate-spin text-white" />
