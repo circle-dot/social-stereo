@@ -16,7 +16,7 @@ function StyledButton({ href, children, className = '', disabled }: StyledButton
       className={`w-full ${disabled ? 'pointer-events-none' : ''}`}
     >
       <Button
-        className={`py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg hover:bg-custom-darkGreen hover:text-custom-lightGreen ${disabled ? 'opacity-50 cursor-not-allowed' : ''
+        className={`py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg hover:bg-custom-lightGreen/50 hover:text-custom-white ${disabled ? 'opacity-50 cursor-not-allowed' : ''
           } ${className}`}
         disabled={disabled}
       >

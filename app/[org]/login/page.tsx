@@ -62,7 +62,7 @@ function Login({
               Connect to verify your DevCon ticket.
             </p>
             {isVerifying ? (
-              <Button className='hover:cursor-wait py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg'>
+              <Button className='hover:cursor-wait py-2 px-8 rounded-full gap-3 bg-custom-lightGreen text-black text-base md:text-lg hover:bg-custom-lightGreen/50 hover:text-custom-white'>
                 Verifying zupass...
               </Button>
             ) : isVerified ? (
