@@ -15,7 +15,7 @@ function Login({
 }) {
   const [isVerifying, setIsVerifying] = useState(false)
   const [isVerified, setIsVerified] = useState(false)
-  const { user, getAccessToken, ready } = usePrivy()
+  const { user, getAccessToken } = usePrivy()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const wallet = user?.wallet?.address
   const [showAboutDialog, setShowAboutDialog] = useState(false)

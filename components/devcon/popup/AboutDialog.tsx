@@ -61,14 +61,14 @@ export function AboutDialog({ open, onOpenChange }: AboutDialogProps) {
               </div>
               <h3 className="text-xl font-bold text-white mb-1">Shape the Playlist</h3>
               <div className="text-white/80 text-base">
-                Use your 25 votes strategically to curate DevCon's soundtrack
+                Use your 25 votes strategically to curate DevCon&apos;s soundtrack
               </div>
             </div>
           </div>
         </DialogHeader>
         
         <div className="flex items-center justify-between mt-8 mb-6">
-          <span className="text-white text-base">Don't show this again</span>
+          <span className="text-white text-base">Don&apos;t show this again</span>
           <Switch
             checked={dontShowAgain}
             onCheckedChange={(checked) => setDontShowAgain(checked)}
