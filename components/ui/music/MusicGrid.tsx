@@ -74,7 +74,6 @@ export default function MusicGrid({
   params,
   hideVoteButton
 }: MusicGridProps) {
-  // Set up intersection observer for infinite scroll
   const { ref, inView } = useInView({
     threshold: 0.5
   });
@@ -97,17 +96,17 @@ export default function MusicGrid({
           />
         ))}
 
-        {/* Loading indicator */}
-        {isLoading && hasNextPage && tracks.length > 0 && (
-          <div className="text-center py-2 text-custom-lightGreen text-sm">
-            Loading...
+        {/* Loading indicator - moved outside of flex-grow div */}
+        {(isLoading || hasNextPage) && (
+          <div className="text-center py-4 text-custom-lightGreen">
+            <div className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-custom-lightGreen rounded-full" role="status" aria-label="loading">
+              <span className="sr-only">Loading...</span>
+            </div>
           </div>
         )}
 
         {/* Intersection observer target */}
-        {hasNextPage && (
-          <div ref={ref} className="h-10" />
-        )}
+        <div ref={ref} className="h-4" />
       </div>
     </div>
   )
