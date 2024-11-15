@@ -79,7 +79,7 @@ export default function MusicPage({ params }: PageProps) {
 
       <div className="mb-4">
         <TitleSection>{orgName} Music</TitleSection>
-        <p className='text-sm text-white mb-4'>Updates every π minutes ( 15 ETH blocks || 3.1415... m) 🧮✨</p>
+        <p className='text-sm text-white mb-4'>Updates every π minutes ( 15 ETH blocks )</p>
         <div className="relative ">
           <Input
             type="text"
