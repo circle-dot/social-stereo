@@ -1,6 +1,5 @@
 import Image from "next/image"
 import VoteSongButton from './VoteSongButton'
-import { Skeleton } from "@/components/ui/skeleton"
 import { useInView } from 'react-intersection-observer'
 import { useEffect } from 'react'
 
