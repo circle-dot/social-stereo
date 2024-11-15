@@ -41,7 +41,9 @@ function SongListItem({ track, params, hideVoteButton }: {
 }) {
   return (
     <div className="flex mb-2 h-16">
-      <div className="flex items-center justify-center min-w-16 border border-custom-lightGreen bg-custom-darkGreen text-custom-lightGreen font-bold text-2xl rounded-lg mr-2">
+      <div className={`flex items-center justify-center min-w-16 border border-custom-lightGreen ${
+        track.rank && track.rank <= 20 ? 'bg-custom-darkPurple' : 'bg-custom-darkGreen'
+      } text-custom-lightGreen font-bold text-2xl rounded-lg mr-2`}>
         {track.rank ? `#${track.rank.toString().padStart(2, '0')}` : 'N/A'}
       </div>
       <div className="flex justify-between flex-grow bg-white rounded-lg overflow-hidden">
@@ -112,20 +114,19 @@ export default function MusicGrid({
             hideVoteButton={hideVoteButton}
           />
         ))}
+
+        {/* Loading indicator */}
+        {isLoading && hasNextPage && tracks.length > 0 && (
+          <div className="text-center py-2 text-custom-lightGreen text-sm">
+            Loading...
+          </div>
+        )}
+
+        {/* Intersection observer target */}
+        {hasNextPage && (
+          <div ref={ref} className="h-10" />
+        )}
       </div>
-
-      {isLoading && (
-        <div className="w-full">
-          {[...Array(7)].map((_, i) => (
-            <SongSkeleton key={i} />
-          ))}
-        </div>
-      )}
-
-      {/* Intersection observer target */}
-      {hasNextPage && (
-        <div ref={ref} className="h-10" />
-      )}
     </div>
   )
 }
