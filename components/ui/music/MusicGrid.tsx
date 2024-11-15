@@ -16,23 +16,6 @@ interface Track {
   spotify_id: string;
 }
 
-function SongSkeleton() {
-  return (
-    <div className="flex items-stretch mb-2 h-16">
-      <Skeleton className="w-16 h-full rounded-lg mr-2" />
-      <div className="flex items-center flex-grow bg-white rounded-lg overflow-hidden">
-        <Skeleton className="h-full w-16" />
-        <div className="flex-grow px-3 py-2">
-          <Skeleton className="h-4 w-24 mb-2" />
-          <Skeleton className="h-3 w-20" />
-        </div>
-        <div className="pr-2">
-          <Skeleton className="w-10 h-10 rounded-full" />
-        </div>
-      </div>
-    </div>
-  )
-}
 
 function SongListItem({ track, params, hideVoteButton }: {
   track: Track,
