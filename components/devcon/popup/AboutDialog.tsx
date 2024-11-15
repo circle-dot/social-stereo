@@ -26,7 +26,7 @@ export function AboutDialog({ open, onOpenChange }: AboutDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-custom-purple max-w-[380px] rounded-[32px] px-6 py-8 text-center">
+      <DialogContent className="bg-custom-purple max-w-[380px] rounded-[32px] px-6 py-8 text-center max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-8">
           <DialogTitle className="text-3xl font-bold text-white">
             Welcome to<br />Social Stereo!
