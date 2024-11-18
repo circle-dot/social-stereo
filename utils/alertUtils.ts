@@ -1,5 +1,4 @@
 import Swal from 'sweetalert2';
-import { useRouter } from 'next/navigation';
 
 // Using Tailwind CSS custom colors from config
 const colors = {
