@@ -1,13 +1,10 @@
 "use client"
 import { ArrowUp } from 'lucide-react'
-import { handleMusicVote } from './logic/handleMusicVote'
 import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogOverlay } from '@/components/ui/dialog'
-import { showLoadingAlert } from '@/utils/alertUtils';
-import { showZupassWarningAlert } from '@/utils/alertUtils';
 import Link from 'next/link'
-import { ethers } from 'ethers'
+import Swal from 'sweetalert2'
 
 interface VoteSongButtonProps {
     trackId: string;
@@ -17,47 +14,17 @@ interface VoteSongButtonProps {
 }
 
 export default function VoteSongButton({ trackId, params }: VoteSongButtonProps) {
-    const { authenticated, ready, getAccessToken, user, logout } = usePrivy();
+    console.log(trackId)
+    const { ready } = usePrivy();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const { wallets, ready: walletsReady } = useWallets();
+    const {ready: walletsReady } = useWallets();
     const handleVote = async () => {
-        console.log(trackId);
-        if (!authenticated && ready) {
-            setIsDialogOpen(true);
-            return;
-        }
-        if (!user || !ready || !walletsReady) {
-            console.error("User not ready or wallets not initialized");
-            await logout();
-            return;
-        }
-
-        showLoadingAlert('Checking verification...', 'Please wait while we verify your credentials');
-
-        // Check if user has Zupass verification
-        try {
-            const token = await getAccessToken();
-            const normalizedAddress = ethers.getAddress(user?.wallet?.address || '')
-            const response = await fetch(`/api/user/${normalizedAddress}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                // Show toast to redirect to login for Zupass verification
-                showZupassWarningAlert(params);
-                return;
-            }
-
-            // If Zupass verified, proceed with vote
-            const result = await handleMusicVote(trackId, user, wallets, getAccessToken, params.org);
-            if (result?.error === 'NO_VALID_WALLETS') {
-                await logout();
-            }
-        } catch (error) {
-            console.error("Error voting for track:", error);
-        }
+      Swal.fire({
+        title: 'Vote season ended',
+        text: 'Thanks for participating during Devcon SEA 7, the votes are already closed.',
+        icon: 'warning',
+        confirmButtonText: 'Ok'
+      })
     }
 
     return (
